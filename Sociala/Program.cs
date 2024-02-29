@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Sociala.Data;
+
 namespace Sociala
 {
     public class Program
@@ -5,6 +8,8 @@ namespace Sociala
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<AppData>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
