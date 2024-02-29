@@ -1,0 +1,122 @@
+﻿﻿ 
+@model section.Models.User
+<body >
+    <section class="vh-100" style=" margin-bottom:11%">
+        <div class="container h-100" >
+            <div class="row d-flex justify-content-center align-items-center h-100" >
+                <div class="col-lg-12 col-xl-11">
+                    <div class="card text-black" style="border-radius: 25px;">
+                        <div class="card-body p-md-5">
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Sign up</p>
+
+                                    <form asp-controller="User" asp-action="SignUp" id="signupForm" method="post" class="mx-1 mx-md-4" onsubmit="return validateForm()" enctype="multipart/form-data" >
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-user fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <label  asp-for="Name"  class="form-label" for="form3Example1c">Your Name</label>
+                                                <input asp-for="Name" type="text" id="form3Example1c" class="form-control" placeholder="Name" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                @if (!string.IsNullOrEmpty(ViewBag.EmailMessage))
+                                                {
+                                                    <p style="color: red">@ViewBag.EmailMessage</p>
+                                                }
+                                                <label asp-for="Email" class="form-label" for="form3Example3c">Your Email</label>
+                                                <input asp-for="Email" type="email" id="form3Example3c" class="form-control" placeholder="Email" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                @if (!string.IsNullOrEmpty(ViewBag.PhoneNumberMessage))
+                                                {
+                                                    <p style="color: red">@ViewBag.PhoneNumberMessage</p>
+                                                }
+                                                <label asp-for="PhoneNumber" class="form-label" for="form3Example3c">Your Phone number</label>
+                                                <input asp-for="PhoneNumber" type="PhoneNumber" id="form3Example3c" class="form-control" placeholder="Phone number" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                @if (!string.IsNullOrEmpty(ViewBag.PasswordMessage))
+                                                {
+                                                    <p style="color: red; font-size: 10px;">@ViewBag.PasswordMessage</p>
+
+                                                }
+
+                                                <label asp-for="Password" class="form-label" for="form3Example4c">Password</label>
+                                                <input asp-for="Password" type="password" id="password" class="form-control" placeholder="Password" required />
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-row align-items-center mb-4">
+                                            <i class="fas fa-key fa-lg me-3 fa-fw"></i>
+                                            <div class="form-outline flex-fill mb-0">
+                                                <label class="form-label" for="form3Example4cd">Repeat your password</label>
+                                                <input type="password" id="repeatPassword" class="form-control" placeholder="Confirm Password" required />
+                                            </div>
+                                        </div>
+
+
+                                        <div id="passwordError" class="text-danger"></div>
+
+
+                                        <div class="form-group">
+                                            @if (!string.IsNullOrEmpty(ViewBag.PhotoMessage))
+                                            {
+                                                <p style="color: red">@ViewBag.PhotoMessage</p>
+                                            }
+                                            <label asp-for="Photo" class="control-label" style="color:white;"></label>
+                                            <input asp-for="Photo" type="file" accept=".jpg, .jpeg, .png" class="form-control" autocomplete="Photo" aria-required="true" placeholder="Photo" style="margin-bottom:20px" />
+                                        </div>
+
+                                        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4" style="display:block">
+                                            <button type="submit" class="btn btn-primary btn-lg" >Register</button>
+                                        </div>
+                                    </form>
+                                    
+
+                                </div>
+                                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                                    <img src="/imj/SignUp.webp"
+                                         class="img-fluid" alt="Sample image">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script>
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            var repeatPassword = document.getElementById("repeatPassword").value;
+            var email = document.getElementById("form3Example3c").value;
+            var passwordError = document.getElementById("passwordError");
+
+            if (password !== repeatPassword) {
+                passwordError.innerText = "Passwords do not match";
+                return false;
+            } else {
+                passwordError.innerText = "";
+                return true;
+            }
+        }
+    </script>
+
+</body>

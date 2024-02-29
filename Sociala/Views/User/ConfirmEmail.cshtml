@@ -1,0 +1,42 @@
+﻿<style>
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    .h-custom {
+        height: calc(100% - 73px);
+    }
+</style>
+<section class="vh-100">
+    <div class="container py-5 h-100">
+        <div class="row d-flex align-items-center justify-content-center h-100">
+            <div class="col-md-8 col-lg-7 col-xl-6">
+                <img src="/imj//ConfirmEmail copy.jpg"
+                     class="img-fluid" alt="Phone image">
+            </div>
+            <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Confirm email</p>
+                <h5>We have send email to you please check your email</h5>
+                <br />
+                <form asp-controller="User" asp-action="ConfirmEmail" method="post">
+                    @if (!string.IsNullOrEmpty(ViewBag.ConfirmEamil))
+                    {
+                        <p style="color: red">@ViewBag.ConfirmEamil</p>
+                    }
+                    <div class="form-outline mb-4">
+                        <label class="form-label" for="key">Confirm email</label>
+                        <input type="text" id="key" name="key" class="form-control form-control-lg" placeholder="Confirm email" />
+                    </div>
+
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</section>
