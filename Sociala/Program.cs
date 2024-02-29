@@ -1,3 +1,5 @@
+using EmailSendertServices;
+using EncryptServices;
 using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
 
@@ -10,6 +12,10 @@ namespace Sociala
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<AppData>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddScoped<IEncrypt, EncryptClass>();
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
