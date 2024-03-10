@@ -16,8 +16,8 @@
                                         <div class="d-flex flex-row align-items-center mb-4">
                                             <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                                             <div class="form-outline flex-fill mb-0">
-                                                <label  asp-for="Name"  class="form-label" for="form3Example1c">Your Name</label>
-                                                <input asp-for="Name" type="text" id="form3Example1c" class="form-control" placeholder="Name" required />
+                                                <label asp-for="UesrName"  class="form-label" for="form3Example1c">Your Username</label>
+                                                <input asp-for="UesrName" type="text" id="form3Example1c" class="form-control" placeholder="UserName" required />
                                             </div>
                                         </div>
 
@@ -76,8 +76,8 @@
                                             {
                                                 <p style="color: red">@ViewBag.PhotoMessage</p>
                                             }
-                                            <label asp-for="Photo" class="control-label" style="color:white;"></label>
-                                            <input asp-for="Photo" type="file" accept=".jpg, .jpeg, .png" class="form-control" autocomplete="Photo" aria-required="true" placeholder="Photo" style="margin-bottom:20px" />
+                                            <label asp-for="UrlPhoto" class="control-label" style="color:white;"></label>
+                                            <input asp-for="UrlPhoto" type="file" accept=".jpg, .jpeg, .png" class="form-control" autocomplete="UrlPhoto" aria-required="true" placeholder="UrlPhoto" style="margin-bottom:20px" />
                                         </div>
 
                                         <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4" style="display:block">
