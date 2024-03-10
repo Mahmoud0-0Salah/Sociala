@@ -171,17 +171,18 @@ namespace Sociala.Controllers
                     file[0].CopyTo(fileStream); // Save in the Images folder
                 }
 
-                user.Photo = $"/imj/{imageName}";
+                user.UrlPhoto = $"/imj/{imageName}";
             }
             else
-                user.Photo = $"/imj/default.jpg";
+                user.UrlPhoto = $"/imj/default.jpg";
             user.Id = Guid.NewGuid().ToString();
             user.Password = Hash(user.Password);
             user.IsActive = false;
             user.ActiveKey = Guid.NewGuid().ToString();
+            user.CreateAt= DateTime.Now;
             try
             {
-                await emailSender.SendEmailAsync(user.Email, "Confirm email", $"Hello {user.Name}\n\nYou're almost there!\r\nPlease confirm your subscription by enter this key \n{user.ActiveKey}");
+                await emailSender.SendEmailAsync(user.Email, "Confirm email", $"Hello {user.UesrName}\n\nYou're almost there!\r\nPlease confirm your subscription by enter this key \n{user.ActiveKey}");
 
                 appData.Add(user);
                 await appData.SaveChangesAsync();
