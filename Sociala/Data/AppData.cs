@@ -25,11 +25,7 @@ namespace Sociala.Data
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                   .HasOne(s => s.Roles)
-                   .WithMany()
-                   .HasForeignKey(s => s.RoleId)
-                   .OnDelete(DeleteBehavior.NoAction);
+         
 
             modelBuilder.Entity<Post>()
                   .HasOne(s => s.User)

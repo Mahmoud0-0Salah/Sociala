@@ -179,6 +179,7 @@ namespace Sociala.Controllers
             user.Password = Hash(user.Password);
             user.IsActive = false;
             user.ActiveKey = Guid.NewGuid().ToString();
+            user.CreateAt= DateTime.Now;
             try
             {
                 await emailSender.SendEmailAsync(user.Email, "Confirm email", $"Hello {user.UesrName}\n\nYou're almost there!\r\nPlease confirm your subscription by enter this key \n{user.ActiveKey}");
