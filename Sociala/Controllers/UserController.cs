@@ -6,6 +6,7 @@ using Sociala.Models;
 using Sociala.ViewModel;
 using EncryptServices;
 using EmailSendertServices;
+using System;
 
 namespace Sociala.Controllers
 {
@@ -178,8 +179,12 @@ namespace Sociala.Controllers
             user.Id = Guid.NewGuid().ToString();
             user.Password = Hash(user.Password);
             user.IsActive = false;
-            user.ActiveKey = Guid.NewGuid().ToString();
             user.CreateAt= DateTime.Now;
+            Random random = new Random();
+            for (int i = 0; i < 6; i++)
+            {
+                user.ActiveKey += random.Next(0, 10); 
+            }
             try
             {
                 await emailSender.SendEmailAsync(user.Email, "Confirm email", $"Hello {user.UesrName}\n\nYou're almost there!\r\nPlease confirm your subscription by enter this key \n{user.ActiveKey}");
@@ -193,7 +198,7 @@ namespace Sociala.Controllers
             }
             catch
             {
-                return Content("Bad connection please try again");
+                return View("ErrorPage");
             }
             return RedirectToAction("ConfirmEmail", "User");
         }
