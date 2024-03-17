@@ -15,11 +15,11 @@ namespace EmailSendertServices
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("M4_0_0_@outlook.com", "MMaasm4@")
+                Credentials = new NetworkCredential("M4_0_0__@outlook.com", "MMaasm4@")
             };
 
             return client.SendMailAsync(
-                new MailMessage(from: "M4_0_0_@outlook.com",
+                new MailMessage(from: "M4_0_0__@outlook.com",
                                 to: email,
                                 subject,
                                 message
