@@ -21,7 +21,11 @@ namespace Sociala.Models
             public string? bio {  get; set; }
             public bool IsActive { get; set; }
             public string ActiveKey { get; set; }
-             public  DateTime CreateAt { get; set; }
+            
+            [ForeignKey("Role")]
+            public int RoleId { get; set; }
+            public Role Roles { get; set; }
+        public  DateTime CreateAt { get; set; }
 
     }
 }

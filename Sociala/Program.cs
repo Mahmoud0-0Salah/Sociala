@@ -1,3 +1,4 @@
+using AuthorizationService;
 using EmailSendertServices;
 using EncryptServices;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,9 @@ namespace Sociala
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+            builder.Services.AddTransient <IAuthorization,Authorization>();
+
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
@@ -40,6 +44,7 @@ namespace Sociala
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
             app.Run();
         }

@@ -7,6 +7,7 @@ using Sociala.ViewModel;
 using EncryptServices;
 using EmailSendertServices;
 using System;
+using AuthorizationService;
 
 namespace Sociala.Controllers
 {
@@ -15,11 +16,13 @@ namespace Sociala.Controllers
         private readonly AppData appData;
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender)
+        private readonly IAuthorization authorization;
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
+            this.authorization = authorization;
         }
 
         private bool IsPasswordValid(string password)
@@ -68,7 +71,7 @@ namespace Sociala.Controllers
 
         public IActionResult Login()
         {
-            if (Request.Cookies["id"] != null)
+            if (authorization.IsLoggedIn())
                 return RedirectToAction("index", "Home");
             return View();
         }
@@ -180,6 +183,7 @@ namespace Sociala.Controllers
             user.Password = Hash(user.Password);
             user.IsActive = false;
             user.CreateAt= DateTime.Now;
+            user.RoleId = 0;
             Random random = new Random();
             for (int i = 0; i < 6; i++)
             {

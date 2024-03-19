@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AuthorizationService;
+using Microsoft.AspNetCore.Mvc;
 using Sociala.Data;
 using Sociala.Models;
 using Sociala.ViewModel;
@@ -11,18 +12,20 @@ namespace Sociala.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly AppData _data;
-        public HomeController(ILogger<HomeController> logger,AppData data)
+        private readonly IAuthorization authorization;
+        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization)
         {
             _logger = logger;
             _data = data;
+            this.authorization = authorization;
         }
 
         public IActionResult Index()
         {
-            string id="a";
+            string id=authorization.GetId();
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=>f.RequestedUserId);
             var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
-            ViewBag.posts = _data.Post.Join(friends,
+            ViewBag.posts = (_data.Post.Join(friends,
                                 post => post.UserId,
                                 friend => friend.Id,
                                 (post, friend) => new PostInfo
@@ -30,8 +33,9 @@ namespace Sociala.Controllers
                                     PostContent=post.content,
                                     PostImj = post.Imj,
                                     UserPhoto = friend.UrlPhoto,
-                                    UserName = friend.UesrName
-                                });
+                                    UserName = friend.UesrName,
+                                    CreateAt = post.CreateAt
+                                })).OrderBy(p=>p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r=>r.RequestedUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 

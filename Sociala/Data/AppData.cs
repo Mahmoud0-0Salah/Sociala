@@ -98,10 +98,11 @@ namespace Sociala.Data
                .HasForeignKey(s => s.RequestingUserId)
                .OnDelete(DeleteBehavior.NoAction);
 
-
-
-
-
+            modelBuilder.Entity<User>()
+                .HasOne(s => s.Roles)
+                .WithMany()
+                .HasForeignKey(s => s.RoleId)
+                .OnDelete(DeleteBehavior.NoAction);
 
         }
 
