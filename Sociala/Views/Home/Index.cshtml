@@ -1,8 +1,217 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using Sociala.ViewModel;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sociala - Social Network App HTML Template </title>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <link rel="stylesheet" href="/css/themify-icons.css">
+    <link rel="stylesheet" href="/css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" href="/css/feather.css">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="/imj/favicon.png">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/emoji.css">
+
+    <link rel="stylesheet" href="/css/lightbox.css">
+
+</head>
+<body class="color-theme-blue mont-font">
+
+    <div class="preloader"></div>
+
+
+    <div class="main-wrapper">
+
+
+        <!-- navigation left
+        <nav class="navigation scroll-bar">
+            <div class="container ps-0 pe-0">
+                <div class="nav-content">
+                    <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2 mt-2">
+                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span>New </span>Feeds</div>
+                        <ul class="mb-1 top-content">
+                            <li class="logo d-none d-xl-block d-lg-block"></li>
+                            <li><a href="default.html" class="nav-content-bttn open-font" ><i class="feather-tv btn-round-md bg-blue-gradiant me-3"></i><span>Newsfeed</span></a></li>
+                            <li><a href="default-badge.html" class="nav-content-bttn open-font" ><i class="feather-award btn-round-md bg-red-gradiant me-3"></i><span>Badges</span></a></li>
+                            <li><a href="default-storie.html" class="nav-content-bttn open-font" ><i class="feather-globe btn-round-md bg-gold-gradiant me-3"></i><span>Explore Stories</span></a></li>
+                            <li><a href="default-group.html" class="nav-content-bttn open-font" ><i class="feather-zap btn-round-md bg-mini-gradiant me-3"></i><span>Popular Groups</span></a></li>
+                            <li><a href="user-page.html" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Author Profile </span></a></li>
+                        </ul>
+                    </div>
+
+                    <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1 mb-2">
+                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span>More </span>Pages</div>
+                        <ul class="mb-3">
+                            <li><a href="default-email-box.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-inbox me-3"></i><span>Email Box</span><span class="circle-count bg-warning mt-1">584</span></a></li>
+                            <li><a href="default-hotel.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-home me-3"></i><span>Near Hotel</span></a></li>
+                            <li><a href="default-event.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-map-pin me-3"></i><span>Latest Event</span></a></li>
+                            <li><a href="default-live-stream.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-youtube me-3"></i><span>Live Stream</span></a></li>
+                        </ul>
+                    </div>
+                    <div class="nav-wrap bg-white bg-transparent-card rounded-xxl shadow-xss pt-3 pb-1">
+                        <div class="nav-caption fw-600 font-xssss text-grey-500"><span></span> Account</div>
+                        <ul class="mb-1">
+                            <li class="logo d-none d-xl-block d-lg-block"></li>
+                            <li><a href="default-settings.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-settings me-3 text-grey-500"></i><span>Settings</span></a></li>
+                            <li><a href="default-analytics.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-pie-chart me-3 text-grey-500"></i><span>Analytics</span></a></li>
+                            <li><a href="default-message.html" class="nav-content-bttn open-font h-auto pt-2 pb-2"><i class="font-sm feather-message-square me-3 text-grey-500"></i><span>Chat</span><span class="circle-count bg-warning mt-0">23</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>-->
+        <!-- navigation left -->
+        <!-- main content -->
+        <div class="main-content right-chat-active">
+
+            <div class="middle-sidebar-bottom">
+                <div class="middle-sidebar-left">
+                    <!-- loader wrapper -->
+                    <div class="preloader-wrap p-3">
+                        <div class="box shimmer">
+                            <div class="lines">
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                            </div>
+                        </div>
+                        <div class="box shimmer mb-3">
+                            <div class="lines">
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                            </div>
+                        </div>
+                        <div class="box shimmer">
+                            <div class="lines">
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- loader wrapper -->
+                    <div class="row feed-body">
+                        <div class="col-xl-8 col-xxl-9 col-lg-8">
+
+
+                            <!--<div class="card w-100 shadow-none bg-transparent bg-transparent-card border-0 p-0 mb-0">
+                                <div class="owl-carousel category-card owl-theme overflow-hidden nav-none">
+                                    <div class="item">
+                                        <div data-bs-toggle="modal" data-bs-target="#Modalstory" class="card w125 h200 d-block border-0 shadow-none rounded-xxxl bg-dark overflow-hidden mb-3 mt-3">
+                                            <div class="card-body d-block p-3 w-100 position-absolute bottom-0 text-center">
+                                                <a href="#">
+                                                    <span class="btn-round-lg bg-white"><i class="feather-plus font-lg"></i></span>
+                                                    <div class="clearfix"></div>
+                                                    <h4 class="fw-700 position-relative z-index-1 ls-1 font-xssss text-white mt-2 mb-1">Add Story </h4>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <div data-bs-toggle="modal" data-bs-target="#Modalstory" class="card w125 h200 d-block border-0 shadow-xss rounded-xxxl bg-gradiant-bottom overflow-hidden cursor-pointer mb-3 mt-3" style="background-image: url(images/s-1.jpg);">
+                                            <div class="card-body d-block p-3 w-100 position-absolute bottom-0 text-center">
+                                                <a href="#">
+                                                    <figure class="avatar ms-auto me-auto mb-0 position-relative w50 z-index-1"><img src="images/user-11.png" alt="image" class="float-right p-0 bg-white rounded-circle w-100 shadow-xss"></figure>
+                                                    <div class="clearfix"></div>
+                                                    <h4 class="fw-600 position-relative z-index-1 ls-1 font-xssss text-white mt-2 mb-1">Victor Exrixon </h4>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+
+
+
+                            <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
+                                <div class="card-body p-0">
+                                    <a href="#" class=" font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"><i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Post</a>
+                                </div>
+                                <form action="#" method="POST">
+                                    <div class="card-body p-0 mt-3 position-relative">
+                                        <input required type="text" name="message" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" placeholder="What's on your mind?">
+                                    </div>
+                                    <div class="card-body d-flex p-0 mt-0">
+                                        <label for="fileInput" class="upload-btn d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4">
+                                            <i class="font-md text-success feather-image me-2"></i><span class="d-none-xs">Photo/Video</span>
+                                        </label>
+                                        <input type="file" id="fileInput" name="fileInput" accept="image/*, video/*" class="d-none">
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i></button>
+                                    </div>
+                                </form>
+
+                            </div>
+                            @foreach(PostInfo post in ViewBag.posts)
+                            {
+                            <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-0">
+                                <div class="card-body p-0 d-flex">
+                                        <figure class="avatar me-3"><img src="/imj/@post.UserPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                    <h4 class="fw-700 text-grey-900 font-xssss mt-1">@post.UserName <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">2 hour ago</span></h4>
+                                    <a href="#" class="ms-auto"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
+                                </div>
+                                <div class="card-body p-0 me-lg-5">
+                                    <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">@post.PostContent</p>
+                                </div>
+                                <div class="card-body d-block p-0 mb-3">
+                                    <div class="row ps-2 pe-2">
+                                        <div class="col-sm-12 p-1"><a href="images/t-30.jpg" data-lightbox="roadtr"><img src="/imj/@post.PostImj" class="rounded-3 w-100" alt="image"></a></div>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex p-0">
+                                    <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"><i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> <i class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>2.8K Like</a>
+                                    <div class="emoji-wrap">
+                                        <ul class="emojis list-inline mb-0">
+                                            <li class="emoji list-inline-item"><i class="em em---1"></i> </li>
+                                            <li class="emoji list-inline-item"><i class="em em-angry"></i></li>
+                                            <li class="emoji list-inline-item"><i class="em em-anguished"></i> </li>
+                                            <li class="emoji list-inline-item"><i class="em em-astonished"></i> </li>
+                                            <li class="emoji list-inline-item"><i class="em em-blush"></i></li>
+                                            <li class="emoji list-inline-item"><i class="em em-clap"></i></li>
+                                            <li class="emoji list-inline-item"><i class="em em-cry"></i></li>
+                                            <li class="emoji list-inline-item"><i class="em em-full_moon_with_face"></i></li>
+                                        </ul>
+                                    </div>
+                                    <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
+                                    <a href="#" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+                                </div>
+                            </div>
+                                
+                            }
+
+                        </div>
+                        <div class="col-xl-4 col-xxl-3 col-lg-4 ps-lg-0">
+                            <div class="card w-100 shadow-xss rounded-xxl border-0 mb-3">
+                                <div class="card-body d-flex align-items-center p-4">
+                                    <h4 class="fw-700 mb-0 font-xssss text-grey-900">Friend Request</h4>
+                                    <a href="default-member.html" class="fw-600 ms-auto font-xssss text-primary">See all</a>
+                                </div>
+                                @foreach (User user in ViewBag.Requests)
+                                {
+                                    <div class="card-body d-flex pt-4 ps-4 pe-4 pb-0 border-top-xs bor-0">
+                                        <figure class="avatar me-3"><img src="/imj/@user.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                        <h4 class="fw-700 text-grey-900 font-xssss mt-1">@user.UesrName</h4>
+                                    </div>
+                                    <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
+                                        <a href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
+                                        <a href="#" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
+                                    </div>
+                                }
+                            
+                            </div>
+                        </div>
+
+                            <script src="/js/lightbox.js"></script>
+                            <script src="/js/scripts.js"></script>
+</body>
+
+</html>

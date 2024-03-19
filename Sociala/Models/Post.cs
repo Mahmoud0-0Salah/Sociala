@@ -9,6 +9,7 @@ namespace Sociala.Models
         [Required]
         [StringLength(1000)]
         public string content { get; set; }
+        public string? Imj { get; set; }
         public DateTime CreateAt { get; set; }
         [StringLength(450)]
         public string  UserId {  get; set; }
