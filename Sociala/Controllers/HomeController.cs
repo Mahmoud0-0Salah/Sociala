@@ -1,4 +1,5 @@
 ﻿using AuthorizationService;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Sociala.Data;
 using Sociala.Models;
@@ -11,17 +12,21 @@ namespace Sociala.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppData _data;
         private readonly IAuthorization authorization;
-        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization)
+        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization, IHttpContextAccessor httpContextAccessor)
         {
             _logger = logger;
             _data = data;
+            _httpContextAccessor = httpContextAccessor;
             this.authorization = authorization;
         }
 
         public IActionResult Index()
         {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
             string id=authorization.GetId();
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=>f.RequestedUserId);
             var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
@@ -41,6 +46,44 @@ namespace Sociala.Controllers
 
             return View();
         }
+        [HttpPost]
+        public IActionResult CreatePost(string content)
+        {
+            Console.WriteLine(content+"1fksgdvfjkhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhal;jjjjjjjjjjjjjjjjjjj/n");
+            Console.WriteLine(authorization.GetId);
+            var post = new Post
+            {
+                content = content,
+                UserId = authorization.GetId(),
+            CreateAt = DateTime.Now,
+            };
+            var file = HttpContext.Request.Form.Files;
+
+            if (file.Count() > 0)
+            {
+                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg"))
+                {
+                    ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG or JPEG";
+                    return View();
+                }
+                string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
+                var filePath = Path.Combine("wwwroot", "imj", imageName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file[0].CopyTo(fileStream); // Save in the Images folder
+                }
+
+                post.Imj = $"/imj/{imageName}";
+            }
+
+            _data.Post.Add(post);
+            _data.SaveChanges();
+           
+
+            return RedirectToAction("Index"); 
+        }
+
 
         public IActionResult Privacy()
         {
