@@ -12,14 +12,12 @@ namespace Sociala.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly AppData _data;
         private readonly IAuthorization authorization;
-        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization, IHttpContextAccessor httpContextAccessor)
+        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization)
         {
             _logger = logger;
             _data = data;
-            _httpContextAccessor = httpContextAccessor;
             this.authorization = authorization;
         }
 
@@ -49,8 +47,8 @@ namespace Sociala.Controllers
         [HttpPost]
         public IActionResult CreatePost(string content)
         {
-            Console.WriteLine(content+"1fksgdvfjkhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhal;jjjjjjjjjjjjjjjjjjj/n");
-            Console.WriteLine(authorization.GetId);
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
             var post = new Post
             {
                 content = content,
@@ -61,10 +59,11 @@ namespace Sociala.Controllers
 
             if (file.Count() > 0)
             {
-                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg"))
+                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg")
+                    && !Path.GetExtension(file[0].FileName).Equals(".mp4"))
                 {
-                    ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG or JPEG";
-                    return View();
+                    TempData["PhotoMessage"] = "Upload photo with Extension mp4,JPG,PNG or JPEG";
+                    return RedirectToAction("Index");
                 }
                 string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
                 var filePath = Path.Combine("wwwroot", "imj", imageName);
