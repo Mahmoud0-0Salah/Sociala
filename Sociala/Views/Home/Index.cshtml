@@ -138,20 +138,21 @@
             <i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Post
         </a>
     </div>
-    <form asp-controller="Home" asp-action="CreatePost" method="post" enctype="multipart/form-data">
-        <div class="card-body p-0 mt-3 position-relative">
-            <input required type="text" name="content" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" placeholder="What's on your mind?">
-        </div>
-        <div class="card-body d-flex p-0 mt-0">
-            <label for="fileInput" class="upload-btn d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4">
-                <i class="font-md text-success feather-image me-2"></i><span class="d-none-xs">Photo/Video</span>
-            </label>
-            <input type="file" id="fileInput" name="imageInput" accept="image/*" class="d-none" multiple>
-        </div>
-        <div class="text-center mt-3">
-            <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i></button>
-        </div>
-    </form>
+                                @TempData["PhotoMessage"]
+                                <form asp-controller="Home" asp-action="CreatePost" method="post" enctype="multipart/form-data">
+                                    <div class="card-body p-0 mt-3 position-relative">
+                                        <input required type="text" name="content" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" placeholder="What's on your mind?">
+                                    </div>
+                                    <div class="card-body d-flex p-0 mt-0">
+                                        <label for="fileInput" class="upload-btn d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4">
+                                            <i class="font-md text-success feather-image me-2"></i><span class="d-none-xs">Photo/Video</span>
+                                        </label>
+                                        <input type="file" id="fileInput" name="imageInput" accept="image/*" class="d-none" multiple>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i></button>
+                                    </div>
+                                </form>
 </div>
 
                             @foreach(PostInfo post in ViewBag.posts)
