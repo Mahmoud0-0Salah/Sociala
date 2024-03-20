@@ -2,6 +2,8 @@
 using Sociala.Data;
 using Sociala.Models;
 using Microsoft.AspNetCore.Http;
+using EncryptServices;
+
 namespace AuthorizationService
 {
     public interface IAuthorization
@@ -16,10 +18,12 @@ namespace AuthorizationService
     {
         private readonly AppData appData;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public Authorization(AppData appData, IHttpContextAccessor httpContextAccessor)
+        private readonly IEncrypt encryptclass;
+        public Authorization(AppData appData, IHttpContextAccessor httpContextAccessor, IEncrypt encryptclass)
         {
             this.appData = appData;
             _httpContextAccessor = httpContextAccessor;
+            this.encryptclass = encryptclass;
         }
 
         public bool IsLoggedIn()
@@ -28,17 +32,19 @@ namespace AuthorizationService
         }
         public bool IsAdmin(string id)
         {
+            id = encryptclass.Decrypt(id, _httpContextAccessor.HttpContext.Request.Cookies["slot"]);
             var user =appData.User.Where( u => u.Id.Equals(id)).SingleOrDefault();
             return user.RoleId == 1;
         }
         public bool IsUser(string id)
         {
+            id = encryptclass.Decrypt(id, _httpContextAccessor.HttpContext.Request.Cookies["slot"]);
             var user = appData.User.Where(u => u.Id.Equals(id)).SingleOrDefault();
             return user.RoleId == 0;
         }
         public string GetId()
         {
-            return _httpContextAccessor.HttpContext.Request.Cookies["id"];
+            return encryptclass.Decrypt(_httpContextAccessor.HttpContext.Request.Cookies["id"], _httpContextAccessor.HttpContext.Request.Cookies["slot"]);
         }
     }
 }
