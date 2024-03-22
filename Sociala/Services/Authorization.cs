@@ -32,15 +32,15 @@ namespace AuthorizationService
         }
         public bool IsAdmin(string id)
         {
-            id = encryptclass.Decrypt(id, _httpContextAccessor.HttpContext.Request.Cookies["slot"]);
             var user =appData.User.Where( u => u.Id.Equals(id)).SingleOrDefault();
-            return user.RoleId == 1;
+            var role= appData.Role.Where(r => r.Id.Equals(user.RoleId)).SingleOrDefault();
+            return role.Name.Equals("Admin");
         }
         public bool IsUser(string id)
         {
-            id = encryptclass.Decrypt(id, _httpContextAccessor.HttpContext.Request.Cookies["slot"]);
             var user = appData.User.Where(u => u.Id.Equals(id)).SingleOrDefault();
-            return user.RoleId == 0;
+            var role = appData.Role.Where(r => r.Id.Equals(user.RoleId)).SingleOrDefault();
+            return role.Name.Equals("User");
         }
         public string GetId()
         {
