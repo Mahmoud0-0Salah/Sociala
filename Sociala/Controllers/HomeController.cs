@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Sociala.Data;
 using Sociala.Models;
 using Sociala.ViewModel;
+using System;
 using System.Diagnostics;
 using System.Linq;
 
@@ -26,7 +27,9 @@ namespace Sociala.Controllers
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
             string id=authorization.GetId();
-            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=>f.RequestedUserId);
+            if (authorization.IsAdmin(id))
+                return RedirectToAction("LogIn", "User");
+            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=> id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId);
             var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
             ViewBag.posts = (_data.Post.Join(friends,
                                 post => post.UserId,
