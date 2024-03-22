@@ -27,8 +27,6 @@ namespace Sociala.Controllers
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
             string id=authorization.GetId();
-            if (authorization.IsAdmin(id))
-                return RedirectToAction("LogIn", "User");
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=> id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId);
             var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
             ViewBag.posts = (_data.Post.Join(friends,
