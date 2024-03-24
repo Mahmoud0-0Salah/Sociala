@@ -45,7 +45,7 @@ namespace Sociala.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult CreatePost(string content)
+        public IActionResult CreatePost(string? content)
         {
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
@@ -75,6 +75,12 @@ namespace Sociala.Controllers
 
                 post.Imj = $"/imj/{imageName}";
             }
+            else if (file.Count() <= 0 && content == null)
+            {
+                TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
+                return RedirectToAction("Index");
+            }
+            
 
             _data.Post.Add(post);
             _data.SaveChanges();
