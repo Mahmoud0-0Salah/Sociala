@@ -16,32 +16,51 @@ namespace Sociala.Controllers
 {
     public class UserController : Controller
     {
-        private readonly AppData _context;
-
         private readonly AppData appData;
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
-        private readonly IAuthorization authorization;
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData context)
+        private readonly IAuthorization authorization; private readonly AppData _data;
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData data)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
-            _context = context;
+
+            _data = data;
 
         }
 
         public IActionResult Profile()
         {
-            string userId = authorization.GetId(); // استخدم الطريقة المناسبة لجلب معرف المستخدم الحالي من خدمة الـ Authorization
+            string userId = authorization.GetId();
 
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
-                return NotFound(); // يمكنك تنفيذ رد فعل مختلف إذا لم يتم العثور على المستخدم
+                return NotFound(); 
             }
+
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+            string id = authorization.GetId();
+            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f => id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
+            friendsId.Add(id);
+            var friends = _data.User.Where(u => friendsId.Contains(u.Id));
+            ViewBag.posts = (_data.Post.Join(friends,
+                                post => post.UserId,
+                                friend => friend.Id,
+                                (post, friend) => new PostInfo
+                                {
+                                    PostContent = post.content,
+                                    PostImj = post.Imj,
+                                    UserPhoto = friend.UrlPhoto,
+                                    UserName = friend.UesrName,
+                                    CreateAt = post.CreateAt
+                                })).OrderBy(p => p.CreateAt);
+            var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
+            ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
             return View(user);
         }
