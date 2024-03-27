@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Sociala.Data;
 using Sociala.Models;
 using Sociala.ViewModel;
+using System;
 using System.Diagnostics;
 using System.Linq;
 
@@ -26,26 +27,14 @@ namespace Sociala.Controllers
         {
            
             string id=authorization.GetId();
-            
+
             var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r=>r.RequestedUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
             return View();
         }
         [HttpPost]
-        public IActionResult Search(string Name)
-        {
 
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i=>i.Id);//?how give me result zero
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
-
-                ;
-           // Console.WriteLine(ResultOfSearch.Count());
-           // Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-                                                            
-            return View();
-        }
-        [HttpPost]
         public IActionResult CreatePost(string? content)
         {
             if (!authorization.IsLoggedIn())
