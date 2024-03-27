@@ -24,22 +24,9 @@ namespace Sociala.Controllers
 
         public IActionResult Index()
         {
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
+           
             string id=authorization.GetId();
-            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=>f.RequestedUserId);
-            var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
-            ViewBag.posts = (_data.Post.Join(friends,
-                                post => post.UserId,
-                                friend => friend.Id,
-                                (post, friend) => new PostInfo
-                                {
-                                    PostContent=post.content,
-                                    PostImj = post.Imj,
-                                    UserPhoto = friend.UrlPhoto,
-                                    UserName = friend.UesrName,
-                                    CreateAt = post.CreateAt
-                                })).OrderBy(p=>p.CreateAt);
+            
             var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r=>r.RequestedUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
@@ -49,8 +36,10 @@ namespace Sociala.Controllers
         public IActionResult Search(string Name)
         {
 
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name));//?how give me result zero
-            ViewBag.Search = ResultOfSearch;
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i=>i.Id);//?how give me result zero
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
+
+                ;
            // Console.WriteLine(ResultOfSearch.Count());
            // Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                                                             
@@ -100,36 +89,38 @@ namespace Sociala.Controllers
 
             return RedirectToAction("Index"); 
         }
-        public IActionResult AddFriendFromSesrch(String ID)//how to take Id from View
+        public IActionResult AddFriend(String Id)//how to take Id from View
         {
             var request = new Request();
             request.RequestingUserId = authorization.GetId();
-            request.RequestedUserId =ID;
+            request.RequestedUserId =Id;
             _data.Request.Add(request);
             _data.SaveChanges();
 
             return View("Search");
 
         }
-        public IActionResult ConfirmRequest(int Id)//?how take Id from form
+        public IActionResult ConfirmRequest(string Id)
         {
-            var Result = _data.Request.Where(p => p.Id == Id).Select(p=>p.RequestingUserId);
             Friend friend =new Friend();
             friend.RequestedUserId= authorization.GetId();
-            friend.RequestingUserId = Result.First();
+            friend.RequestingUserId = Id;
             _data.Friend.Add(friend);
-             var DeleteResult = _data.Request.Find(Id);
-            _data.Request.Remove(DeleteResult);
+            var DeleteResult = _data.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+            var FinalResult = _data.Request.Find(DeleteResult.First());
+           _data.Request.Remove(FinalResult);
             _data.SaveChanges();
             
             return View("Index");
         }
 
-        public IActionResult DeleteRequest(int Id)
+        public IActionResult DeleteRequest(string Id)
         {
+            
 
-            var DeleteResult = _data.Request.Find(Id);
-            _data.Request.Remove(DeleteResult);
+            var DeleteResult = _data.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f=>f.Id);
+            var FinalResult = _data.Request.Find(DeleteResult.First());
+            _data.Request.Remove(FinalResult);
             _data.SaveChanges();
             return View("Index");
 
