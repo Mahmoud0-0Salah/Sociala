@@ -8,21 +8,42 @@ using EncryptServices;
 using EmailSendertServices;
 using System;
 using AuthorizationService;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sociala.Controllers
 {
     public class UserController : Controller
     {
+        private readonly AppData _context;
+
         private readonly AppData appData;
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
         private readonly IAuthorization authorization;
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization)
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData context)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
+            _context = context;
+
+        }
+
+        public IActionResult Profile()
+        {
+            string userId = authorization.GetId(); // استخدم الطريقة المناسبة لجلب معرف المستخدم الحالي من خدمة الـ Authorization
+
+            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound(); // يمكنك تنفيذ رد فعل مختلف إذا لم يتم العثور على المستخدم
+            }
+
+            return View(user);
         }
 
         private bool IsPasswordValid(string password)
