@@ -1,6 +1,7 @@
 ﻿using AuthorizationService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Sociala.Data;
 using Sociala.Models;
 using Sociala.ViewModel;
@@ -47,6 +48,17 @@ namespace Sociala.Controllers
             return View();
         }
         [HttpPost]
+        public IActionResult Search(string Name)
+        {
+
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name));//?how give me result zero
+            ViewBag.Search = ResultOfSearch;
+           // Console.WriteLine(ResultOfSearch.Count());
+           // Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                                                            
+            return View();
+        }
+        [HttpPost]
         public IActionResult CreatePost(string? content)
         {
             if (!authorization.IsLoggedIn())
@@ -72,7 +84,7 @@ namespace Sociala.Controllers
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    file[0].CopyTo(fileStream); // Save in the Images folder
+                    file[0].CopyTo(fileStream); 
                 }
 
                 post.Imj = $"/imj/{imageName}";
@@ -90,7 +102,40 @@ namespace Sociala.Controllers
 
             return RedirectToAction("Index"); 
         }
+        public IActionResult AddFriendFromSesrch(String ID)//how to take Id from View
+        {
+            var request = new Request();
+            request.RequestingUserId = authorization.GetId();
+            request.RequestedUserId =ID;
+            _data.Request.Add(request);
+            _data.SaveChanges();
 
+            return View("Search");
+
+        }
+        public IActionResult ConfirmRequest(int Id)//?how take Id from form
+        {
+            var Result = _data.Request.Where(p => p.Id == Id).Select(p=>p.RequestingUserId);
+            Friend friend =new Friend();
+            friend.RequestedUserId= authorization.GetId();
+            friend.RequestingUserId = Result.First();
+            _data.Friend.Add(friend);
+             var DeleteResult = _data.Request.Find(Id);
+            _data.Request.Remove(DeleteResult);
+            _data.SaveChanges();
+            
+            return View("Index");
+        }
+
+        public IActionResult DeleteRequest(int Id)
+        {
+
+            var DeleteResult = _data.Request.Find(Id);
+            _data.Request.Remove(DeleteResult);
+            _data.SaveChanges();
+            return View("Index");
+
+        }
 
         public IActionResult Privacy()
         {
