@@ -64,6 +64,57 @@ namespace Sociala.Controllers
 
             return View(user);
         }
+        public IActionResult AddFriend(String Id, String Place)
+        {
+           
+            var request = new Request();
+            request.RequestingUserId = authorization.GetId();
+            request.RequestedUserId = Id;
+            appData.Request.Add(request);
+            appData.SaveChanges();
+            Console.WriteLine(Place);
+            if (Place == "Search") { return Redirect("/Home/Search");
+
+                var result=appData.User.Where(u => u.Id == Id).FirstOrDefault();
+                TempData["Name"] =result.UesrName;
+            }
+            else return RedirectToAction("Profile");
+
+
+
+
+        }
+        public IActionResult DeleteRequest(string Id)
+        {
+
+
+            var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+            var FinalResult = appData.Request.Find(DeleteResult.First());
+            appData.Request.Remove(FinalResult);
+            appData.SaveChanges();
+            return Redirect("/Home/Index");
+
+        }
+        public IActionResult ConfirmRequest(string Id)
+        {
+            Friend friend = new Friend();
+            friend.RequestedUserId = authorization.GetId();
+            friend.RequestingUserId = Id;
+            appData.Friend.Add(friend);
+            var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+            var FinalResult = appData.Request.Find(DeleteResult.First());
+            appData.Request.Remove(FinalResult);
+            appData.SaveChanges();
+            return Redirect("/Home/Index");
+        }
+        public IActionResult ShowRequest()
+        {
+            string id = authorization.GetId();
+            var RequestsId = appData.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
+            ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id));
+
+            return View();
+        }
 
         private bool IsPasswordValid(string password)
         {
