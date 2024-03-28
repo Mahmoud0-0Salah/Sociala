@@ -225,7 +225,7 @@
                             <div class="card w-100 shadow-xss rounded-xxl border-0 mb-3">
                                 <div class="card-body d-flex align-items-center p-4">
                                     <h4 class="fw-700 mb-0 font-xssss text-grey-900">Friend Request</h4>
-                                    <a href="default-member.html" class="fw-600 ms-auto font-xssss text-primary">See all</a>
+                                    <a  asp-controller="User" asp-action="ShowRequest" class="fw-600 ms-auto font-xssss text-primary">See all</a>
                                 </div>
                                 @foreach (User user in ViewBag.Requests)
                                 {

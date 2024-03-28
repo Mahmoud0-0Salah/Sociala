@@ -88,6 +88,14 @@ namespace Sociala.Controllers
             appData.SaveChanges();
             return Redirect("/Home/Index");
         }
+        public IActionResult ShowRequest()
+        {
+            string id = authorization.GetId();
+            var RequestsId = appData.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
+            ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id));
+
+            return View();
+        }
 
         private bool IsPasswordValid(string password)
         {
