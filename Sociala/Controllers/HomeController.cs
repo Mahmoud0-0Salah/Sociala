@@ -53,6 +53,23 @@ namespace Sociala.Controllers
 
             return View();
         }
+        [HttpGet]
+         public IActionResult Search()
+        {
+            string Name =Convert.ToString( TempData["Name"]);
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Search(string Name)
+        {
+           
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
+            return View();
+        }
         [HttpPost]
         public IActionResult CreatePost(string? content)
         {
@@ -97,6 +114,8 @@ namespace Sociala.Controllers
 
             return RedirectToAction("Index"); 
         }
+      
+
 
 
         public IActionResult Privacy()

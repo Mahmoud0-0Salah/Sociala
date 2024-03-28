@@ -45,6 +45,47 @@ namespace Sociala.Controllers
 
             return View(user);
         }
+        public IActionResult AddFriend(String Id, String Place)
+        {
+           
+            var request = new Request();
+            request.RequestingUserId = authorization.GetId();
+            request.RequestedUserId = Id;
+            appData.Request.Add(request);
+            appData.SaveChanges();
+            Console.WriteLine(Place);
+            if (Place == "Search") { return Redirect("/Home/Search");
+                TempData["Name"] ="anwar";
+            }
+            else return RedirectToAction("Profile");
+
+
+
+
+        }
+        public IActionResult DeleteRequest(string Id)
+        {
+
+
+            var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+            var FinalResult = appData.Request.Find(DeleteResult.First());
+            appData.Request.Remove(FinalResult);
+            appData.SaveChanges();
+            return Redirect("/Home/Index");
+
+        }
+        public IActionResult ConfirmRequest(string Id)
+        {
+            Friend friend = new Friend();
+            friend.RequestedUserId = authorization.GetId();
+            friend.RequestingUserId = Id;
+            appData.Friend.Add(friend);
+            var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+            var FinalResult = appData.Request.Find(DeleteResult.First());
+            appData.Request.Remove(FinalResult);
+            appData.SaveChanges();
+            return Redirect("/Home/Index");
+        }
 
         private bool IsPasswordValid(string password)
         {
