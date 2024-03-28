@@ -47,7 +47,7 @@ namespace Sociala.Controllers
                                     UserName = friend.UesrName,
                                     CreateAt = post.CreateAt,
                                     IsHidden = post.IsHidden
-                                })).Where(p => !p.IsHidden).OrderBy(p=>p.CreateAt);
+                                })).Where(p => !p.IsHidden).OrderByDescending(p=>p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r=>r.RequestedUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
