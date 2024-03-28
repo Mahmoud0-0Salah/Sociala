@@ -129,9 +129,12 @@ namespace Sociala.Migrations
                     b.Property<string>("Imj")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsHidden")
+                        .HasMaxLength(450)
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("content")
