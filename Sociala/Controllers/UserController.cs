@@ -55,7 +55,9 @@ namespace Sociala.Controllers
             appData.SaveChanges();
             Console.WriteLine(Place);
             if (Place == "Search") { return Redirect("/Home/Search");
-                TempData["Name"] ="anwar";
+
+                var result=appData.User.Where(u => u.Id == Id).FirstOrDefault();
+                TempData["Name"] =result.UesrName;
             }
             else return RedirectToAction("Profile");
 
