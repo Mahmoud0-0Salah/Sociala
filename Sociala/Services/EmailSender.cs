@@ -23,7 +23,10 @@ namespace EmailSendertServices
                                 to: email,
                                 subject,
                                 message
-                                ));
+                                )
+                {
+                    IsBodyHtml = true 
+                });
         }
     }
 }

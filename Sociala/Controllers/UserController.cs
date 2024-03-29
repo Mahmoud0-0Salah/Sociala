@@ -264,7 +264,12 @@ namespace Sociala.Controllers
             }
             try
             {
-                await emailSender.SendEmailAsync(user.Email, "Confirm email", $"Hello {user.UesrName}\n\nYou're almost there!\r\nPlease confirm your subscription by enter this key \n{user.ActiveKey}");
+                await emailSender.SendEmailAsync(user.Email, "Confirm email", @"
+            <p>Dear User," + user.UesrName + @"</p>
+            <p>Thank you for registering with us.</p>
+            <p>To verify your account, please use the following verification code:</p>
+            <p><strong>" + user.ActiveKey + @"</strong></p>
+            <p>Thank you.</p>");
 
                 appData.Add(user);
                 await appData.SaveChangesAsync();
