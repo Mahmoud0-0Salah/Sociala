@@ -44,27 +44,84 @@ namespace Sociala.Controllers
 
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
+
             string id = authorization.GetId();
-            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f => id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
-            friendsId.Add(id);
-            var friends = _data.User.Where(u => friendsId.Contains(u.Id));
-            ViewBag.posts = (_data.Post.Join(friends,
-                                post => post.UserId,
-                                friend => friend.Id,
-                                (post, friend) => new PostInfo
-                                {
-                                    PostContent = post.content,
-                                    PostImj = post.Imj,
-                                    UserPhoto = friend.UrlPhoto,
-                                    UserName = friend.UesrName,
-                                    CreateAt = post.CreateAt
-                                })).OrderBy(p => p.CreateAt);
+            ViewBag.posts = _data.Post.Where(post => post.UserId == id)
+                                      .Join(_data.User,
+                                            post => post.UserId,
+                                            user => user.Id,
+                                            (post, user) => new PostInfo
+                                            {
+                                                PostContent = post.content,
+                                                PostImj = post.Imj,
+                                                UserPhoto = user.UrlPhoto,
+                                                UserName = user.UesrName,
+                                                CreateAt = post.CreateAt
+                                            })
+                                      .OrderBy(p => p.CreateAt);
+
             var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
             return View(user);
         }
 
+
+        public IActionResult EditProfile()
+        {
+            string userId = authorization.GetId();
+            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult EditProfile(User updatedUser, IFormFile photo)
+        {
+            string userId = authorization.GetId();
+            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.UesrName = updatedUser.UesrName;
+            user.PhoneNumber = updatedUser.PhoneNumber;
+            user.bio = updatedUser.bio;
+            var file = HttpContext.Request.Form.Files;
+
+            if (file.Count() > 0)
+            {
+                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg"))
+                {
+                    ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG or JPEG";
+                    return View();
+                }
+                string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
+                var filePath = Path.Combine("wwwroot", "imj", imageName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file[0].CopyTo(fileStream);
+                }
+
+                user.UrlPhoto = $"/imj/{imageName}";
+            }
+            else
+                user.UrlPhoto =user.UrlPhoto;
+
+            appData.SaveChanges();
+
+            return RedirectToAction("Profile");
+        }
+
+       
         private bool IsPasswordValid(string password)
         {
             if (password.Length < 8)
@@ -90,6 +147,8 @@ namespace Sociala.Controllers
 
             return true;
         }
+
+
         /**************************************************************************************/
 
         private string Hash(string input)
