@@ -16,52 +16,32 @@ namespace Sociala.Controllers
 {
     public class UserController : Controller
     {
+        private readonly AppData _context;
+
         private readonly AppData appData;
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
-        private readonly IAuthorization authorization; private readonly AppData _data;
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData data)
+        private readonly IAuthorization authorization;
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData context)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
-
-            _data = data;
+            _context = context;
 
         }
 
         public IActionResult Profile()
         {
-            string userId = authorization.GetId();
+            string userId = authorization.GetId(); // استخدم الطريقة المناسبة لجلب معرف المستخدم الحالي من خدمة الـ Authorization
 
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
-                return NotFound(); 
+                return NotFound(); // يمكنك تنفيذ رد فعل مختلف إذا لم يتم العثور على المستخدم
             }
-
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
-
-            string id = authorization.GetId();
-            ViewBag.posts = _data.Post.Where(post => post.UserId == id)
-                                      .Join(_data.User,
-                                            post => post.UserId,
-                                            user => user.Id,
-                                            (post, user) => new PostInfo
-                                            {
-                                                PostContent = post.content,
-                                                PostImj = post.Imj,
-                                                UserPhoto = user.UrlPhoto,
-                                                UserName = user.UesrName,
-                                                CreateAt = post.CreateAt
-                                            })
-                                      .OrderBy(p => p.CreateAt);
-
-            var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
-            ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
             return View(user);
         }
@@ -118,62 +98,6 @@ namespace Sociala.Controllers
             return View();
         }
 
-
-        public IActionResult EditProfile()
-        {
-            string userId = authorization.GetId();
-            var user = appData.User.FirstOrDefault(u => u.Id == userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        [HttpPost]
-        public IActionResult EditProfile(User updatedUser, IFormFile photo)
-        {
-            string userId = authorization.GetId();
-            var user = appData.User.FirstOrDefault(u => u.Id == userId);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            user.UesrName = updatedUser.UesrName;
-            user.PhoneNumber = updatedUser.PhoneNumber;
-            user.bio = updatedUser.bio;
-            var file = HttpContext.Request.Form.Files;
-
-            if (file.Count() > 0)
-            {
-                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg"))
-                {
-                    ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG or JPEG";
-                    return View();
-                }
-                string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
-                var filePath = Path.Combine("wwwroot", "images", imageName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    file[0].CopyTo(fileStream);
-                }
-
-                user.UrlPhoto = $"/images/{imageName}";
-            }
-            else
-                user.UrlPhoto =user.UrlPhoto;
-
-            appData.SaveChanges();
-
-            return RedirectToAction("Profile");
-        }
-
-       
         private bool IsPasswordValid(string password)
         {
             if (password.Length < 8)
@@ -199,8 +123,6 @@ namespace Sociala.Controllers
 
             return true;
         }
-
-
         /**************************************************************************************/
 
         private string Hash(string input)
@@ -343,11 +265,58 @@ namespace Sociala.Controllers
             try
             {
                 await emailSender.SendEmailAsync(user.Email, "Confirm email", @"
-            <p>Dear User," + user.UesrName + @"</p>
-            <p>Thank you for registering with us.</p>
-            <p>To verify your account, please use the following verification code:</p>
-            <p><strong>" + user.ActiveKey + @"</strong></p>
-            <p>Thank you.</p>");
+                <html>
+                <head>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            padding: 20px;
+                            border: 1px solid #ddd;
+                            border-radius: 5px;
+                        }
+
+                        .header {
+                            background-color: #f5f5f5;
+                            padding: 10px 0;
+                            text-align: center;
+                            border-bottom: 1px solid #ddd;
+                        }
+
+                        .body-content {
+                            padding: 20px 0;
+                        }
+
+                        .verification-code {
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #007bff;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Welcome to Sociala</h2>
+                        </div>
+                        <div class='body-content'>
+                            <p>Dear " + user.UesrName + @",</p>
+                            <p>Thank you for choosing Sociala, your gateway to a vibrant online community.</p>
+                            <p>To verify your account, please use the following verification code:</p>
+                            <p class='verification-code'>" + user.ActiveKey + @"</p>
+                            <p>Thank you.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                ");
 
                 appData.Add(user);
                 await appData.SaveChangesAsync();

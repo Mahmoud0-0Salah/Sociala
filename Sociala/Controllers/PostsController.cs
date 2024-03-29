@@ -32,6 +32,23 @@ namespace Sociala.Controllers
             return Redirect("/Home/Index");
         }
 
+        public IActionResult Like(int Id,string Place)
+        {
+
+             Like like=new Like();
+            like.UserId = authorization.GetId();
+            like.PostId = Id;
+            _data.Like.Add(like);
+            _data.SaveChanges();
+            if (Place == "Index")
+            return Redirect("/Home/Index");
+            else  {
+                var Result = _data.Post.Where(p => p.Id == Id).Select(p=>p.UserId);
+                TempData["Like"] = Result.First();
+                return Redirect("/User/Profile");
+            }
+
+        }
 
 
         [HttpGet]

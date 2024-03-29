@@ -150,7 +150,6 @@
                                         <input type="file" id="fileInput" name="imageInput" accept="image/*" class="d-none" multiple>
                                     </div>
                                     <div class="text-center mt-3">
-                                        <button type="submit" class="btn-round-lg bg-white text-grey-500">Post<i class="ti-pencil"></i> </button>
                                         <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i> </button>
                                     </div>
                                 </form>
@@ -201,7 +200,7 @@
                                     </div>
                                 }
                                 <div class="card-body d-flex p-0">
-                                    <a href="#" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"><i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> <i class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>2.8K Like</a>
+                                        <a asp-controller="Posts" asp-action="Like"  asp-route-ID="@post.Id"  asp-route-Place="Index" class="emoji-bttn d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2"><i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i> <i class="feather-heart text-white bg-red-gradiant me-2 btn-round-xs font-xss"></i>2.8K Like</a>
                                     <div class="emoji-wrap">
                                         <ul class="emojis list-inline mb-0">
                                             <li class="emoji list-inline-item"><i class="em em---1"></i> </li>

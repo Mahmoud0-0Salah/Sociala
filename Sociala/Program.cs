@@ -3,8 +3,6 @@ using EmailSendertServices;
 using EncryptServices;
 using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
-using Microsoft.AspNetCore.Identity;
-using Sociala.Models;
 
 namespace Sociala
 {
@@ -15,7 +13,6 @@ namespace Sociala
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<AppData>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
             builder.Services.AddScoped<IEncrypt, EncryptClass>();
 
