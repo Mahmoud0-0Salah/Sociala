@@ -265,11 +265,58 @@ namespace Sociala.Controllers
             try
             {
                 await emailSender.SendEmailAsync(user.Email, "Confirm email", @"
-            <p>Dear User," + user.UesrName + @"</p>
-            <p>Thank you for registering with us.</p>
-            <p>To verify your account, please use the following verification code:</p>
-            <p><strong>" + user.ActiveKey + @"</strong></p>
-            <p>Thank you.</p>");
+                <html>
+                <head>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            line-height: 1.6;
+                            margin: 0;
+                            padding: 0;
+                        }
+
+                        .container {
+                            max-width: 600px;
+                            margin: 0 auto;
+                            padding: 20px;
+                            border: 1px solid #ddd;
+                            border-radius: 5px;
+                        }
+
+                        .header {
+                            background-color: #f5f5f5;
+                            padding: 10px 0;
+                            text-align: center;
+                            border-bottom: 1px solid #ddd;
+                        }
+
+                        .body-content {
+                            padding: 20px 0;
+                        }
+
+                        .verification-code {
+                            font-size: 18px;
+                            font-weight: bold;
+                            color: #007bff;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>
+                            <h2>Welcome to Sociala</h2>
+                        </div>
+                        <div class='body-content'>
+                            <p>Dear " + user.UesrName + @",</p>
+                            <p>Thank you for choosing Sociala, your gateway to a vibrant online community.</p>
+                            <p>To verify your account, please use the following verification code:</p>
+                            <p class='verification-code'>" + user.ActiveKey + @"</p>
+                            <p>Thank you.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                ");
 
                 appData.Add(user);
                 await appData.SaveChangesAsync();
