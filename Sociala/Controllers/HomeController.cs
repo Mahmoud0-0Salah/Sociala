@@ -5,6 +5,7 @@ using Sociala.Data;
 using Sociala.Models;
 using Sociala.ViewModel;
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 
@@ -57,7 +58,9 @@ namespace Sociala.Controllers
          public IActionResult Search()
         {
             string Name =Convert.ToString( TempData["Name"]);
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
+            Console.WriteLine(Name);
+            Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
             ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
             return View();
         }
@@ -66,7 +69,7 @@ namespace Sociala.Controllers
         public IActionResult Search(string Name)
         {
            
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)&&Name!="Admin").Select(i => i.Id);
             ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
             return View();
         }
