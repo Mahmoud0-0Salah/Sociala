@@ -22,28 +22,103 @@ namespace Sociala.Controllers
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
         private readonly IAuthorization authorization;
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData context)
+        private readonly AppData _data;
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData data)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
-            _context = context;
+            _data = data;
+
 
         }
-
         public IActionResult Profile()
         {
-            string userId = authorization.GetId(); // استخدم الطريقة المناسبة لجلب معرف المستخدم الحالي من خدمة الـ Authorization
+            string userId = authorization.GetId();
 
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
-                return NotFound(); // يمكنك تنفيذ رد فعل مختلف إذا لم يتم العثور على المستخدم
+                return NotFound();
+            }
+
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+
+            string id = authorization.GetId();
+            ViewBag.posts = _data.Post.Where(post => post.UserId == id)
+                                      .Join(_data.User,
+                                            post => post.UserId,
+                                            user => user.Id,
+                                            (post, user) => new PostInfo
+                                            {
+                                                PostContent = post.content,
+                                                PostImj = post.Imj,
+                                                UserPhoto = user.UrlPhoto,
+                                                UserName = user.UesrName,
+                                                CreateAt = post.CreateAt
+                                            })
+                                      .OrderBy(p => p.CreateAt);
+
+            var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
+            ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
+
+            return View(user);
+        }
+        public IActionResult EditProfile()
+        {
+            string userId = authorization.GetId();
+            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
             }
 
             return View(user);
+        }
+
+        [HttpPost]
+        public IActionResult EditProfile(User updatedUser, IFormFile photo)
+        {
+            string userId = authorization.GetId();
+            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            user.UesrName = updatedUser.UesrName;
+            user.PhoneNumber = updatedUser.PhoneNumber;
+            user.bio = updatedUser.bio;
+            var file = HttpContext.Request.Form.Files;
+
+            if (file.Count() > 0)
+            {
+                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg"))
+                {
+                    ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG or JPEG";
+                    return View();
+                }
+                string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
+                var filePath = Path.Combine("wwwroot", "images", imageName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    file[0].CopyTo(fileStream);
+                }
+
+                user.UrlPhoto = $"/images/{imageName}";
+            }
+            else
+                user.UrlPhoto = user.UrlPhoto;
+
+            appData.SaveChanges();
+
+            return RedirectToAction("Profile");
         }
         public IActionResult AddFriend(String Id, String Place)
         {
