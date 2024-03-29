@@ -58,8 +58,6 @@ namespace Sociala.Controllers
          public IActionResult Search()
         {
             string Name =Convert.ToString( TempData["Name"]);
-            Console.WriteLine(Name);
-            Console.WriteLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
             ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
             return View();
