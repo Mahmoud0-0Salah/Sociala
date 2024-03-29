@@ -17,6 +17,22 @@ namespace Sociala.Controllers
         }
 
 
+        public IActionResult SharePost( int Id)
+        {
+            Post Result = _data.Post.Where(p => p.Id == Id).SingleOrDefault();
+            Post post= new Post();
+            post.UserId = authorization.GetId();
+            post.CreateAt = DateTime.Now;
+            post.Imj = Result.Imj;
+            post.content = Result.content;
+            post.IsHidden = Result.IsHidden;
+            _data.Post.Add(post);
+            _data.SaveChanges();
+
+            return Redirect("/Home/Index");
+        }
+
+
 
         [HttpGet]
         public IActionResult Report(int Id)
