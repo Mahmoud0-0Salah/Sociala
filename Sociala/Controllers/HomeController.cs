@@ -5,6 +5,7 @@ using Sociala.Data;
 using Sociala.Models;
 using Sociala.ViewModel;
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 
@@ -27,6 +28,11 @@ namespace Sociala.Controllers
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
             string id=authorization.GetId();
+            if (authorization.IsAdmin(id))
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=> id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
             friendsId.Add(id);
             var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
@@ -35,15 +41,34 @@ namespace Sociala.Controllers
                                 friend => friend.Id,
                                 (post, friend) => new PostInfo
                                 {
+                                    Id = post.Id,
                                     PostContent=post.content,
                                     PostImj = post.Imj,
                                     UserPhoto = friend.UrlPhoto,
                                     UserName = friend.UesrName,
-                                    CreateAt = post.CreateAt
-                                })).OrderBy(p=>p.CreateAt);
+                                    CreateAt = post.CreateAt,
+                                    IsHidden = post.IsHidden
+                                })).Where(p => !p.IsHidden).OrderByDescending(p=>p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r=>r.RequestedUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
+            return View();
+        }
+        [HttpGet]
+         public IActionResult Search()
+        {
+            string Name =Convert.ToString( TempData["Name"]);
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Search(string Name)
+        {
+           
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)&&Name!="Admin").Select(i => i.Id);
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
             return View();
         }
         [HttpPost]
@@ -90,6 +115,8 @@ namespace Sociala.Controllers
 
             return RedirectToAction("Index"); 
         }
+      
+
 
 
         public IActionResult Privacy()

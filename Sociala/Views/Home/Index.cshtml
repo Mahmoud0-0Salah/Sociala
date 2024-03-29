@@ -150,7 +150,11 @@
                                         <input type="file" id="fileInput" name="imageInput" accept="image/*" class="d-none" multiple>
                                     </div>
                                     <div class="text-center mt-3">
+<<<<<<< HEAD
                                         <button type="submit" class="btn-round-lg bg-white text-grey-500">Post<i class="ti-pencil"></i> </button>
+=======
+                                        <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i> </button>
+>>>>>>> c5661a3208871f509fee3c47ffb26e07d32bb206
                                     </div>
                                 </form>
 </div>
@@ -161,6 +165,20 @@
                                 <div class="card-body p-0 d-flex">
                                         <figure class="avatar me-3"><img src="@post.UserPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
                                     <h4 class="fw-700 text-grey-900 font-xssss mt-1">@post.UserName </h4>
+                                        <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
+                                            @* <div class="card-body p-0 d-flex">
+                                                <i class="feather-bookmark text-grey-500 me-3 font-lg"></i>
+                                                <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Save Link <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Add this to your saved items</span></h4>
+                                            </div> *@
+                                            <div class="card-body p-0 d-flex mt-2">
+                                                <a asp-action="Report" asp-controller="Posts" asp-route-id="@post.Id">
+                                                    <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                    <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Report <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Save to your saved items</span></h4>
+                                                </a>
+                                            </div>
+                                            
+                                        </div>
                                 </div>
                                 <div class="card-body p-0 me-lg-5">
                                     <p class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">@post.PostContent</p>
@@ -211,17 +229,17 @@
                             <div class="card w-100 shadow-xss rounded-xxl border-0 mb-3">
                                 <div class="card-body d-flex align-items-center p-4">
                                     <h4 class="fw-700 mb-0 font-xssss text-grey-900">Friend Request</h4>
-                                    <a href="default-member.html" class="fw-600 ms-auto font-xssss text-primary">See all</a>
+                                    <a  asp-controller="User" asp-action="ShowRequest" class="fw-600 ms-auto font-xssss text-primary">See all</a>
                                 </div>
                                 @foreach (User user in ViewBag.Requests)
                                 {
                                     <div class="card-body d-flex pt-4 ps-4 pe-4 pb-0 border-top-xs bor-0">
-                                        <figure class="avatar me-3"><img src="/imj/@user.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                        <figure class="avatar me-3"><img src="@user.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
                                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">@user.UesrName</h4>
                                     </div>
                                     <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
-                                        <a href="#" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
-                                        <a href="#" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
+                                        <a asp-controller="User" asp-action="ConfirmRequest" asp-route-id="@user.Id" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
+                                        <a asp-controller="User" asp-action="DeleteRequest" asp-route-id="@user.Id" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
                                     </div>
                                 }
                             
