@@ -64,17 +64,20 @@ namespace Sociala.Controllers
         {
 
             string Name =Convert.ToString( TempData["Name"]);
+          ///  Console.WriteLine(Name+"aaaaaaaaaaaaaaaaaaaaaaaaa");
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id)).ToList();
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id) && p.UesrName != "Admin").ToList();
             return View();
         }
 
         [HttpPost]
         public IActionResult Search(string Name)
         {
-           
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)&&Name!="Admin").Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id)).ToList(); 
+            if (Name.Length == 0) Name = Convert.ToString(TempData["Name"]);
+
+          //  Console.WriteLine(Name + "aaaaaaaaaaaaaaaaaaaaaaaaa");
+            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id)&&p.UesrName!="Admin").ToList(); 
           // Console.WriteLine( CheckRelationShip.IsFriend(authorization.GetId()));
 
 
