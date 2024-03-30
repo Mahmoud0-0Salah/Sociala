@@ -119,18 +119,22 @@ namespace Sociala.Controllers
         }
         public IActionResult AddFriend(String Id, String Place)
         {
+            
            
             var request = new Request();
             request.RequestingUserId = authorization.GetId();
             request.RequestedUserId = Id;
             appData.Request.Add(request);
             appData.SaveChanges();
-            Console.WriteLine(Place);
+          //  Console.WriteLine(Place);
             if (Place == "Search") { 
 
-                var result=appData.User.Where(u => u.Id == Id).FirstOrDefault();
-                TempData["Name"] =result.UesrName;
+                var result =appData.User.Where(u => u.Id == Id);
+               // Console.WriteLine("aaaaaaaaaaaaaaa 2in Add friend");
+                foreach (var item in result)
+                TempData["Name"] =item.UesrName;
                 return Redirect("/Home/Search");
+                
             }
             else return RedirectToAction("Profile");
 
@@ -161,6 +165,20 @@ namespace Sociala.Controllers
             appData.SaveChanges();
             return Redirect("/Home/Index");
         }
+        public IActionResult Derequest(string Id)
+        {
+
+
+            var DeleteResult = appData.Request.Where(p => p.RequestedUserId ==Id  && p.RequestingUserId == authorization.GetId()).Select(f => f.Id);
+            var FinalResult = appData.Request.Find(DeleteResult.First());
+            appData.Request.Remove(FinalResult);
+            appData.SaveChanges();
+            var result = appData.User.Where(u => u.Id == Id).FirstOrDefault();
+            TempData["Name"] = result.UesrName;
+            return Redirect("/Home/Search");
+
+        }
+
         public IActionResult ShowRequest()
         {
             string id = authorization.GetId();

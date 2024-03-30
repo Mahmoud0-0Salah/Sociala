@@ -3,7 +3,10 @@ using Sociala.Data;
 using Sociala.Models;
 using Microsoft.AspNetCore.Http;
 using EncryptServices;
-
+using AuthorizationService;
+using Sociala.Services;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq;
 namespace AuthorizationService
 {
     public interface IAuthorization
@@ -12,6 +15,7 @@ namespace AuthorizationService
         public bool IsAdmin(string id);
         public bool IsUser(string id);
         public string GetId();
+
         
     }
     public class Authorization :IAuthorization
