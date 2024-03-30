@@ -62,10 +62,7 @@ namespace Sociala.Controllers
         }
         public IActionResult EditProfile()
         {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
@@ -126,13 +123,10 @@ namespace Sociala.Controllers
             request.RequestedUserId = Id;
             appData.Request.Add(request);
             appData.SaveChanges();
-          //  Console.WriteLine(Place);
             if (Place == "Search") { 
 
-                var result =appData.User.Where(u => u.Id == Id);
-               // Console.WriteLine("aaaaaaaaaaaaaaa 2in Add friend");
-                foreach (var item in result)
-                TempData["Name"] =item.UesrName;
+                var result =appData.User.Where(u => u.Id == Id).SingleOrDefault();
+                TempData["Name"] =result.UesrName;
                 return Redirect("/Home/Search");
                 
             }
