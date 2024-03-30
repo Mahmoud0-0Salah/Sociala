@@ -3,6 +3,7 @@ using EmailSendertServices;
 using EncryptServices;
 using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
+using Sociala.Services;
 
 namespace Sociala
 {
@@ -23,6 +24,10 @@ namespace Sociala
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+          
+             builder.Services.AddTransient<ICheckRelationShip, CheckRelationShip>();
+
+             
 
             var app = builder.Build();
 

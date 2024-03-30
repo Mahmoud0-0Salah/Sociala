@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Sociala.Data;
 using Sociala.Models;
+using Sociala.Services;
 using Sociala.ViewModel;
 using System;
 using System.Collections.Specialized;
@@ -16,11 +17,14 @@ namespace Sociala.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppData _data;
         private readonly IAuthorization authorization;
-        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization)
+        private readonly ICheckRelationShip CheckRelationShip;
+        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip)
         {
             _logger = logger;
             _data = data;
             this.authorization = authorization;
+            this.CheckRelationShip = CheckRelationShip;
+
         }
 
         public IActionResult Index()
@@ -47,7 +51,8 @@ namespace Sociala.Controllers
                                     UserPhoto = friend.UrlPhoto,
                                     UserName = friend.UesrName,
                                     CreateAt = post.CreateAt,
-                                    IsHidden = post.IsHidden
+                                    IsHidden = post.IsHidden,
+                                   
                                 })).Where(p => !p.IsHidden).OrderByDescending(p=>p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r=>r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
@@ -57,9 +62,10 @@ namespace Sociala.Controllers
         [HttpGet]
          public IActionResult Search()
         {
+
             string Name =Convert.ToString( TempData["Name"]);
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id)).ToList();
             return View();
         }
 
@@ -68,7 +74,11 @@ namespace Sociala.Controllers
         {
            
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)&&Name!="Admin").Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id));
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id)).ToList(); 
+          // Console.WriteLine( CheckRelationShip.IsFriend(authorization.GetId()));
+
+
+       
             return View();
         }
         [HttpPost]
