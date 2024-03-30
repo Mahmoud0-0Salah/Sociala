@@ -49,7 +49,7 @@ namespace Sociala.Controllers
                                     CreateAt = post.CreateAt,
                                     IsHidden = post.IsHidden
                                 })).Where(p => !p.IsHidden).OrderByDescending(p=>p.CreateAt);
-            var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r=>r.RequestedUserId);
+            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r=>r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
             return View();
