@@ -11,6 +11,7 @@ using AuthorizationService;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Sociala.Controllers
 {
@@ -22,34 +23,26 @@ namespace Sociala.Controllers
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
         private readonly IAuthorization authorization;
-        private readonly AppData _data;
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, AppData data)
+
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
-            _data = data;
-
-
         }
         public IActionResult Profile()
         {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+            
             string userId = authorization.GetId();
 
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
-
             string id = authorization.GetId();
-            ViewBag.posts = _data.Post.Where(post => post.UserId == id)
-                                      .Join(_data.User,
+            ViewBag.posts = appData.Post.Where(post => post.UserId == id)
+                                      .Join(appData.User,
                                             post => post.UserId,
                                             user => user.Id,
                                             (post, user) => new PostInfo
@@ -60,23 +53,27 @@ namespace Sociala.Controllers
                                                 UserName = user.UesrName,
                                                 CreateAt = post.CreateAt
                                             })
-                                      .OrderBy(p => p.CreateAt);
+                                      .OrderByDescending(p => p.CreateAt);
 
-            var RequestsId = _data.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
-            ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
+            var RequestsId = appData.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
+            ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id));
 
             return View(user);
         }
         public IActionResult EditProfile()
         {
-            string userId = authorization.GetId();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
                 return NotFound();
             }
-
             return View(user);
         }
 
