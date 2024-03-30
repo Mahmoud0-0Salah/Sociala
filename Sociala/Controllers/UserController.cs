@@ -101,14 +101,14 @@ namespace Sociala.Controllers
                     return View();
                 }
                 string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
-                var filePath = Path.Combine("wwwroot", "images", imageName);
+                var filePath = Path.Combine("wwwroot", "imj", imageName);
 
                 using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
                     file[0].CopyTo(fileStream);
                 }
 
-                user.UrlPhoto = $"/images/{imageName}";
+                user.UrlPhoto = $"/imj/{imageName}";
             }
             else
                 user.UrlPhoto = user.UrlPhoto;
