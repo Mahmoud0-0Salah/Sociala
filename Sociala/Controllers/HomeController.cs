@@ -62,10 +62,7 @@ namespace Sociala.Controllers
         [HttpGet]
          public IActionResult Search()
         {
-
             string Name =Convert.ToString( TempData["Name"]);
-          ///  Console.WriteLine(Name+"aaaaaaaaaaaaaaaaaaaaaaaaa");
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
             ViewBag.Search = (_data.User.Join(_data.Role,
                                 User => User.RoleId,
                                 Role => Role.Id,
@@ -81,7 +78,7 @@ namespace Sociala.Controllers
                                     IsActive = User.IsActive,
                                     UrlPhoto=User.UrlPhoto
 
-                                })).Where(result => result.Role != "Admin"&&result.IsActive).ToList();
+                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName == Name)).ToList();
             return View();
         }
 
@@ -89,14 +86,22 @@ namespace Sociala.Controllers
         public IActionResult Search(string Name)
         {
             if (Name.Length == 0) Name = Convert.ToString(TempData["Name"]);
+            ViewBag.Search = (_data.User.Join(_data.Role,
+                                User => User.RoleId,
+                                Role => Role.Id,
 
-          //  Console.WriteLine(Name + "aaaaaaaaaaaaaaaaaaaaaaaaa");
-            var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id) && p.UesrName != "Admin" && p.IsActive == true).ToList();
-            // Console.WriteLine( CheckRelationShip.IsFriend(authorization.GetId()));
+                                (User, Role) => new
+                                {
+                                    Role = Role.Name,
+                                    Id = User.Id,
+                                    UesrName = User.UesrName,
+                                    Email = User.Email,
+                                    PhoneNumber = User.PhoneNumber,
+                                    bio = User.bio,
+                                    IsActive = User.IsActive,
+                                    UrlPhoto = User.UrlPhoto
 
-
-
+                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName==Name)).ToList();
             return View();
         }
         [HttpPost]
