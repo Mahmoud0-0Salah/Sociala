@@ -136,7 +136,7 @@ namespace Sociala.Controllers
 
 
         }
-        public IActionResult DeleteRequest(string Id)
+        public IActionResult DeleteRequest(string Id ,string Place)
         {
 
 
@@ -144,10 +144,12 @@ namespace Sociala.Controllers
             var FinalResult = appData.Request.Find(DeleteResult.First());
             appData.Request.Remove(FinalResult);
             appData.SaveChanges();
-            return Redirect("/Home/Index");
+            if (Place == "Index")
+                return Redirect("/Home/Index");
+            else return RedirectToAction("ShowRequest");
 
         }
-        public IActionResult ConfirmRequest(string Id)
+        public IActionResult ConfirmRequest(string Id, string Place)
         {
             Friend friend = new Friend();
             friend.RequestedUserId = authorization.GetId();
@@ -157,7 +159,9 @@ namespace Sociala.Controllers
             var FinalResult = appData.Request.Find(DeleteResult.First());
             appData.Request.Remove(FinalResult);
             appData.SaveChanges();
-            return Redirect("/Home/Index");
+            if (Place == "Index")
+                return Redirect("/Home/Index");
+            else return RedirectToAction("ShowRequest");
         }
         public IActionResult Derequest(string Id)
         {
@@ -176,7 +180,7 @@ namespace Sociala.Controllers
         public IActionResult ShowRequest()
         {
             string id = authorization.GetId();
-            var RequestsId = appData.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
+            var RequestsId = appData.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
             ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id));
 
             return View();
