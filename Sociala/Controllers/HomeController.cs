@@ -78,7 +78,7 @@ namespace Sociala.Controllers
                                     IsActive = User.IsActive,
                                     UrlPhoto=User.UrlPhoto
 
-                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName == Name)).ToList();
+                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName.Contains( Name))).ToList();
             return View();
         }
 
@@ -101,7 +101,7 @@ namespace Sociala.Controllers
                                     IsActive = User.IsActive,
                                     UrlPhoto = User.UrlPhoto
 
-                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName==Name)).ToList();
+                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
         [HttpPost]
