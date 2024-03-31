@@ -43,17 +43,28 @@ namespace Sociala.Controllers
             ViewBag.posts = (_data.Post.Join(friends,
                                 post => post.UserId,
                                 friend => friend.Id,
-                                (post, friend) => new PostInfo
+                                (post, friend) =>
+                                
+                                new PostInfo
+                                ()
                                 {
                                     Id = post.Id,
-                                    PostContent=post.content,
+                                    PostContent = post.content,
                                     PostImj = post.Imj,
                                     UserPhoto = friend.UrlPhoto,
                                     UserName = friend.UesrName,
                                     CreateAt = post.CreateAt,
                                     IsHidden = post.IsHidden,
-                                   
-                                })).Where(p => !p.IsHidden).OrderByDescending(p=>p.CreateAt);
+                                    
+                                    Isliked = ((!(_data.Like.Contains(new Like
+                                    {
+                                        PostId = post.Id,
+                                        UserId = id
+                                    }))) ? false
+                                    : true),
+
+                                }
+                                )).Where(p => !p.IsHidden).OrderByDescending(p => p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r=>r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
