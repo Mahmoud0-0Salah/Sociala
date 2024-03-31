@@ -66,7 +66,22 @@ namespace Sociala.Controllers
             string Name =Convert.ToString( TempData["Name"]);
           ///  Console.WriteLine(Name+"aaaaaaaaaaaaaaaaaaaaaaaaa");
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id) && p.UesrName != "Admin"&&p.IsActive==true).ToList();
+            ViewBag.Search = (_data.User.Join(_data.Role,
+                                User => User.RoleId,
+                                Role => Role.Id,
+                                
+                                (User, Role) => new 
+                                {
+                                    Role=Role.Name,
+                                    Id = User.Id,
+                                    UesrName = User.UesrName,
+                                    Email = User.Email,
+                                    PhoneNumber = User.PhoneNumber,
+                                    bio = User.bio,
+                                    IsActive = User.IsActive,
+                                    UrlPhoto=User.UrlPhoto
+
+                                })).Where(result => result.Role != "Admin"&&result.IsActive).ToList();
             return View();
         }
 
