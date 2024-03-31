@@ -66,7 +66,7 @@ namespace Sociala.Controllers
             string Name =Convert.ToString( TempData["Name"]);
           ///  Console.WriteLine(Name+"aaaaaaaaaaaaaaaaaaaaaaaaa");
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name) && Name != "Admin").Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id) && p.UesrName != "Admin").ToList();
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id) && p.UesrName != "Admin"&&p.IsActive==true).ToList();
             return View();
         }
 
@@ -77,11 +77,11 @@ namespace Sociala.Controllers
 
           //  Console.WriteLine(Name + "aaaaaaaaaaaaaaaaaaaaaaaaa");
             var ResultOfSearch = _data.User.Where(p => p.UesrName.Contains(Name)).Select(i => i.Id);
-            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id)&&p.UesrName!="Admin").ToList(); 
-          // Console.WriteLine( CheckRelationShip.IsFriend(authorization.GetId()));
+            ViewBag.Search = _data.User.Where(p => ResultOfSearch.Contains(p.Id) && p.UesrName != "Admin" && p.IsActive == true).ToList();
+            // Console.WriteLine( CheckRelationShip.IsFriend(authorization.GetId()));
 
 
-       
+
             return View();
         }
         [HttpPost]
