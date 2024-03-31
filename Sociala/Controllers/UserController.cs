@@ -31,17 +31,20 @@ namespace Sociala.Controllers
             this.emailSender = emailSender;
             this.authorization = authorization;
         }
-        public IActionResult Profile()
+        public IActionResult Profile(string IDd)
         {
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
-            
-            string userId = authorization.GetId();
 
-            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+            if (IDd == null)
+            {
+              
+                IDd = authorization.GetId();
+            }
 
-            string id = authorization.GetId();
-            ViewBag.posts = appData.Post.Where(post => post.UserId == id)
+            var user = appData.User.FirstOrDefault(u => u.Id == IDd);
+
+            ViewBag.posts = appData.Post.Where(post => post.UserId == IDd)
                                       .Join(appData.User,
                                             post => post.UserId,
                                             user => user.Id,
@@ -53,10 +56,10 @@ namespace Sociala.Controllers
                                                 UserName = user.UesrName,
                                                 CreateAt = post.CreateAt
                                             })
-                                      .OrderByDescending(p => p.CreateAt);
+                                      .OrderByDescending(p => p.CreateAt)
+                                        .ToList();
 
-            var RequestsId = appData.Request.Where(r => r.RequestingUserId.Equals(id)).Select(r => r.RequestedUserId);
-            ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id));
+            ViewBag.IDd = IDd;
 
             return View(user);
         }
