@@ -34,7 +34,7 @@ namespace Sociala.Services
             string id = authorization.GetId();
             var Result = appData.Friend
                 .Where(p => (p.RequestingUserId == id && p.RequestedUserId == UserId) || (p.RequestingUserId == UserId && p.RequestedUserId == id))
-                .ToList(); // Materialize the query result here
+                .ToList(); 
             return Result.Count() > 0;
         }
         public bool IsRequested( string UserId)
