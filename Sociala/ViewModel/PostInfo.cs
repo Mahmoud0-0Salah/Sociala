@@ -8,7 +8,7 @@
         public string PostImj { get; set; }
         public string UserPhoto { get; set; }
         public string UserName { get; set; }
-
+        public bool Isliked { get; set; }
         public bool IsHidden { get; set; }
     }
 }

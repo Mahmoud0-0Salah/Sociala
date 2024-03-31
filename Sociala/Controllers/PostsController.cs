@@ -41,15 +41,23 @@ namespace Sociala.Controllers
             _data.Like.Add(like);
             _data.SaveChanges();
             if (Place == "Index")
-            return Redirect("/Home/Index");
-            else  {
-                var Result = _data.Post.Where(p => p.Id == Id).Select(p=>p.UserId);
-                TempData["Like"] = Result.First();
-                return Redirect("/User/Profile");
-            }
+                 return Redirect("/Home/Index");
+            return Redirect("/User/Profile");
 
         }
 
+        public IActionResult DeleteLike(int Id, string Place)
+        {
+
+
+            var target= _data.Like.Where(l => l.PostId == Id && l.UserId == authorization.GetId()).SingleOrDefault();
+            _data.Like.Remove(target);
+            _data.SaveChanges();
+            if (Place == "Index")
+                return Redirect("/Home/Index");
+            return Redirect("/User/Profile");
+
+        }
 
         [HttpGet]
         public IActionResult Report(int Id)
