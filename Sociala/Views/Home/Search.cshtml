@@ -44,10 +44,11 @@
                                             <div class="clearfix"></div>
                                             <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id">@user.UesrName</a>
                                             <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3"></p>
-                                            <a asp-controller="User" asp-action="Derequest" asp-route-Id="@user.Id"  class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-success font-xsssss fw-700 ls-lg text-white">Derequest</a>
+                                            <a asp-controller="User" asp-action="Derequest" asp-route-Id="@user.Id" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-danger font-xsssss fw-700 ls-lg text-white">Derequest</a>
                                         </div>
                                     </div>
                                 </div>
+
                             }
                             else if (CheckRelationShip.IsFriend(user.Id))
                             {
@@ -59,10 +60,11 @@
                                             <div class="clearfix"></div>
                                             <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id">@user.UesrName</a>
                                             <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3"></p>
-                                            <a  class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-success font-xsssss fw-700 ls-lg text-white">Friend</a>
+                                            <a style="color: blue" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-primary font-xsssss fw-700 ls-lg text-white">Friend</a>
                                         </div>
                                     </div>
                                 </div>
+
 
                             }
                             else
