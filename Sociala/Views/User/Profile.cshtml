@@ -213,13 +213,13 @@
                                     <div class="card-body d-flex p-0">
                                         @if (!post.Isliked)
                                         {
-                                            <a asp-controller="Posts" asp-action="Like" asp-route-ID="@post.Id" asp-route-Place="@post.UserId" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
+                                            <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
                                                 <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
                                             </a>
                                         }
                                         else
                                         {
-                                            <a asp-controller="Posts" asp-action="DeleteLike" asp-route-ID="@post.Id" asp-route-Place="@post.UserId" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
+                                            <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
                                                 <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
                                             </a>
                                         }
@@ -238,11 +238,10 @@
             </div>
         </>
         <!-- main content -->
-        <!-- right chat -->
+        <!-- right chat
         <div class="right-chat nav-wrap mt-2 right-scroll-bar">
             <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
 
-                <!-- loader wrapper -->
                 <div class="preloader-wrap p-3">
                     <div class="box shimmer">
                         <div class="lines">
@@ -269,7 +268,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- loader wrapper -->
 
                 <div class="section full pe-3 ps-4 pt-4 position-relative feed-body">
                     <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">CONTACTS</h4>
@@ -402,10 +400,10 @@
                 </div>
 
             </div>
-        </div>
+    </div> 
 
 
-        <!-- right chat -->
+        right chat 
 
         <div class="app-footer border-0 shadow-lg bg-primary-gradiant">
             <a href="default.html" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
@@ -480,28 +478,42 @@
             </div>
         </div>
     </div>
-
+        -->
 
     <script src="js/plugin.js"></script>
     <script src="js/lightbox.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/jquery.easypiechart.min.js"></script>
-    <script>
-        $('.chart').easyPieChart({
-            easing: 'easeOutElastic',
-            delay: 3000,
-            barColor: '#3498db',
-            trackColor: '#aaa',
-            scaleColor: false,
-            lineWidth: 5,
-            trackWidth: 5,
-            size: 50,
-            lineCap: 'round',
-            onStep: function (from, to, percent) {
-                this.el.children[0].innerHTML = Math.round(percent);
-            }
-        });
-    </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('.like-button').click(function () {
+                    var postId = $(this).data('post-id');
+                    var place = $(this).data('place');
+                    var isLiked = $(this).find('i').hasClass('bg-primary-gradiant');
+
+                    $.ajax({
+                        url: isLiked ? '/Posts/DeleteLike' : '/Posts/Like',
+                        type: 'POST',
+                        data: { id: postId, place: place },
+                        success: function (response) {
+                            if (response.success) {
+                                if (isLiked) {
+                                    $('#likeButton-' + postId).html('<i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>');
+                                } else {
+                                    $('#likeButton-' + postId).html('<i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>');
+                                }
+                            } else {
+                                alert('An error occurred');
+                            }
+                        },
+                        error: function () {
+                            alert('An error occurred');
+                        }
+                    });
+                });
+            });
+        </script>
     
 </body>
 

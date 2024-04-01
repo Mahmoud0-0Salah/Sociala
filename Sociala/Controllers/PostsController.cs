@@ -41,8 +41,8 @@ namespace Sociala.Controllers
             _data.Like.Add(like);
             _data.SaveChanges();
             if (Place == "Index")
-                 return Redirect("/Home/Index");
-            return Redirect($"/User/Profile/{Place}");
+                return Json(new { success = true, redirectTo = "/Home/Index" });
+            return Json(new { success = true, redirectTo = $"/User/Profile/{Place}" });
 
         }
 
@@ -54,8 +54,8 @@ namespace Sociala.Controllers
             _data.Like.Remove(target);
             _data.SaveChanges();
             if (Place == "Index")
-                return Redirect("/Home/Index");
-            return Redirect($"/User/Profile/{Place}");
+                return Json(new { success = true, redirectTo = "/Home/Index" });
+            return Json(new { success = true, redirectTo = $"/User/Profile/{Place}" });
 
         }
 
