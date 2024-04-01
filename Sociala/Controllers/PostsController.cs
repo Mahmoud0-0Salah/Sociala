@@ -42,7 +42,7 @@ namespace Sociala.Controllers
             _data.SaveChanges();
             if (Place == "Index")
                  return Redirect("/Home/Index");
-            return Redirect("/User/Profile");
+            return Redirect($"/User/Profile/{Place}");
 
         }
 
@@ -55,7 +55,7 @@ namespace Sociala.Controllers
             _data.SaveChanges();
             if (Place == "Index")
                 return Redirect("/Home/Index");
-            return Redirect("/User/Profile");
+            return Redirect($"/User/Profile/{Place}");
 
         }
 
