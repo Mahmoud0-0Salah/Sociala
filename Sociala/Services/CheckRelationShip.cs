@@ -14,6 +14,7 @@ namespace Sociala.Services
     {
         public bool IsFriend( string UserId);
         public bool IsRequested( string UserId);
+        public bool IsRequesting( string UserId);
 
         public bool IsMe( string UserId);
        
@@ -42,6 +43,15 @@ namespace Sociala.Services
             string id = authorization.GetId();
             var Result = appData.Request.Where(p => (p.RequestingUserId ==id && p.RequestedUserId == UserId) ).ToList();
             
+            return Result.Count() > 0;
+
+        }
+
+        public bool IsRequesting(string UserId)
+        {
+            string id = authorization.GetId();
+            var Result = appData.Request.Where(p => (p.RequestingUserId == UserId  && p.RequestedUserId == id)).ToList();
+
             return Result.Count() > 0;
 
         }

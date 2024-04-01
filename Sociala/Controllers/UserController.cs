@@ -34,13 +34,13 @@ namespace Sociala.Controllers
         }
         public IActionResult Profile(string Id)
         {
+            if (Id == null)
+                Id = authorization.GetId();
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
-
-            if (Id ==null)
-            {
-                Id = authorization.GetId();
-            }
+            if (authorization.IsAdmin(Id))
+               return RedirectToAction("Index", "home");
+            
             var user = appData.User.FirstOrDefault(u => u.Id == Id);
 
             ViewBag.posts = appData.Post.Where(post => post.UserId == Id)
@@ -134,7 +134,7 @@ namespace Sociala.Controllers
 
             appData.SaveChanges();
 
-            return RedirectToAction("Profile");
+            return Redirect($"/user/profile/{user.Id}");
         }
 
 
@@ -187,7 +187,7 @@ namespace Sociala.Controllers
                 return Redirect("/Home/Index");
             else return RedirectToAction("ShowRequest");
         }
-        public IActionResult Derequest(string Id)
+        public IActionResult Derequest(string Id ,string place)
         {
 
 
@@ -197,6 +197,8 @@ namespace Sociala.Controllers
             appData.SaveChanges();
             var result = appData.User.Where(u => u.Id == Id).FirstOrDefault();
             TempData["Name"] = result.UesrName;
+            if (place=="Profile")
+                return Redirect($"/User/Profile/{Id}");
             return Redirect("/Home/Search");
 
         }

@@ -13,6 +13,8 @@ namespace Sociala
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddControllersWithViews();
+
             builder.Services.AddDbContext<AppData>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<IEncrypt, EncryptClass>();
@@ -23,7 +25,6 @@ namespace Sociala
 
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
           
              builder.Services.AddTransient<ICheckRelationShip, CheckRelationShip>();
 
