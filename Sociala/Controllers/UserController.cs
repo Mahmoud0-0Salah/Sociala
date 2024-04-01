@@ -49,7 +49,7 @@ namespace Sociala.Controllers
                                             user => user.Id,
                                             (post, friend) =>
                                             new PostInfo
-                                ()
+                                             ()
                                             {
                                                 Id = post.Id,
                                                 PostContent = post.content,
@@ -63,12 +63,12 @@ namespace Sociala.Controllers
                                                 Isliked = ((!(appData.Like.Contains(new Like
                                                 {
                                                     PostId = post.Id,
-                                                    UserId = Id
+                                                    UserId = authorization.GetId()
                                                 }))) ? false
-                                    : true),
+                                                  : true),
 
                                             })
-                                      .OrderByDescending(p => p.CreateAt)
+                                           .Where(p => !p.IsHidden).OrderByDescending(p => p.CreateAt)
                                         .ToList();
 
              Id = authorization.GetId();
