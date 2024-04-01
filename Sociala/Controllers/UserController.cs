@@ -24,16 +24,19 @@ namespace Sociala.Controllers
         private readonly IEmailSender emailSender;
         private readonly IEncrypt encryptclass;
         private readonly IAuthorization authorization;
+        private readonly IConfiguration configuration;
 
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization)
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, IConfiguration configuration)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
+            this.configuration = configuration;
         }
         public IActionResult Profile(string Id)
         {
+            
             if (Id == null)
                 Id = authorization.GetId();
             if (!authorization.IsLoggedIn())
@@ -268,7 +271,6 @@ namespace Sociala.Controllers
         public IActionResult Login(LoginInfo loginInfo)
         {
             var user = appData.User.SingleOrDefault(u => u.Email.Equals(loginInfo.Email));
-            string slot = Guid.NewGuid().ToString();
             if (user == null)
             {
                 ViewBag.NonFoundEmailMessage = "Wrong Email";
@@ -281,22 +283,19 @@ namespace Sociala.Controllers
             }
             if (!user.IsActive)
             {
-                Response.Cookies.Append("ActiveKey", encryptclass.Encrypt(user.ActiveKey, slot));
-                Response.Cookies.Append("TempId", encryptclass.Encrypt(user.Id, slot));
-                Response.Cookies.Append("TempSlot", slot);
+                Response.Cookies.Append("ActiveKey", encryptclass.Encrypt(user.ActiveKey, configuration.GetSection("Key").ToString()));
+                Response.Cookies.Append("TempId", encryptclass.Encrypt(user.Id, configuration.GetSection("Key").ToString()));
                 return RedirectToAction("ConfirmEmail", "User");
             }
             if (loginInfo.RememberMe)
             {
                 CookieOptions cookie = new CookieOptions();
                 cookie.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("id", encryptclass.Encrypt(user.Id, slot), cookie);
-                Response.Cookies.Append("slot", slot, cookie);
+                Response.Cookies.Append("id", encryptclass.Encrypt(user.Id, configuration.GetSection("Key").ToString()), cookie);
             }
             else
             {
-                Response.Cookies.Append("id", encryptclass.Encrypt(user.Id, slot));
-                Response.Cookies.Append("slot", slot);
+                Response.Cookies.Append("id", encryptclass.Encrypt(user.Id, configuration.GetSection("Key").ToString()));
             }
             return RedirectToAction("index", "Home");
         }
@@ -309,7 +308,6 @@ namespace Sociala.Controllers
             CookieOptions cookie = new CookieOptions();
             cookie.Expires = DateTime.Now.AddDays(-1);
             Response.Cookies.Append("id", "1", cookie);
-            Response.Cookies.Append("slot", "1", cookie);
             return RedirectToAction("index", "Home");
         }
         /**************************************************************************************/
@@ -434,10 +432,8 @@ namespace Sociala.Controllers
 
                 appData.Add(user);
                 await appData.SaveChangesAsync();
-                string slot = Guid.NewGuid().ToString();
-                Response.Cookies.Append("ActiveKey", encryptclass.Encrypt(user.ActiveKey, slot));
-                Response.Cookies.Append("TempId", encryptclass.Encrypt(user.Id, slot));
-                Response.Cookies.Append("TempSlot", slot);
+                Response.Cookies.Append("ActiveKey", encryptclass.Encrypt(user.ActiveKey, configuration.GetSection("Key").ToString()));
+                Response.Cookies.Append("TempId", encryptclass.Encrypt(user.Id, configuration.GetSection("Key").ToString()));
             }
             catch
             {
@@ -459,19 +455,16 @@ namespace Sociala.Controllers
         public IActionResult ConfirmEmail(string key)
         {
 
-            if (key != null && key.Equals(encryptclass.Decrypt(Request.Cookies["ActiveKey"], Request.Cookies["TempSlot"])))
+            if (key != null && key.Equals(encryptclass.Decrypt(Request.Cookies["ActiveKey"], configuration.GetSection("Key").ToString())))
             {
-                string slot = Guid.NewGuid().ToString();
                 CookieOptions cookie = new CookieOptions();
-                var user = appData.User.SingleOrDefault(u => u.Id.Equals(encryptclass.Decrypt(Request.Cookies["TempId"], Request.Cookies["TempSlot"])));
+                var user = appData.User.SingleOrDefault(u => u.Id.Equals(encryptclass.Decrypt(Request.Cookies["TempId"], configuration.GetSection("Key").ToString())));
                 user.IsActive = true;
                 appData.SaveChanges();
                 cookie.Expires = DateTime.Now.AddDays(-1);
                 Response.Cookies.Append("TempId", "1", cookie);
-                Response.Cookies.Append("TempSlot", "1", cookie);
                 Response.Cookies.Append("ActiveKey", "1", cookie);
-                Response.Cookies.Append("id", encryptclass.Encrypt(user.Id, slot));
-                Response.Cookies.Append("slot", slot);
+                Response.Cookies.Append("id", encryptclass.Encrypt(user.Id, configuration.GetSection("Key").ToString()));
             }
             else
             {

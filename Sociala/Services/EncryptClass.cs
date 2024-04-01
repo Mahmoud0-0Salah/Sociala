@@ -14,7 +14,7 @@
             for (int i = 0; i < plaintext.Length; i++)
             {
                 char c = plaintext[i];
-                int shift = key[i % key.Length] % 256; // Ensure the shift value is within the range of ASCII characters
+                int shift = key[i % key.Length] % 256;
 
                 char shifted = (char)(c + shift);
                 ciphertext += shifted;
@@ -30,7 +30,7 @@
             for (int i = 0; i < ciphertext.Length; i++)
             {
                 char c = ciphertext[i];
-                int shift = key[i % key.Length] % 256; // Ensure the shift value is within the range of ASCII characters
+                int shift = key[i % key.Length] % 256; 
 
                 char shifted = (char)(c - shift);
                 decryptedText += shifted;

@@ -7,6 +7,8 @@ using AuthorizationService;
 using Sociala.Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+
 namespace AuthorizationService
 {
     public interface IAuthorization
@@ -23,11 +25,13 @@ namespace AuthorizationService
         private readonly AppData appData;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IEncrypt encryptclass;
-        public Authorization(AppData appData, IHttpContextAccessor httpContextAccessor, IEncrypt encryptclass)
+        private readonly IConfiguration configuration;
+        public Authorization(AppData appData, IHttpContextAccessor httpContextAccessor, IEncrypt encryptclass, IConfiguration configuration)
         {
             this.appData = appData;
             _httpContextAccessor = httpContextAccessor;
             this.encryptclass = encryptclass;
+            this.configuration = configuration;
         }
 
         public bool IsLoggedIn()
@@ -48,7 +52,7 @@ namespace AuthorizationService
         }
         public string GetId()
         {
-            return encryptclass.Decrypt(_httpContextAccessor.HttpContext.Request.Cookies["id"], _httpContextAccessor.HttpContext.Request.Cookies["slot"]);
+            return encryptclass.Decrypt(_httpContextAccessor.HttpContext.Request.Cookies["id"], configuration.GetSection("Key").ToString());
         }
     }
 }
