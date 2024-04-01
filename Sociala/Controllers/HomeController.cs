@@ -18,7 +18,7 @@ namespace Sociala.Controllers
         private readonly AppData _data;
         private readonly IAuthorization authorization;
         private readonly ICheckRelationShip CheckRelationShip;
-        public HomeController(ILogger<HomeController> logger,AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip)
+        public HomeController(ILogger<HomeController> logger, AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip)
         {
             _logger = logger;
             _data = data;
@@ -31,20 +31,20 @@ namespace Sociala.Controllers
         {
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
-            string id=authorization.GetId();
+            string id = authorization.GetId();
             if (authorization.IsAdmin(id))
             {
                 return RedirectToAction("Index", "Admin");
             }
 
-            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f=> id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
+            var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f => id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
             friendsId.Add(id);
-            var friends = _data.User.Where(u=>friendsId.Contains(u.Id));
+            var friends = _data.User.Where(u => friendsId.Contains(u.Id));
             ViewBag.posts = (_data.Post.Join(friends,
                                 post => post.UserId,
                                 friend => friend.Id,
                                 (post, friend) =>
-                                
+
                                 new PostInfo
                                 ()
                                 {
@@ -53,9 +53,10 @@ namespace Sociala.Controllers
                                     PostImj = post.Imj,
                                     UserPhoto = friend.UrlPhoto,
                                     UserName = friend.UesrName,
+                                    UserId = friend.Id,
                                     CreateAt = post.CreateAt,
                                     IsHidden = post.IsHidden,
-                                    
+
                                     Isliked = ((!(_data.Like.Contains(new Like
                                     {
                                         PostId = post.Id,
@@ -65,31 +66,31 @@ namespace Sociala.Controllers
 
                                 }
                                 )).Where(p => !p.IsHidden).OrderByDescending(p => p.CreateAt);
-            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r=>r.RequestingUserId);
+            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
             return View();
         }
         [HttpGet]
-         public IActionResult Search()
+        public IActionResult Search()
         {
-            string Name =Convert.ToString( TempData["Name"]);
+            string Name = Convert.ToString(TempData["Name"]);
             ViewBag.Search = (_data.User.Join(_data.Role,
                                 User => User.RoleId,
                                 Role => Role.Id,
-                                
-                                (User, Role) => new 
+
+                                (User, Role) => new
                                 {
-                                    Role=Role.Name,
+                                    Role = Role.Name,
                                     Id = User.Id,
                                     UesrName = User.UesrName,
                                     Email = User.Email,
                                     PhoneNumber = User.PhoneNumber,
                                     bio = User.bio,
                                     IsActive = User.IsActive,
-                                    UrlPhoto=User.UrlPhoto
+                                    UrlPhoto = User.UrlPhoto
 
-                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName.Contains( Name))).ToList();
+                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
 
@@ -124,7 +125,7 @@ namespace Sociala.Controllers
             {
                 content = content,
                 UserId = authorization.GetId(),
-            CreateAt = DateTime.Now,
+                CreateAt = DateTime.Now,
             };
             var file = HttpContext.Request.Form.Files;
 
@@ -151,15 +152,15 @@ namespace Sociala.Controllers
                 TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
                 return RedirectToAction("Index");
             }
-            
+
 
             _data.Post.Add(post);
             _data.SaveChanges();
-           
 
-            return RedirectToAction("Index"); 
+
+            return RedirectToAction("Index");
         }
-      
+
 
 
 

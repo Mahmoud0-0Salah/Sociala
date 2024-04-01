@@ -81,7 +81,8 @@
                                     <figure class="avatar position-absolute w100 z-index-1" style="top:-40px; left: 30px;"><img src="@Model.UrlPhoto" alt="image" class="float-right p-1 bg-white rounded-circle w-100"height="100px"></figure>
                                     <h4 class="fw-700 font-sm mt-2 mb-lg-5 mb-4 pl-15">@Model.UesrName <span class="fw-500 font-xssss text-grey-500 mt-1 mb-3 d-block mt-1">@Model.Email</span></h4>
                                     <div class="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2">
-                                    @if(Model.Id==ViewBag.IDd){
+                                    @if (Model.Id == ViewBag.Id)
+                                    {
                                         <a asp-controller="User" asp-action="EditProfile" class="d-none d-lg-block bg-primary  p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3 ">Edit Profile</a>
                                     }else{       
                                         <a asp-controller="User" asp-action="AddFriend" asp-route-id="@Model.Id" asp-route-Place="Profile" class="d-none d-lg-block bg-success p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3">Add Friend</a>
@@ -184,18 +185,17 @@
                                     <div class="card-body d-flex p-0">
                                         @if (!post.Isliked)
                                         {
-                                            <a asp-controller="Posts" asp-action="Like" asp-route-ID="@post.Id" asp-route-Place="Index" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
+                                            <a asp-controller="Posts" asp-action="Like" asp-route-ID="@post.Id" asp-route-Place="Profile" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
                                                 <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
                                             </a>
                                         }
                                         else
                                         {
-                                            <a asp-controller="Posts" asp-action="DeleteLike" asp-route-ID="@post.Id" asp-route-Place="Index" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
+                                            <a asp-controller="Posts" asp-action="DeleteLike" asp-route-ID="@post.Id" asp-route-Place="Profile" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
                                                 <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
                                             </a>
                                         }
                                         <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
-                                        <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
                                     </div>
                                 </div>
                             </div>

@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using Sociala.Migrations;
 
 namespace Sociala.Controllers
 {
@@ -31,34 +32,47 @@ namespace Sociala.Controllers
             this.emailSender = emailSender;
             this.authorization = authorization;
         }
-        public IActionResult Profile(string IDd)
+        public IActionResult Profile(string Id)
         {
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
 
-            if (IDd == null)
+            if (Id ==null)
             {
-                IDd = authorization.GetId();
+                Id = authorization.GetId();
             }
+            var user = appData.User.FirstOrDefault(u => u.Id == Id);
 
-            var user = appData.User.FirstOrDefault(u => u.Id == IDd);
-
-            ViewBag.posts = appData.Post.Where(post => post.UserId == IDd)
+            ViewBag.posts = appData.Post.Where(post => post.UserId == Id)
                                       .Join(appData.User,
                                             post => post.UserId,
                                             user => user.Id,
-                                            (post, user) => new PostInfo
+                                            (post, friend) =>
+                                            new PostInfo
+                                ()
                                             {
+                                                Id = post.Id,
                                                 PostContent = post.content,
                                                 PostImj = post.Imj,
-                                                UserPhoto = user.UrlPhoto,
-                                                UserName = user.UesrName,
-                                                CreateAt = post.CreateAt
+                                                UserPhoto = friend.UrlPhoto,
+                                                UserName = friend.UesrName,
+                                                UserId = friend.Id,
+                                                CreateAt = post.CreateAt,
+                                                IsHidden = post.IsHidden,
+
+                                                Isliked = ((!(appData.Like.Contains(new Like
+                                                {
+                                                    PostId = post.Id,
+                                                    UserId = Id
+                                                }))) ? false
+                                    : true),
+
                                             })
                                       .OrderByDescending(p => p.CreateAt)
                                         .ToList();
 
-            ViewBag.IDd = IDd;
+             Id = authorization.GetId();
+            ViewBag.Id = Id;
 
             return View(user);
         }
@@ -93,7 +107,7 @@ namespace Sociala.Controllers
                                              user.PhoneNumber.StartsWith("015")))
             {
                 ViewBag.PhoneNumberMessage = "Enter valid egyptian phonenumber";
-                return View();
+                return View(user);
             }
             user.bio = updatedUser.bio;
             var file = HttpContext.Request.Form.Files;
@@ -103,7 +117,7 @@ namespace Sociala.Controllers
                 if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg"))
                 {
                     ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG or JPEG";
-                    return View();
+                    return View(user);
                 }
                 string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
                 var filePath = Path.Combine("wwwroot", "imj", imageName);
@@ -140,7 +154,7 @@ namespace Sociala.Controllers
                 return Redirect("/Home/Search");
                 
             }
-            else return RedirectToAction("Profile");
+            else return Redirect($"/user/Profile/{Id}");
 
 
 
