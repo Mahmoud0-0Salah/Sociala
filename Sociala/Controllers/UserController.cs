@@ -38,7 +38,6 @@ namespace Sociala.Controllers
 
             if (IDd == null)
             {
-              
                 IDd = authorization.GetId();
             }
 
@@ -65,9 +64,7 @@ namespace Sociala.Controllers
         }
         public IActionResult EditProfile()
         {
-            
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string userId = authorization.GetId();
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
@@ -117,6 +114,8 @@ namespace Sociala.Controllers
 
             return RedirectToAction("Profile");
         }
+
+
         public IActionResult AddFriend(String Id, String Place)
         {
             
