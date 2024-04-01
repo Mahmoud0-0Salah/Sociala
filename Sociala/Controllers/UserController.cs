@@ -87,6 +87,14 @@ namespace Sociala.Controllers
 
             user.UesrName = updatedUser.UesrName;
             user.PhoneNumber = updatedUser.PhoneNumber;
+            if (user.PhoneNumber.Length != 11 || !(user.PhoneNumber.StartsWith("010") ||
+                                             user.PhoneNumber.StartsWith("011") ||
+                                             user.PhoneNumber.StartsWith("012") ||
+                                             user.PhoneNumber.StartsWith("015")))
+            {
+                ViewBag.PhoneNumberMessage = "Enter valid egyptian phonenumber";
+                return View();
+            }
             user.bio = updatedUser.bio;
             var file = HttpContext.Request.Form.Files;
 
