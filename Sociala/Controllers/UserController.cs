@@ -43,7 +43,8 @@ namespace Sociala.Controllers
                 return RedirectToAction("LogIn", "User");
             if (authorization.IsAdmin(Id))
                return RedirectToAction("Index", "home");
-            
+            if (authorization.IsBlocked(Id))
+                return View("ErrorPage");
             var user = appData.User.FirstOrDefault(u => u.Id == Id);
 
             ViewBag.posts = appData.Post.Where(post => post.UserId == Id)
@@ -280,6 +281,10 @@ namespace Sociala.Controllers
             {
                 ViewBag.WrongPassword = "Wrong password";
                 return View();
+            }
+            if (user.IsBanned)
+            {
+                return View("BlockPage");
             }
             if (!user.IsActive)
             {

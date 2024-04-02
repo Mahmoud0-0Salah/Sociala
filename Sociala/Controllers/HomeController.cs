@@ -56,7 +56,7 @@ namespace Sociala.Controllers
                                     UserId = friend.Id,
                                     CreateAt = post.CreateAt,
                                     IsHidden = post.IsHidden,
-
+                                    IsBanned=friend.IsBanned,
                                     Isliked = ((!(_data.Like.Contains(new Like
                                     {
                                         PostId = post.Id,
@@ -65,7 +65,7 @@ namespace Sociala.Controllers
                                     : true),
 
                                 }
-                                )).Where(p => !p.IsHidden).OrderByDescending(p => p.CreateAt);
+                                )).Where(p => !p.IsHidden&&!p.IsBanned).OrderByDescending(p => p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
 
@@ -88,9 +88,10 @@ namespace Sociala.Controllers
                                     PhoneNumber = User.PhoneNumber,
                                     bio = User.bio,
                                     IsActive = User.IsActive,
-                                    UrlPhoto = User.UrlPhoto
+                                    UrlPhoto = User.UrlPhoto,
+                                    status =User.IsBanned
 
-                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName.Contains(Name))).ToList();
+                                })).Where((result => result.Role != "Admin" && !result.status && result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
 
@@ -111,9 +112,10 @@ namespace Sociala.Controllers
                                     PhoneNumber = User.PhoneNumber,
                                     bio = User.bio,
                                     IsActive = User.IsActive,
-                                    UrlPhoto = User.UrlPhoto
+                                    UrlPhoto = User.UrlPhoto,
+                                    status = User.IsBanned
 
-                                })).Where((result => result.Role != "Admin" && result.IsActive && result.UesrName.Contains(Name))).ToList();
+                                })).Where((result => result.Role != "Admin" && !result.status&& result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
         [HttpPost]

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
+using Sociala.Models;
 
 namespace Sociala.Controllers
 {
@@ -29,7 +30,7 @@ namespace Sociala.Controllers
             }
 
             var reports = _data.Report.Where(r => r.Status == "Pending").Include(r => r.User);
-
+            ViewBag.NumOfReportedUsers = _data.Report.Where(r => r.Status.Equals("Approved")).Include(r => r.Post).Include(r => r.Post.User).Select(r => r.Post.User).Where(u => !u.IsBanned).Distinct().Count();
             return View(reports);
         }
 
@@ -57,7 +58,21 @@ namespace Sociala.Controllers
 
             return View(report);
         }
-
+        public IActionResult ReportedUsersInfo()
+        {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string userId = authorization.GetId();
+            if (!authorization.IsAdmin(userId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var users = _data.Report.Where(r=>r.Status.Equals("Approved")).Include(r => r.Post).Include(r => r.Post.User).Select(r=>r.Post.User).Where(u=>!u.IsBanned).Distinct().OrderByDescending(u => u.NumberOfApprovedReports);
+            ViewBag.ReportNum= _data.Report.Where(r => r.Status == "Pending").Count();
+            return View(users);
+        }
         [HttpGet]
         public IActionResult ApproveReport(int Id)
         {
@@ -71,7 +86,7 @@ namespace Sociala.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var report = _data.Report.Where(r => r.Id == Id).Include(r => r.Post).SingleOrDefault();
+            var report = _data.Report.Where(r => r.Id == Id).Include(r => r.Post).Include(r=>r.Post.User).SingleOrDefault();
             if (report == null || report.Status != "Pending")
             {
                 return RedirectToAction("Index", "Admin");
@@ -79,8 +94,7 @@ namespace Sociala.Controllers
 
             report.Status = "Approved";
             report.Post.IsHidden = true;
-            var user = _data.User.Where(u => u.Id.Equals(report.Post.UserId)).SingleOrDefault();
-            user.NumberOfApprovedReports += 1;
+            report.Post.User.NumberOfApprovedReports +=1;
             _data.SaveChanges();
 
             return View();
@@ -109,7 +123,24 @@ namespace Sociala.Controllers
 
             return View();
         }
+        public IActionResult Block(string id)
+        {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string userId = authorization.GetId();
+            if (!authorization.IsAdmin(userId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var user = _data.User.Where(u=>u.Id.Equals(id)).SingleOrDefault();
+            user.IsBanned = true;
+            _data.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
 
     }
 }

@@ -17,8 +17,9 @@ namespace AuthorizationService
         public bool IsAdmin(string id);
         public bool IsUser(string id);
         public string GetId();
+        public bool IsBlocked(string id);
 
-        
+
     }
     public class Authorization :IAuthorization
     {
@@ -50,6 +51,12 @@ namespace AuthorizationService
             var role = appData.Role.Where(r => r.Id.Equals(user.RoleId)).SingleOrDefault();
             return role.Name.Equals("User");
         }
+        public bool IsBlocked(string id)
+        {
+            var user = appData.User.Where(u => u.Id.Equals(id)).SingleOrDefault();
+            return user.IsBanned;
+        }
+
         public string GetId()
         {
             return encryptclass.Decrypt(_httpContextAccessor.HttpContext.Request.Cookies["id"], configuration.GetSection("Key").ToString());
