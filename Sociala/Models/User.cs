@@ -24,7 +24,8 @@ namespace Sociala.Models
             
             [ForeignKey("Role")]
             public int RoleId { get; set; }
-            public Role Roles { get; set; }
+        public int NumberOfApprovedReports { get; set; } = 0;
+        public Role Roles { get; set; }
         public  DateTime CreateAt { get; set; }
 
     }
