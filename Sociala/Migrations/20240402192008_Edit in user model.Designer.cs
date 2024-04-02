@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Sociala.Data;
 
@@ -11,9 +12,11 @@ using Sociala.Data;
 namespace Sociala.Migrations
 {
     [DbContext(typeof(AppData))]
-    partial class AppDataModelSnapshot : ModelSnapshot
+    [Migration("20240402192008_Edit in user model")]
+    partial class Editinusermodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

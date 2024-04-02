@@ -49,12 +49,11 @@ namespace Sociala.Controllers
             var report = _data.Report.Where(r => r.Id == Id).Include(r => r.User)
                                                             .Include(r => r.Post).Include(r => r.Post.User)
                                                             .SingleOrDefault();
-            if (report == null)
+            if (report == null || report.Status!= "Pending")
             {
 
                 return RedirectToAction("Index", "Admin");
             }
-            
 
             return View(report);
         }
@@ -80,6 +79,8 @@ namespace Sociala.Controllers
 
             report.Status = "Approved";
             report.Post.IsHidden = true;
+            var user = _data.User.Where(u => u.Id.Equals(report.Post.UserId)).SingleOrDefault();
+            user.NumberOfApprovedReports += 1;
             _data.SaveChanges();
 
             return View();
