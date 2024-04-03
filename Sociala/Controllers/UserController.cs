@@ -234,13 +234,13 @@ namespace Sociala.Controllers
         {
             string  Id = Convert.ToString( TempData["IdToSearch"]);
             var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p => Id.Equals(p.RequestedUserId) ? p.RequestingUserId : p.RequestedUserId).ToList();
-            var ResultOfSearch = appData.User.Where(u => Result.Contains(u.Id) && Name.Contains(u.UesrName)).ToList();
+            var ResultOfSearch = appData.User.Where(u => Result.Contains(u.Id) && u.UesrName.Contains(Name)).ToList();
             ViewBag.Search = ResultOfSearch;
             return View();
         }
         public IActionResult Photos(string Id)
         {
-            var ResultOfPosts = appData.Post.Where(p => p.UserId==Id).ToList();
+            var ResultOfPosts = appData.Post.Where(p => p.UserId==Id&&!p.IsHidden).ToList();
             ViewBag.Photos = ResultOfPosts;
             return View();
         }
