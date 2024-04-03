@@ -43,7 +43,7 @@ namespace Sociala.Controllers
                 return RedirectToAction("LogIn", "User");
             if (authorization.IsAdmin(Id))
                return RedirectToAction("Index", "home");
-            if (authorization.IsBlocked(Id))
+            if (authorization.IsBanned(Id))
                 return View("ErrorPage");
             var user = appData.User.FirstOrDefault(u => u.Id == Id);
 

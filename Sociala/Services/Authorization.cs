@@ -17,7 +17,7 @@ namespace AuthorizationService
         public bool IsAdmin(string id);
         public bool IsUser(string id);
         public string GetId();
-        public bool IsBlocked(string id);
+        public bool IsBanned(string id);
 
 
     }
@@ -51,7 +51,7 @@ namespace AuthorizationService
             var role = appData.Role.Where(r => r.Id.Equals(user.RoleId)).SingleOrDefault();
             return role.Name.Equals("User");
         }
-        public bool IsBlocked(string id)
+        public bool IsBanned(string id)
         {
             var user = appData.User.Where(u => u.Id.Equals(id)).SingleOrDefault();
             return user.IsBanned;

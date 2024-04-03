@@ -123,7 +123,7 @@ namespace Sociala.Controllers
 
             return View();
         }
-        public IActionResult Block(string id)
+        public IActionResult Ban(string id)
         {
             if (!authorization.IsLoggedIn())
             {
