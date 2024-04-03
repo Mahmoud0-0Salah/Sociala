@@ -11,5 +11,6 @@
         public string UserId { get; set; }
         public bool Isliked { get; set; }
         public bool IsHidden { get; set; }
+        public bool IsBanned { get; set; }
     }
 }

@@ -20,7 +20,8 @@ namespace Sociala.Models
 
             public string? bio {  get; set; }
             public bool IsActive { get; set; }
-            public string ActiveKey { get; set; }
+            public bool IsBanned { get; set; }
+        public string ActiveKey { get; set; }
             
             [ForeignKey("Role")]
             public int RoleId { get; set; }
