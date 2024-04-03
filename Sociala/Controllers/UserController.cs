@@ -215,6 +215,36 @@ namespace Sociala.Controllers
 
             return View();
         }
+     
+        public IActionResult Friends( string Id)
+        {
+            var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p=>Id.Equals(p.RequestedUserId)? p.RequestingUserId :p.RequestedUserId).ToList();
+            var FinalResult=appData.User.Where(u => Result.Contains(u.Id)).ToList();
+            ViewBag.Friends = FinalResult;
+            TempData["IdToSearch"] = Id;////// this Id pass to search to make query easy
+
+
+            return View();
+
+        }
+        
+        
+            [HttpPost]
+        public IActionResult Search( string Name )
+        {
+            string  Id = Convert.ToString( TempData["IdToSearch"]);
+            var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p => Id.Equals(p.RequestedUserId) ? p.RequestingUserId : p.RequestedUserId).ToList();
+            var ResultOfSearch = appData.User.Where(u => Result.Contains(u.Id) && Name.Contains(u.UesrName)).ToList();
+            ViewBag.Search = ResultOfSearch;
+            return View();
+        }
+        public IActionResult Photos(string Id)
+        {
+            var ResultOfPosts = appData.Post.Where(p => p.UserId==Id).ToList();
+            ViewBag.Photos = ResultOfPosts;
+            return View();
+        }
+
 
         private bool IsPasswordValid(string password)
         {
