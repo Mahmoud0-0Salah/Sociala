@@ -532,22 +532,22 @@ namespace Sociala.Controllers
         {
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
+            string userId = authorization.GetId();
 
+            if (authorization.IsAdmin(userId))
+                return RedirectToAction("Index", "home");
             return View();
         }
 
         [HttpPost]
         public IActionResult EditPassword(EditPassword model)
         {
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
-
             var userId = authorization.GetId();
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
             {
-                return NotFound();
+                return View("ErrorPage"); ;
             }
 
             if (!Hash(model.CurrentPassword).Equals(user.Password))
