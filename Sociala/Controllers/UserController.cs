@@ -509,5 +509,46 @@ namespace Sociala.Controllers
             return RedirectToAction("index", "Home");
         }
 
+        public IActionResult EditPassword()
+        {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EditPassword(EditPassword model)
+        {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+
+            var userId = authorization.GetId();
+            var user = appData.User.FirstOrDefault(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!Hash(model.CurrentPassword).Equals(user.Password))
+            {
+                ViewBag.CurrentPasswordMessage = "Incorrect current password.";
+                return View();
+            }
+
+            if (!IsPasswordValid(model.NewPassword))
+            {
+                ViewBag.PasswordMessage = "Password must be 8 characters long, contain at least one uppercase letter, one lowercase letter, and one digit.";
+                return View();
+            }
+           
+            user.Password = Hash(model.NewPassword);
+            appData.SaveChanges();
+
+            return RedirectToAction("EditProfile", new { Id = userId });
+        }
+
+
     }
 }
