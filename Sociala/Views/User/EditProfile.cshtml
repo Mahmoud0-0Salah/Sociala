@@ -78,7 +78,13 @@
         <label asp-for="UrlPhoto" class="control-label" style="color:white;"></label>
         <input asp-for="UrlPhoto" type="file" accept=".jpg, .jpeg, .png" class="form-control" autocomplete="UrlPhoto" aria-required="true" placeholder="UrlPhoto" style="margin-bottom:20px" value="@Model.UrlPhoto" />
     </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a asp-controller="User" asp-action="EditPassword" class=" translate-middle-y bg-primary p-2 rounded-3 text-white font-size-sm text-uppercase fw-bold">Edit Password</a>
+
+                            <br />
+                            <br />
+
+                            <button type="submit" class="btn btn-primary" style="margin-left:33%">Save Changes</button>
+
                 </div>
             </div>
         </div>
