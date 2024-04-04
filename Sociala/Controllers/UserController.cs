@@ -82,7 +82,14 @@ namespace Sociala.Controllers
         }
         public IActionResult EditProfile()
         {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+        
             string userId = authorization.GetId();
+
+            if (authorization.IsAdmin(userId))
+                return RedirectToAction("Index", "home");
+                
             var user = appData.User.FirstOrDefault(u => u.Id == userId);
 
             if (user == null)
@@ -218,6 +225,12 @@ namespace Sociala.Controllers
      
         public IActionResult Friends( string Id)
         {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+
+            if (authorization.IsAdmin(Id))
+                return RedirectToAction("Index", "home");
+
             var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p=>Id.Equals(p.RequestedUserId)? p.RequestingUserId :p.RequestedUserId).ToList();
             var FinalResult=appData.User.Where(u => Result.Contains(u.Id)).ToList();
             ViewBag.Friends = FinalResult;
@@ -240,6 +253,12 @@ namespace Sociala.Controllers
         }
         public IActionResult Photos(string Id)
         {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+
+            if (authorization.IsAdmin(Id))
+                return RedirectToAction("Index", "home");
+
             var ResultOfPosts = appData.Post.Where(p => p.UserId==Id&&!p.IsHidden).ToList();
             ViewBag.Photos = ResultOfPosts;
             return View();
