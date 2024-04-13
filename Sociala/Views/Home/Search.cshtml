@@ -1,4 +1,5 @@
 ﻿@inject Sociala.Services.ICheckRelationShip CheckRelationShip
+@inject AuthorizationService.IAuthorization Authorization
 @{
     ViewBag.Title = "Search";
 }
@@ -17,7 +18,7 @@
                         @foreach (var user in ViewBag.Search)
                         {
 
-                        @if (CheckRelationShip.IsMe(user.Id))
+                        @if (CheckRelationShip.IsMe(user.Id) || Authorization.IsAdmin(Authorization.GetId()))
                         {
                             <div class="col-md-3 col-sm-4 pe-2 ps-2">
                                 <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">

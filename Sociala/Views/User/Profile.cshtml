@@ -1,5 +1,6 @@
 ﻿@model Sociala.Models.User
 @inject Sociala.Services.ICheckRelationShip CheckRelationShip
+@inject AuthorizationService.IAuthorization Authorization
 @using Sociala.ViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -82,27 +83,30 @@
                                     <figure class="avatar position-absolute w100 z-index-1" style="top:-40px; left: 30px;"><img src="@Model.UrlPhoto" alt="image" class="float-right p-1 bg-white rounded-circle w-100"height="100px"></figure>
                                     <h4 class="fw-700 font-sm mt-2 mb-lg-5 mb-4 pl-15">@Model.UesrName <span class="fw-500 font-xssss text-grey-500 mt-1 mb-3 d-block mt-1">@Model.Email</span></h4>
                                     <div class="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2">
-                                    @if (Model.Id == ViewBag.Id)
+                                    @if (Authorization.IsUser(ViewBag.Id))
                                     {
-                                        <a asp-controller="User" asp-action="EditProfile" class="d-none d-lg-block bg-primary  p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3 ">Edit Profile</a>
-                                    }
-                                    else{
+                                        @if (Model.Id == ViewBag.Id)
+                                        {
+                                            <a asp-controller="User" asp-action="EditProfile" class="d-none d-lg-block bg-primary  p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3 ">Edit Profile</a>
+                                        }
+                                        else
+                                        {
                                             @if (CheckRelationShip.IsRequested(Model.Id))
                                             {
                                                 <div class="col-md-3 col-sm-4 pe-2 ps-2">
-                                                            <a asp-controller="User" asp-action="Derequest" asp-route-Id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Derequest</a>
+                                                    <a asp-controller="User" asp-action="Derequest" asp-route-Id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Derequest</a>
                                                 </div>
 
 
                                             }
-                                        else if (CheckRelationShip.IsRequesting(Model.Id))
-                                        {
-                                            <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
-                                                <a asp-controller="User" asp-action="ConfirmRequest" asp-route-id="@Model.Id" asp-route-Place="Index" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
-                                                <a asp-controller="User" asp-action="DeleteRequest" asp-route-id="@Model.Id" asp-route-Place="Index" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
-                                            </div>
-                                        }
-                                            else if(CheckRelationShip.IsFriend(Model.Id))
+                                            else if (CheckRelationShip.IsRequesting(Model.Id))
+                                            {
+                                                <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
+                                                    <a asp-controller="User" asp-action="ConfirmRequest" asp-route-id="@Model.Id" asp-route-Place="Index" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
+                                                    <a asp-controller="User" asp-action="DeleteRequest" asp-route-id="@Model.Id" asp-route-Place="Index" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
+                                                </div>
+                                            }
+                                            else if (CheckRelationShip.IsFriend(Model.Id))
                                             {
                                                 <div class="col-md-3 col-sm-4 pe-2 ps-2">
                                                     <a style="color: blue" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-primary font-xsssss fw-700 ls-lg text-white">Friend</a>
@@ -116,7 +120,8 @@
                                             }
                                         }
 
-                                        <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu4">
+                                    }
+                                    <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu4">
 
                                             <div class="card-body p-0 d-flex">
                                                 <i class="feather-bookmark text-grey-500 me-3 font-lg"></i>
@@ -161,29 +166,31 @@
                                     </div>
                                 </div>
                             </div>
-
-                        <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
-                            <div class="card-body p-0">
-                                <a href="#" class="font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center">
-                                    <i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Post
-                                </a>
+                         @if (Authorization.IsUser(ViewBag.Id))
+                        {
+                            <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
+                                <div class="card-body p-0">
+                                    <a href="#" class="font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center">
+                                        <i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Create Post
+                                    </a>
+                                </div>
+                                @TempData["PhotoMessage"]
+                                <form asp-controller="Home" asp-action="CreatePost" method="post" enctype="multipart/form-data">
+                                    <div class="card-body p-0 mt-3 position-relative">
+                                        <input type="text" name="content" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" placeholder="What's on your mind?">
+                                    </div>
+                                    <div class="card-body d-flex p-0 mt-0">
+                                        <label for="fileInput" class="upload-btn d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4">
+                                            <i class="font-md text-success feather-image me-2"></i><span class="d-none-xs">Photo/Video</span>
+                                        </label>
+                                        <input type="file" id="fileInput" name="imageInput" accept="image/*" class="d-none" >
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i> </button>
+                                    </div>
+                                </form>
                             </div>
-                            @TempData["PhotoMessage"]
-                            <form asp-controller="Home" asp-action="CreatePost" method="post" enctype="multipart/form-data">
-                                <div class="card-body p-0 mt-3 position-relative">
-                                    <input type="text" name="content" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" placeholder="What's on your mind?">
-                                </div>
-                                <div class="card-body d-flex p-0 mt-0">
-                                    <label for="fileInput" class="upload-btn d-flex align-items-center font-xssss fw-600 ls-1 text-grey-700 text-dark pe-4">
-                                        <i class="font-md text-success feather-image me-2"></i><span class="d-none-xs">Photo/Video</span>
-                                    </label>
-                                    <input type="file" id="fileInput" name="imageInput" accept="image/*" class="d-none" >
-                                </div>
-                                <div class="text-center mt-3">
-                                    <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i> </button>
-                                </div>
-                            </form>
-                        </div>
+                        }
 
 
 
@@ -219,19 +226,22 @@
                                         </div>
                                     }
                                     <div class="card-body d-flex p-0">
-                                        @if (!post.Isliked)
+                                        @if (Authorization.IsUser(ViewBag.Id))
                                         {
-                                            <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
-                                                <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
-                                            </a>
+                                            @if (!post.Isliked)
+                                            {
+                                                <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" >
+                                                    <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" >
+                                                    <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
+                                                </a>
+                                            }
+                                            <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
                                         }
-                                        else
-                                        {
-                                            <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" style="background-color:white;">
-                                                <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-                                            </a>
-                                        }
-                                        <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
                                     </div>
                                 </div>
                             </div>
