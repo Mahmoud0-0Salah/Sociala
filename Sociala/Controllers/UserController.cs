@@ -232,10 +232,9 @@ namespace Sociala.Controllers
                 return RedirectToAction("Index", "home");
 
             var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p=>Id.Equals(p.RequestedUserId)? p.RequestingUserId :p.RequestedUserId).ToList();
-            var FinalResult=appData.User.Where(u => Result.Contains(u.Id)).ToList();
+            var FinalResult=appData.User.Where(u => Result.Contains(u.Id)&&!u.IsBanned).ToList();
             ViewBag.Friends = FinalResult;
             TempData["IdToSearch"] = Id;////// this Id pass to search to make query easy
-
 
             return View();
 

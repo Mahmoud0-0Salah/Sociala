@@ -32,8 +32,6 @@
 
                         @foreach (User user in (List<User>) ViewBag.Friends)
                         {
-                        @if (!Authorization.IsBanned(user.Id))
-                        {
                             @if (CheckRelationShip.IsMe(user.Id))
                             {
                                 <div class="col-md-3 col-sm-4 pe-2 ps-2">
@@ -140,7 +138,6 @@
                                 }
                             }
 
-                        }
                         }
 
 
