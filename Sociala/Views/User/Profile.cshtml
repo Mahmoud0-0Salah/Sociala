@@ -166,7 +166,7 @@
                                     </div>
                                 </div>
                             </div>
-                         @if (Authorization.IsUser(ViewBag.Id))
+                        @if (Authorization.IsUser(ViewBag.Id) && Model.Id == ViewBag.Id)
                         {
                             <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
                                 <div class="card-body p-0">

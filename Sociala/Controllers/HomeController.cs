@@ -66,39 +66,15 @@ namespace Sociala.Controllers
 
                                 }
                                 )).Where(p => !p.IsHidden&&!p.IsBanned).OrderByDescending(p => p.CreateAt);
-            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
-            ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id));
+            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id) ).Select(r => r.RequestingUserId);
+            ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id) && !u.IsBanned);
 
-            return View();
-        }
-        [HttpGet]
-        public IActionResult Search()
-        {
-            string Name = Convert.ToString(TempData["Name"]);
-            ViewBag.Search = (_data.User.Join(_data.Role,
-                                User => User.RoleId,
-                                Role => Role.Id,
-
-                                (User, Role) => new
-                                {
-                                    Role = Role.Name,
-                                    Id = User.Id,
-                                    UesrName = User.UesrName,
-                                    Email = User.Email,
-                                    PhoneNumber = User.PhoneNumber,
-                                    bio = User.bio,
-                                    IsActive = User.IsActive,
-                                    UrlPhoto = User.UrlPhoto,
-                                    status =User.IsBanned
-
-                                })).Where((result => result.Role != "Admin" && !result.status && result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
 
         [HttpPost]
         public IActionResult Search(string Name)
         {
-            if (Name.Length == 0) Name = Convert.ToString(TempData["Name"]);
             ViewBag.Search = (_data.User.Join(_data.Role,
                                 User => User.RoleId,
                                 Role => Role.Id,
