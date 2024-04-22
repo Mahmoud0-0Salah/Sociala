@@ -29,12 +29,20 @@ namespace Sociala.Controllers
 
         public IActionResult Index()
         {
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
-            string id = authorization.GetId();
-            if (authorization.IsAdmin(id))
+            string id;
+            try
             {
-                return RedirectToAction("Index", "Admin");
+                if (!authorization.IsLoggedIn())
+                    return RedirectToAction("LogIn", "User");
+                id = authorization.GetId();
+                if (authorization.IsAdmin(id))
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+            }
+            catch
+            {
+                return Redirect("/User/LogOut");
             }
 
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f => id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
@@ -72,7 +80,6 @@ namespace Sociala.Controllers
             return View();
         }
 
-        [HttpPost]
         public IActionResult Search(string Name)
         {
             ViewBag.Search = (_data.User.Join(_data.Role,

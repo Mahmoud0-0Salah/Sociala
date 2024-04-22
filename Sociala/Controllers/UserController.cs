@@ -355,7 +355,6 @@ namespace Sociala.Controllers
 
         /**************************************************************************************/
 
-        [HttpPost]
         public IActionResult LogOut()
         {
             CookieOptions cookie = new CookieOptions();
@@ -421,7 +420,7 @@ namespace Sociala.Controllers
             user.Password = Hash(user.Password);
             user.IsActive = false;
             user.CreateAt= DateTime.Now;
-            user.RoleId = 0;
+            user.RoleId = 1;
             Random random = new Random();
             for (int i = 0; i < 6; i++)
             {
