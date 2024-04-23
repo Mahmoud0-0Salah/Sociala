@@ -227,15 +227,14 @@ namespace Sociala.Controllers
         {
             if (!authorization.IsLoggedIn())
                 return RedirectToAction("LogIn", "User");
-
-            if (authorization.IsAdmin(Id))
-                return RedirectToAction("Index", "home");
-
+            
+            string id= authorization.GetId();
+            ViewBag.IsAdmin= authorization.IsAdmin(id);
             var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p=>Id.Equals(p.RequestedUserId)? p.RequestingUserId :p.RequestedUserId).ToList();
             var FinalResult=appData.User.Where(u => Result.Contains(u.Id)&&!u.IsBanned).ToList();
             ViewBag.Friends = FinalResult;
             TempData["IdToSearch"] = Id;////// this Id pass to search to make query easy
-
+            
             return View();
 
         }
