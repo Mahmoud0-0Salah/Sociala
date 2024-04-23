@@ -11,9 +11,10 @@ namespace Sociala.Models
         public DateTime CreatedAt { get; set; }
         public bool Seen { get; set; }
         [StringLength(450)]
+
+        [ForeignKey("User")]
         public string  UserId { get; set; }
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        virtual public User User { get; set; }
 
     }
 }

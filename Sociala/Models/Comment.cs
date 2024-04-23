@@ -5,18 +5,21 @@ namespace Sociala.Models
 {
     public class Comment
     {
+        [Key]
+        public int Id { get; set; }
 
         [Required]
         public string Content { get; set; }
       public DateTime CreatedAt { get; set; }
         [StringLength(450)]
-        public string  UserId { get; set; }
-        [ForeignKey("UserId")]
-        public User User { get; set; }
         
+        [ForeignKey("User")]
+        public string  UserId { get; set; }
+        
+        [ForeignKey("Post")]
         public int PostId { get; set; }
-        [ForeignKey("PostId")]
-        public Post Post { get; set; }
+        virtual public Post Post { get; set; }
+        virtual public User User { get; set; }
 
     }
 }

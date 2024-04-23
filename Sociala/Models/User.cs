@@ -23,11 +23,11 @@ namespace Sociala.Models
             public bool IsBanned { get; set; }
         public string ActiveKey { get; set; }
             
-            [ForeignKey("Role")]
+            [ForeignKey("Roles")]
             public int RoleId { get; set; }
         public int NumberOfApprovedReports { get; set; } = 0;
-        public Role Roles { get; set; }
         public  DateTime CreateAt { get; set; }
+        virtual public Role Roles { get; set; }
 
     }
 }

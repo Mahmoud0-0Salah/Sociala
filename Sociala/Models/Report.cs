@@ -15,9 +15,10 @@ namespace Sociala.Models
         public int PostId { get; set; }
         [ForeignKey("PostId")]
         public Post Post { get; set; }
+
         [StringLength(450)]
+        [ForeignKey("User")]
         public string  UserId { get; set; }
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        virtual public User User { get; set; }
     }
 }

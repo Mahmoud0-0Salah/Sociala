@@ -10,9 +10,9 @@ namespace Sociala.Models
         public int Id { get; set; }
         [StringLength(450)]
         public string RequestingUserId { get; set; }
-        public User User { get; set; }
 
         [StringLength(450)]
         public string RequestedUserId { get; set; }
+        virtual public User User { get; set; }
     }
 }

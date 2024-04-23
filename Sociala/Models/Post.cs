@@ -13,9 +13,10 @@ namespace Sociala.Models
         [StringLength(450)]
 
         public bool IsHidden { get; set; } = false;
+       
+        [ForeignKey("User")]
         public string  UserId {  get; set; }
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        virtual public User User { get; set; }
 
 
     }

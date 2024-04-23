@@ -33,8 +33,6 @@ namespace Sociala.Data
                   .HasForeignKey(s => s.UserId)
                   .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Comment>()
-             .HasKey(r => new { r.UserId,r.PostId});
 
             modelBuilder.Entity<Comment>()
                 .HasOne(s => s.User)
