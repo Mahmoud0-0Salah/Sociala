@@ -16,9 +16,30 @@ namespace Sociala.Controllers
             this.authorization = authorization;
         }
 
+        public IActionResult DeletePost(int Id)
+        {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string userId = authorization.GetId();
+            if (authorization.IsAdmin(userId))
+                return RedirectToAction("index", "Home");
 
+            var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
+            Post.IsHidden = true;
+            _data.SaveChanges();
+            return Redirect("/user/profile");
+        }
         public IActionResult SharePost( int Id)
         {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string userId = authorization.GetId();
+            if (authorization.IsAdmin(userId))
+                return RedirectToAction("index", "Home");
             Post Result = _data.Post.Where(p => p.Id == Id).SingleOrDefault();
             Post post= new Post();
             post.UserId = authorization.GetId();
@@ -34,8 +55,14 @@ namespace Sociala.Controllers
 
         public IActionResult Like(int Id,string Place)
         {
-
-             Like like=new Like();
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string userId = authorization.GetId();
+            if (authorization.IsAdmin(userId))
+                return RedirectToAction("index", "Home");
+            Like like=new Like();
             like.UserId = authorization.GetId();
             like.PostId = Id;
             _data.Like.Add(like);
@@ -49,6 +76,13 @@ namespace Sociala.Controllers
         public IActionResult DeleteLike(int Id, string Place)
         {
 
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string userId = authorization.GetId();
+            if (authorization.IsAdmin(userId))
+                return RedirectToAction("index", "Home");
 
             var target= _data.Like.Where(l => l.PostId == Id && l.UserId == authorization.GetId()).SingleOrDefault();
             _data.Like.Remove(target);
