@@ -7,7 +7,7 @@
                 <div class="nav-caption fw-600 font-xssss text-grey-500"><span>Dashboard </span></div>
                 <ul class="mb-3">
                     <li><a href="/admin" class="nav-content-bttn open-font"><i class="font-xl text-current feather-inbox me-3"></i><span>Reports</span><span class="circle-count bg-warning mt-1">@ViewBag.ReportNum</span></a></li>
-                    <li><a href="/admin/ReportedUsersInfo" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Reported users </span><<span class="circle-count bg-warning mt-1">@Model.Count()</span/a></li>
+                    <li><a href="/admin/ReportedUsersInfo" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Reported users </span><<span class="circle-count bg-warning mt-1">@Model.Count()</span></a></li>
                     <!-- <li><a href="default-hotel.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-home me-3"></i><span>Near Hotel</span></a></li>
                     <li><a href="default-event.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-map-pin me-3"></i><span>Latest Event</span></a></li>
                     <li><a href="default-live-stream.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-youtube me-3"></i><span>Live Stream</span></a></li>                         -->
@@ -38,12 +38,15 @@
                                 <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
                                     <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(images/bb-16.png);"></div>
                                     <div class="card-body d-block w-100 pl-10 pe-4 pb-4 pt-0 text-left position-relative">
-                                        <figure class="avatar position-absolute w75 z-index-1" style="top:-40px; left: 15px;"><img src="@user.UrlPhoto" alt="image" class="float-right p-1 bg-white rounded-circle w-100"></figure>
-                                        <div class="clearfix"></div>
-                                        <h4 class="fw-700 font-xsss mt-3 mb-1">@user.UesrName</h4>
+                                       <a href="/user/profile/@user.Id" style="display:inline">
+
+                                         <figure class="avatar position-absolute w75 z-index-1" style="top:-40px; left: 15px;"><img src="@user.UrlPhoto" alt="image" class="float-right p-1 bg-white rounded-circle w-100"></figure>
+                                         <div class="clearfix"></div>
+                                         <h4 class="fw-700 font-xsss mt-3 mb-1">@user.UesrName</h4>
+                                       </a>
                                         <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">@user.Email</p>
                                         <span class="position-absolute right-15 top-0 d-flex align-items-center">
-                                            <a href="#" class="d-lg-block d-none">  @user.NumberOfApprovedReports </a>
+                                            <a href="#" class="d-lg-block d-none" style="position: relative; bottom: -40px;">Number of approved reports :  @user.NumberOfApprovedReports </a>
                                             <a href="/admin/Ban/@user.Id" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white">Ban</a>
                                         </span>
                                     </div>
