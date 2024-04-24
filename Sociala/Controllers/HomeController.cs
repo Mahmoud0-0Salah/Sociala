@@ -82,6 +82,10 @@ namespace Sociala.Controllers
 
         public IActionResult Search(string Name)
         {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
             TempData["Name"] = Name;
             ViewBag.Search = (_data.User.Join(_data.Role,
                                 User => User.RoleId,
