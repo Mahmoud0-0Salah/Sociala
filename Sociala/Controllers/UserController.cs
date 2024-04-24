@@ -158,12 +158,22 @@ namespace Sociala.Controllers
             string userId = authorization.GetId();
             if (authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
+            try
+            {
+                var requestingUserId = authorization.GetId();
+                if (appData.Request.Where(r => (r.RequestingUserId.Equals(requestingUserId) && r.RequestedUserId.Equals(Id))|| (r.RequestedUserId.Equals(requestingUserId) && r.RequestingUserId.Equals(Id))).Count()>0)
+                    return View("ErrorPage");
+                var request = new Request();
+                request.RequestingUserId = requestingUserId;
+                request.RequestedUserId = Id;
+                appData.Request.Add(request);
+                appData.SaveChanges();
 
-            var request = new Request();
-            request.RequestingUserId = authorization.GetId();
-            request.RequestedUserId = Id;
-            appData.Request.Add(request);
-            appData.SaveChanges();
+            }
+            catch
+            {
+                return View("ErrorPage");
+            }
             if (Place == "Search") { 
 
                 return Redirect($"/Home/Search/?name={TempData["Name"]}");
@@ -189,10 +199,17 @@ namespace Sociala.Controllers
             if (authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
 
-            var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
-            var FinalResult = appData.Request.Find(DeleteResult.First());
-            appData.Request.Remove(FinalResult);
-            appData.SaveChanges();
+            try
+            {
+                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+                var FinalResult = appData.Request.Find(DeleteResult.First());
+                appData.Request.Remove(FinalResult);
+                appData.SaveChanges();
+            }
+            catch
+            {
+                return View("ErrorPage");
+            }
             if (Place == "Index")
                 return Redirect("/Home/Index");
             if (Place == "Search")
@@ -225,15 +242,21 @@ namespace Sociala.Controllers
             string userId = authorization.GetId();
             if (authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
-
-            Friend friend = new Friend();
-            friend.RequestedUserId = authorization.GetId();
-            friend.RequestingUserId = Id;
-            appData.Friend.Add(friend);
-            var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
-            var FinalResult = appData.Request.Find(DeleteResult.First());
-            appData.Request.Remove(FinalResult);
-            appData.SaveChanges();
+            try
+            {
+                Friend friend = new Friend();
+                friend.RequestedUserId = authorization.GetId();
+                friend.RequestingUserId = Id;
+                appData.Friend.Add(friend);
+                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
+                var FinalResult = appData.Request.Find(DeleteResult.First());
+                appData.Request.Remove(FinalResult);
+                appData.SaveChanges();
+            }
+            catch
+            {
+                return View("ErrorPage");
+            }
             if (Place == "Index")
                 return Redirect("/Home/Index");
             if (Place == "Search")
@@ -265,13 +288,19 @@ namespace Sociala.Controllers
             string userId = authorization.GetId();
             if (authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
-
-            var DeleteResult = appData.Request.Where(p => p.RequestedUserId ==Id  && p.RequestingUserId == authorization.GetId()).Select(f => f.Id);
-            var FinalResult = appData.Request.Find(DeleteResult.First());
-            appData.Request.Remove(FinalResult);
-            appData.SaveChanges();
-            if (place=="Profile")
-                return Redirect($"/User/Profile/{Id}");
+            try
+            {
+                var DeleteResult = appData.Request.Where(p => p.RequestedUserId ==Id  && p.RequestingUserId == authorization.GetId()).Select(f => f.Id);
+                var FinalResult = appData.Request.Find(DeleteResult.First());
+                appData.Request.Remove(FinalResult);
+                appData.SaveChanges();
+                if (place=="Profile")
+                    return Redirect($"/User/Profile/{Id}");
+            }
+            catch
+            {
+                return View("ErrorPage");
+            }
             if (place == "Search")
             {
 
