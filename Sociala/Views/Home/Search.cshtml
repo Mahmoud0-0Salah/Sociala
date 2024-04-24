@@ -52,7 +52,7 @@
                                             <div class="clearfix"></div>
                                             <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id">@user.UesrName</a>
                                             <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3"></p>
-                                            <a asp-controller="User" asp-action="Derequest" asp-route-Id="@user.Id" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Derequest</a>
+                                            <a asp-controller="User" asp-action="Derequest" asp-route-Place="Search"  asp-route-Id="@user.Id" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Derequest</a>
                                         </div>
                                     </div>
                                 </div>
@@ -95,8 +95,8 @@
                                             <a asp-controller="User" asp-action="Profile" asp-route-Id="@user.Id">@user.UesrName</a>
                                             <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3"></p>
                                             <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
-                                                <a asp-controller="User" asp-action="ConfirmRequest" asp-route-id="@user.Id" asp-route-Place="Index" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
-                                                <a asp-controller="User" asp-action="DeleteRequest" asp-route-id="@user.Id" asp-route-Place="Index" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
+                                                <a asp-controller="User" asp-action="ConfirmRequest" asp-route-id="@user.Id" asp-route-Place="Search" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
+                                                <a asp-controller="User" asp-action="DeleteRequest" asp-route-id="@user.Id" asp-route-Place="Search" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
                                             </div>
                                         </div>
                                     </div>
