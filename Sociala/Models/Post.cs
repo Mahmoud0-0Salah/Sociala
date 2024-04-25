@@ -10,8 +10,7 @@ namespace Sociala.Models
         public string? content { get; set; }
         public string? Imj { get; set; }
         public DateTime CreateAt { get; set; }
-        [StringLength(450)]
-
+  
         public bool IsHidden { get; set; } = false;
        
         [ForeignKey("User")]

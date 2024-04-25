@@ -1,7 +1,6 @@
 ﻿@model Sociala.Models.User
 @inject Sociala.Services.ICheckRelationShip CheckRelationShip
 @inject AuthorizationService.IAuthorization Authorization
-
 @using Sociala.ViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -109,13 +108,10 @@
                                             }
                                             else if (CheckRelationShip.IsFriend(Model.Id))
                                             {
-                                                if (Authorization.IsLoggedIn() && !Authorization.IsAdmin(Authorization.GetId()))
-                                                {
-                                                    <div class="col-md-3 col-sm-4 pe-2 ps-2">
-                                                        <a asp-controller="User" asp-action="UnFriend" asp-route-Id="@Model.Id" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: gray;"> UnFriend</a>
+                                                <div class="col-md-3 col-sm-4 pe-2 ps-2">
+                                                    <a style="color: blue" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-primary font-xsssss fw-700 ls-lg text-white">Friend</a>
+                                                </div>
 
-                                                    </div>
-                                                }
 
                                             }
                                             else
@@ -205,6 +201,10 @@
                                     <div class="card-body p-0 d-flex">
                                         <figure class="avatar me-3"><img src="@post.UserPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
                                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">@post.UserName </h4>
+                                        <br />
+                                        <h4 class="fw-500 text-grey-400 font-xssss mt-1">@post.CreateAt </h4>
+
+
                                         @if (Model.Id == ViewBag.Id)
                                         {
                                             <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
@@ -219,7 +219,12 @@
                                                         <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Post </h4>
                                                     </a>
                                                 </div>
-
+                                                <div class="card-body p-0 d-flex mt-2">
+                                                    <a asp-controller="Posts" asp-action="EditPost" asp-route-id="@post.Id">
+                                                        <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                        <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Edit Post </h4>
+                                                    </a>
+                                                </div>
                                             </div>
                                         }
                                     </div>
