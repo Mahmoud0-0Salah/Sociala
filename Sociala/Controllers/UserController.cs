@@ -358,7 +358,7 @@ namespace Sociala.Controllers
         [HttpPost]
         public IActionResult Search( string Name )
         {
-            string  Id = Convert.ToString( TempData["IdToSearch"]);
+            string  Id = Convert.ToString( TempData["IdToSearch"]);////come from frinds
             var Result = appData.Friend.Where(p => p.RequestedUserId == Id || p.RequestingUserId == Id).Select(p => Id.Equals(p.RequestedUserId) ? p.RequestingUserId : p.RequestedUserId).ToList();
             var ResultOfSearch = appData.User.Where(u => Result.Contains(u.Id) && u.UesrName.Contains(Name)).ToList();
             ViewBag.Search = ResultOfSearch;

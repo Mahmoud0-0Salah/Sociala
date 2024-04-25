@@ -18,6 +18,7 @@ namespace Sociala.Data
         public DbSet<Notification> Notification { get; set; }
         public DbSet<Report> Report { get; set; }
         public DbSet<Request> Request { get; set; }
+        public DbSet<Block> Block { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -67,7 +68,12 @@ namespace Sociala.Data
                 .HasForeignKey(s => s.RequestingUserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-         
+
+            modelBuilder.Entity<Block>()
+                .HasOne(s => s.User)
+                .WithMany()
+                .HasForeignKey(s => s.Blocking)
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Notification>()
               .HasOne(s => s.User)
