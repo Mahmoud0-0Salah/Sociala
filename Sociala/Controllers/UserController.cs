@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Sociala.Migrations;
+using System.Linq;
 
 namespace Sociala.Controllers
 {
@@ -341,9 +342,22 @@ namespace Sociala.Controllers
             return View();
 
         }
-        
-        
-            [HttpPost]
+        public IActionResult UnFriend(string Id)
+        {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+
+            var Result = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
+            var FinalResult = appData.Friend.Find(Result.First());
+            appData.Friend.Remove(FinalResult);
+            TempData["IdToProfile"]= Id;
+            appData.SaveChanges();
+             return Redirect($"/User/Profile/?Id={TempData["IdToProfile"]}");
+        }
+
+
+
+        [HttpPost]
         public IActionResult Search( string Name )
         {
             string  Id = Convert.ToString( TempData["IdToSearch"]);

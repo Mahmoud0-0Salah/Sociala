@@ -1,6 +1,7 @@
 ﻿@model Sociala.Models.User
 @inject Sociala.Services.ICheckRelationShip CheckRelationShip
 @inject AuthorizationService.IAuthorization Authorization
+
 @using Sociala.ViewModel;
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -108,10 +109,12 @@
                                             }
                                             else if (CheckRelationShip.IsFriend(Model.Id))
                                             {
-                                                <div class="col-md-3 col-sm-4 pe-2 ps-2">
-                                                    <a style="color: blue" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-primary font-xsssss fw-700 ls-lg text-white">Friend</a>
-                                                </div>
-
+                                                if (Authorization.IsLoggedIn() && !Authorization.IsAdmin(Authorization.GetId()))
+                                                {
+                                                    <div class="col-md-3 col-sm-4 pe-2 ps-2">
+                                                        <a asp-controller="User" asp-action="UnFriend" asp-route-Id="@Model.Id"  style="color: gray" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl bg-primary font-xsssss fw-700 ls-lg text-white"> UnFriend</a>
+                                                    </div>
+                                                }
 
                                             }
                                             else
