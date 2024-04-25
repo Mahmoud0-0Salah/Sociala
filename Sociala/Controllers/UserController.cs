@@ -344,9 +344,7 @@ namespace Sociala.Controllers
         }
         public IActionResult UnFriend(string Id)
         {
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
-
+            
             var Result = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
             var FinalResult = appData.Friend.Find(Result.First());
             appData.Friend.Remove(FinalResult);
