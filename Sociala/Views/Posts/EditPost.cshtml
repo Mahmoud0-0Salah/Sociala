@@ -11,23 +11,13 @@
                         <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
                             <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">Post Details</h4>
                         </div>
-                        @if (!string.IsNullOrEmpty(Model.content))
-                        {
-                            <div class="form-group" style="padding:3%;">
-                                <label asp-for="content" class="form-label" for="form3Example3c">Content</label>
-                                <input asp-for="content" type="text" id="form3Example3c" class="form-control" placeholder="Content" value="@Model.content" />
-                            </div>
-                        }
-                        @if (!string.IsNullOrEmpty(Model.Imj))
+                        <div class="form-group" style="padding:3%;">
+                            <label asp-for="content" class="form-label" for="form3Example3c">Content</label>
+                            <input asp-for="content" type="text" id="form3Example3c" class="form-control" placeholder="Content" value="@Model.content" />
+                        </div>
+                        @if (string.IsNullOrEmpty(Model.Imj))
                         {
                             <div class="card-body p-lg-5 p-4 w-100 border-0">
-                                <div class="row justify-content-center">
-                                    <div class="col-lg-10 text-center">
-                                        <figure class="avatar ms-auto me-auto mb-0 w400">
-                                            <img src="@Model.Imj" alt="image" class="shadow-sm rounded-3 w-100">
-                                        </figure>
-                                    </div>
-                                </div>
 
                                 <div class="col-lg-12 mb-3">
                                     @if (!string.IsNullOrEmpty(ViewBag.PhotoMessage))
@@ -37,7 +27,7 @@
                                     <div class="card mt-3 border-0">
                                         <div class="card-body d-flex justify-content-between align-items-end p-0">
                                             <div class="form-group mb-0 w-100">
-                                                <input asp-for="Imj" type="file" accept=".jpg, .jpeg, .png" name="file" id="file" class="input-file" autocomplete="Img" aria-required="true" placeholder="Img" value="@Model.Imj">
+                                                <input asp-for="Imj" type="file" accept=".jpg, .jpeg, .png, mp4" name="file" id="file" class="input-file" autocomplete="Img" aria-required="true" placeholder="Img" value="@Model.Imj">
                                                 <label asp-for="Imj" class="rounded-3 text-center bg-white btn-tertiary js-labelFile p-4 w-100 border-dashed">
                                                     <i class="ti-cloud-down large-icon me-3 d-block"></i>
                                                     <span class="js-fileName">Drag and drop or click to replace Photo</span>
@@ -46,20 +36,94 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="form-group" style="display:none;">
+                                    @if (!string.IsNullOrEmpty(ViewBag.PhotoMessage))
+                                    {
+                                        <p style="color: red">@ViewBag.PhotoMessage</p>
+                                    }
+
+                                    <label asp-for="Imj" class="control-label" style="color:white;"></label>
+                                    <input asp-for="Imj" type="file" accept=".jpg, .jpeg, .png, mp4" class="form-control" autocomplete="Img" aria-required="true" placeholder="Img" style="margin-bottom:20px" value="@Model.Imj" />
+                                </div>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Imj))
+                        {
+                            <div class="card-body p-lg-5 p-4 w-100 border-0">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-10 text-center">
+                                        @if (!string.IsNullOrEmpty(Model.Imj) && Model.Imj.EndsWith(".mp4", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            <video controls class="shadow-sm rounded-3 w-100">
+                                                <source src="@Model.Imj" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        }
+                                        else if (!string.IsNullOrEmpty(Model.Imj))
+                                        {
+                                            <figure class="avatar ms-auto me-auto mb-0 w400">
+                                                <img src="@Model.Imj" alt="image" class="shadow-sm rounded-3 w-100">
+                                            </figure>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="deleteImage" name="deleteImage" value="true">
+                                <label for="deleteImage">Delete The Image Or The Video</label>
                             </div>
 
+
+                            <div class="col-lg-10 mb-3  justify-content-center">
+                                @if (!string.IsNullOrEmpty(ViewBag.PhotoMessage))
+                                {
+                                    <p style="color: red">@ViewBag.PhotoMessage</p>
+                                }
+                                <div class="card mt-3 border-0 " style="margin-left:17%">
+                                    <div class="card-body d-flex justify-content-between align-items-end p-0">
+                                        <div class="form-group mb-0 w-100">
+                                            <input asp-for="Imj" type="file" accept=".jpg, .jpeg, .png, .mp4" name="file" id="file" class="input-file" autocomplete="Img" aria-required="true" placeholder="Img" value="@Model.Imj">
+                                            <label asp-for="Imj" class="rounded-3 text-center bg-white btn-tertiary js-labelFile p-4 w-100 border-dashed">
+                                                <i class="ti-cloud-down large-icon me-3 d-block"></i>
+                                                <span class="js-fileName">Drag and drop or click to replace Photo Or Video</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="form-group" style="display:none;">
                                 @if (!string.IsNullOrEmpty(ViewBag.PhotoMessage))
                                 {
                                     <p style="color: red">@ViewBag.PhotoMessage</p>
                                 }
                                 <label asp-for="Imj" class="control-label" style="color:white;"></label>
-                                <input asp-for="Imj" type="file" accept=".jpg, .jpeg, .png" class="form-control" autocomplete="Img" aria-required="true" placeholder="Img" style="margin-bottom:20px" value="@Model.Imj" />
+                                <input asp-for="Imj" type="file" accept=".jpg, .jpeg, .png, mp4" class="form-control" autocomplete="Img" aria-required="true" placeholder="Img" style="margin-bottom:20px" value="@Model.Imj" />
                             </div>
-                        }<button type="submit" class="btn btn-primary" style="margin-left:20%; margin-right:20%; margin-bottom:20%;">Save Changes</button>
+                        }
+                        @if (string.IsNullOrEmpty(Model.Imj) && string.IsNullOrEmpty(Model.content))
+                        {
+
+                        }
+                        @TempData["PhotoMessage"]
+
+                        <button type="submit" class="btn btn-primary" style="margin-left:20%; margin-right:20%; margin-bottom:20%;">Save Changes</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
+<form asp-controller="Posts" asp-action="EditPost" id="EditForm" method="post" enctype="multipart/form-data">
+    <!-- محتوى النموذج هنا -->
+</form>
+
+<script>
+    window.onload = function () {
+        var message = "@TempData["PhotoMessage"]";
+        if (message) {
+            alert(message);
+        }
+    };
+</script>

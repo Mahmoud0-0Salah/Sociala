@@ -48,15 +48,14 @@ namespace Sociala.Controllers
             string userId = authorization.GetId();
             if (post.UserId != userId)
             {
-                return View ("ErrorPage");
+                return View("ErrorPage");
             }
 
             return View(post);
         }
         [HttpPost]
-        public IActionResult EditPost(Post updatedPost)
+        public IActionResult EditPost(Post updatedPost, bool deleteImage)
         {
-
             var post = _data.Post.FirstOrDefault(p => p.Id == updatedPost.Id);
 
             if (post == null)
@@ -67,35 +66,52 @@ namespace Sociala.Controllers
             string userId = authorization.GetId();
             if (post.UserId != userId)
             {
-                return Forbid();
+                return View("ErrorPage");
             }
 
             post.content = updatedPost.content;
-            var file = HttpContext.Request.Form.Files;
 
-            if (file.Count() > 0)
+            if (deleteImage)
             {
-                if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg")
-                    && !Path.GetExtension(file[0].FileName).Equals(".mp4"))
-                {
-                    ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG,JPEG or mp4";
-
-                    return View(post);
-                }
-                string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
-                var filePath = Path.Combine("wwwroot", "imj", imageName);
-
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    file[0].CopyTo(fileStream);
-                }
-
-                post.Imj = $"/imj/{imageName}";
-
+                post.Imj = null;
             }
             else
-                post.Imj = post.Imj;
+            {
+                var file = HttpContext.Request.Form.Files;
+
+                if (file.Count() > 0)
+                {
+                    if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg")
+                            && !Path.GetExtension(file[0].FileName).Equals(".mp4"))
+                    {
+                        ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG,JPEG, or MP4";
+
+                        return View(post);
+                    }
+                    string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
+                    var filePath = Path.Combine("wwwroot", "imj", imageName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file[0].CopyTo(fileStream);
+                    }
+
+                    post.Imj = $"/imj/{imageName}";
+                }
+                else if (file.Count() <= 0 && post.content == null)
+                {
+
+                    TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
+                    return RedirectToAction("EditPost");
+                }
+            }
+            if (post.Imj == null && post.content == null)
+            {
+                TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
+                return RedirectToAction("EditPost");
+            }
             _data.SaveChanges();
+
             return RedirectToAction("Profile", "User");
 
 
