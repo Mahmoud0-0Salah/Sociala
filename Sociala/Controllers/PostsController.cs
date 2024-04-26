@@ -98,12 +98,6 @@ namespace Sociala.Controllers
 
                     post.Imj = $"/imj/{imageName}";
                 }
-                else if (file.Count() <= 0 && post.content == null)
-                {
-
-                    TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
-                    return RedirectToAction("EditPost");
-                }
             }
             if (post.Imj == null && post.content == null)
             {
