@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Sociala.Migrations;
 using System.Linq;
+using Sociala.Services;
 
 namespace Sociala.Controllers
 {
@@ -26,14 +27,16 @@ namespace Sociala.Controllers
         private readonly IEncrypt encryptclass;
         private readonly IAuthorization authorization;
         private readonly IConfiguration configuration;
+        private readonly ICheckRelationShip CheckRelationShip;
 
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, IConfiguration configuration)
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, IConfiguration configuration, ICheckRelationShip CheckRelationShip)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
             this.configuration = configuration;
+            this.CheckRelationShip = CheckRelationShip;
         }
         public IActionResult Profile(string Id)
         {
@@ -344,14 +347,89 @@ namespace Sociala.Controllers
         }
         public IActionResult UnFriend(string Id)
         {
-            
-            var Result = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
-            var FinalResult = appData.Friend.Find(Result.First());
-            appData.Friend.Remove(FinalResult);
-            TempData["IdToProfile"]= Id;
-            appData.SaveChanges();
-             return Redirect($"/User/Profile/?Id={TempData["IdToProfile"]}");
+
+            try
+            {
+
+                var Result = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
+                var FinalResult = appData.Friend.Find(Result.First());
+                appData.Friend.Remove(FinalResult);
+                TempData["IdToProfile"] = Id;
+                appData.SaveChanges();
+                return Redirect($"/User/Profile/?Id={TempData["IdToProfile"]}");
+            }
+            catch
+            {
+
+                return View("ErrorPage");
+            }
         }
+
+        public IActionResult Block(string Id)
+        {
+            if (!authorization.IsLoggedIn())
+                return RedirectToAction("LogIn", "User");
+            if (authorization.IsAdmin(authorization.GetId()))
+                return RedirectToAction("index", "Home");
+
+
+
+            if (!CheckRelationShip.IsBlock(Id)) {
+                Block block = new Block();
+                block.Blocking = authorization.GetId();
+                block.Blocked = Id;
+                appData.Block.Add(block);
+                appData.SaveChanges();
+               
+                var ResultOfFriend = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
+                if (ResultOfFriend.Count() >= 1)
+                {
+                    var FinalResultOfFriend = appData.Friend.Find(ResultOfFriend.First());
+                    appData.Friend.Remove(FinalResultOfFriend);
+                    appData.SaveChanges();
+                }
+                else
+                {
+                    var ResultOfRequest = appData.Request.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
+
+                    if (ResultOfRequest.Count() >= 1)
+                    {
+                        var FinalResultOfRequest = appData.Request.Find(ResultOfRequest.First());
+                        appData.Request.Remove(FinalResultOfRequest);
+                        appData.SaveChanges();
+                    }
+                }
+
+                return Redirect("/Home/Index");
+            }
+            else 
+            {
+                return View("ErrorPage");
+
+            }
+
+            
+        }
+        public IActionResult Blocks(string Id)
+        {
+
+            var Result = appData.Block.Where(p => p.Blocking == authorization.GetId()).Select(p=>p.Blocked);
+            var FinalResult = appData.User.Where(u => Result.Contains(u.Id) && !u.IsBanned).ToList();
+            ViewBag.Blocks= FinalResult;
+            return View();
+
+        }
+        public IActionResult UnBlock(string Id)
+        {
+
+            var Result = appData.Block.Where(p => p.Blocking == authorization.GetId()&&p.Blocked==Id).Select(p=>p.Id);
+             var FinalResult=appData.Block.Find(Result.First());
+            appData.Block.Remove(FinalResult);
+            appData.SaveChanges();
+            return RedirectToAction("Blocks");
+
+        }
+
 
 
 
