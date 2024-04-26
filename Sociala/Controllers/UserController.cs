@@ -14,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Sociala.Migrations;
 using System.Linq;
+using Sociala.Services;
 
 namespace Sociala.Controllers
 {
@@ -26,14 +27,16 @@ namespace Sociala.Controllers
         private readonly IEncrypt encryptclass;
         private readonly IAuthorization authorization;
         private readonly IConfiguration configuration;
+        private readonly ICheckRelationShip CheckRelationShip;
 
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, IConfiguration configuration)
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, IConfiguration configuration, ICheckRelationShip CheckRelationShip)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
             this.emailSender = emailSender;
             this.authorization = authorization;
             this.configuration = configuration;
+            this.CheckRelationShip = CheckRelationShip;
         }
         public IActionResult Profile(string Id)
         {
@@ -368,16 +371,16 @@ namespace Sociala.Controllers
                 return RedirectToAction("LogIn", "User");
             if (authorization.IsAdmin(authorization.GetId()))
                 return RedirectToAction("index", "Home");
-            
 
-            try
-            {
+
+
+            if (!CheckRelationShip.IsBlock(Id)) {
                 Block block = new Block();
                 block.Blocking = authorization.GetId();
                 block.Blocked = Id;
                 appData.Block.Add(block);
                 appData.SaveChanges();
-                Console.WriteLine("aaaaaaaaaaaaaaaaa" + Id);
+               
                 var ResultOfFriend = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
                 if (ResultOfFriend.Count() >= 1)
                 {
@@ -399,7 +402,7 @@ namespace Sociala.Controllers
 
                 return Redirect("/Home/Index");
             }
-            catch
+            else 
             {
                 return View("ErrorPage");
 
