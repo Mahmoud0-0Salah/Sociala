@@ -15,8 +15,7 @@ namespace Sociala.Services
         public bool IsFriend( string UserId);
         public bool IsRequested( string UserId);
         public bool IsRequesting( string UserId);
-        public bool IsBlocked(string UserId);
-        public bool IsBlocking(string UserId);
+        public bool IsBlock(string UserId);
         public bool IsMe( string UserId);
        
 
@@ -56,22 +55,15 @@ namespace Sociala.Services
             return Result.Count() > 0;
 
         }
-        public bool IsBlocked(string UserId) ///انا اللي عملت بلوك
+        public bool IsBlock(string UserId) ///انا اللي عملت بلوك
         {
             string Id = authorization.GetId();
-            var Result = appData.Block.Where(p=>p.Blocking==Id&&p.Blocked==UserId).ToList();
+            var Result = appData.Block.Where(p=>(p.Blocking==Id&&p.Blocked==UserId) ||(p.Blocking == UserId && p.Blocked == Id)).ToList();
 
             return Result.Count() > 0;
 
         }
-        public bool IsBlocking(string UserId)/////    انا معمولي بلوك من الانبوت هتفهمها
-        {
-            string Id = authorization.GetId();
-            var Result = appData.Block.Where(p => p.Blocking == UserId&& p.Blocked == Id).ToList();
-
-            return Result.Count() > 0; ;
-
-        }
+       
 
         public bool IsMe(string UserId)
         {

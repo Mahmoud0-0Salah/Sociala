@@ -358,7 +358,7 @@ namespace Sociala.Controllers
             catch
             {
 
-                return Redirect($"/User/Profile/?Id={TempData["IdToProfile"]}");
+                return View("ErrorPage");
             }
         }
 

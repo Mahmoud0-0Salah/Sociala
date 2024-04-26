@@ -45,7 +45,7 @@
                                 }
                                 else
                                 {
-                                    if ((!CheckRelationShip.IsBlocked(user.Id) && !CheckRelationShip.IsBlocking(user.Id)))
+                                    if (!CheckRelationShip.IsBlock(user.Id))
                                     {
 
                                         @if (CheckRelationShip.IsRequested(user.Id))
