@@ -24,27 +24,20 @@ namespace Sociala.Migrations
 
             modelBuilder.Entity("Sociala.Models.Block", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Blocking")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Blocked")
-                        .IsRequired()
                         .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Blocking")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("Blocking", "Blocked");
 
-                    b.HasIndex("Blocking");
-
-                    b.ToTable("Block");
+                    b.ToTable("Block", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Comment", b =>
@@ -76,7 +69,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Friend", b =>
@@ -101,7 +94,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("RequestingUserId");
 
-                    b.ToTable("Friend");
+                    b.ToTable("Friend", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Like", b =>
@@ -116,7 +109,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Like");
+                    b.ToTable("Like", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Notification", b =>
@@ -146,7 +139,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notification", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Post", b =>
@@ -179,7 +172,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Post", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Report", b =>
@@ -215,7 +208,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Report");
+                    b.ToTable("Report", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Request", b =>
@@ -243,7 +236,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("RequestingUserId");
 
-                    b.ToTable("Request");
+                    b.ToTable("Request", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Role", b =>
@@ -261,7 +254,7 @@ namespace Sociala.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.User", b =>
@@ -316,7 +309,7 @@ namespace Sociala.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("Sociala.Models.Block", b =>
