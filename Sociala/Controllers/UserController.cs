@@ -322,7 +322,7 @@ namespace Sociala.Controllers
         {
             string id = authorization.GetId();
             var RequestsId = appData.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
-            ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id));
+            ViewBag.Requests = appData.User.Where(u => RequestsId.Contains(u.Id)&& !u.IsBanned);
 
             return View();
         }
