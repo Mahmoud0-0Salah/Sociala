@@ -218,6 +218,7 @@
                                     <div class="card-body p-0 d-flex">
                                         <figure class="avatar me-3"><img src="@post.UserPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
                                         <h4 class="fw-700 text-grey-900 font-xssss mt-1">@post.UserName </h4>
+                                        <h4 class="fw-500 text-grey-450 font-xssss mt-1">@post.CreateAt </h4>
                                         @if (Model.Id == ViewBag.Id)
                                         {
                                             <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
@@ -230,6 +231,13 @@
                                                     <a asp-action="DeletePost" asp-controller="Posts" asp-route-id="@post.Id">
                                                         <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
                                                         <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Post </h4>
+                                                    </a>
+                                                </div>
+
+                                                <div class="card-body p-0 d-flex mt-2">
+                                                    <a asp-controller="Posts" asp-action="EditPost" asp-route-id="@post.Id">
+                                                        <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                        <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Edit Post </h4>
                                                     </a>
                                                 </div>
 

@@ -31,6 +31,91 @@ namespace Sociala.Controllers
             _data.SaveChanges();
             return Redirect("/user/profile");
         }
+        public IActionResult EditPost(int Id)
+        {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+
+            var post = _data.Post.FirstOrDefault(p => p.Id == Id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            string userId = authorization.GetId();
+            if (post.UserId != userId)
+            {
+                return View("ErrorPage");
+            }
+
+            return View(post);
+        }
+        [HttpPost]
+        public IActionResult EditPost(Post updatedPost, bool deleteImage)
+        {
+            var post = _data.Post.FirstOrDefault(p => p.Id == updatedPost.Id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            string userId = authorization.GetId();
+            if (post.UserId != userId)
+            {
+                return View("ErrorPage");
+            }
+
+            post.content = updatedPost.content;
+
+            if (deleteImage)
+            {
+                post.Imj = null;
+            }
+            else
+            {
+                var file = HttpContext.Request.Form.Files;
+
+                if (file.Count() > 0)
+                {
+                    if (!Path.GetExtension(file[0].FileName).Equals(".jpg") && !Path.GetExtension(file[0].FileName).Equals(".png") && !Path.GetExtension(file[0].FileName).Equals(".jpeg")
+                            && !Path.GetExtension(file[0].FileName).Equals(".mp4"))
+                    {
+                        ViewBag.PhotoMessage = "Upload photo with Extension JPG,PNG,JPEG, or MP4";
+
+                        return View(post);
+                    }
+                    string imageName = Guid.NewGuid().ToString() + Path.GetExtension(file[0].FileName);
+                    var filePath = Path.Combine("wwwroot", "imj", imageName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file[0].CopyTo(fileStream);
+                    }
+
+                    post.Imj = $"/imj/{imageName}";
+                }
+                else if (file.Count() <= 0 && post.content == null)
+                {
+
+                    TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
+                    return RedirectToAction("EditPost");
+                }
+            }
+            if (post.Imj == null && post.content == null)
+            {
+                TempData["PhotoMessage"] = "The Post is empty please Enter  anything";
+                return RedirectToAction("EditPost");
+            }
+            _data.SaveChanges();
+
+            return RedirectToAction("Profile", "User");
+
+
+        }
         public IActionResult SharePost( int Id)
         {
             if (!authorization.IsLoggedIn())
