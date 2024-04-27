@@ -409,7 +409,7 @@ namespace Sociala.Controllers
 
             
         }
-        public IActionResult Blocks(string Id)
+        public IActionResult Blocks()
         {
 
             var Result = appData.Block.Where(p => p.Blocking == authorization.GetId()).Select(p=>p.Blocked);
