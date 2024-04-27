@@ -96,7 +96,6 @@
                                             {
                                                 <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
                                                     <a asp-controller="User" asp-action="Derequest" asp-route-Id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Derequest</a>
-                                                    <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>
 
                                                 </div>
 
@@ -107,7 +106,6 @@
                                                 <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
                                                     <a asp-controller="User" asp-action="ConfirmRequest" asp-route-id="@Model.Id" asp-route-place="Profile" class="p-2 lh-20 w100 bg-primary-gradiant me-2 text-white text-center font-xssss fw-600 ls-1 rounded-xl">Confirm</a>
                                                     <a asp-controller="User" asp-action="DeleteRequest" asp-route-id="@Model.Id" asp-route-place="Profile" class="p-2 lh-20 w100 bg-grey text-grey-800 text-center font-xssss fw-600 ls-1 rounded-xl">Delete</a>
-                                                    <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>
 
                                                 </div>
                                             }
@@ -117,7 +115,6 @@
                                                 {
                                                    <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
                                                         <a asp-controller="User" asp-action="UnFriend" asp-route-Id="@Model.Id" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: gray;"> UnFriend</a>
-                                                        <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>
 
                                                         
                                                    </div>
@@ -128,13 +125,33 @@
                                             {
                                                 <div class="card-body d-flex align-items-center pt-0 ps-4 pe-4 pb-4">
                                                 <a asp-controller="User" asp-action="AddFriend" asp-route-id="@Model.Id" asp-route-Place="Profile" class="d-none d-lg-block bg-success p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3">Add Friend</a>
-                                                <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>
                                                 </div>
                                            
                                             }
                                         }
 
                                     }
+                                    <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
+                                       
+                                        @if (Model.Id != ViewBag.Id)
+                                        {
+                                        <div class="card-body p-0 d-flex mt-2">
+                                           
+                                            <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>   
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="card-body p-0 d-flex mt-2">
+
+                                                <a asp-controller="User" asp-action="Blocks"  class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: gray;">Blocks</a>
+                                            </div>
+                                            
+                                        }
+                                        
+
+                                    </div>
                                     <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu4">
 
                                             <div class="card-body p-0 d-flex">
@@ -161,10 +178,7 @@
                                     <li class="active list-inline-item me-5"><a class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block active" href="#navtabs1" data-toggle="tab">About</a></li>
                                     <li class="list-inline-item me-5"><a  asp-controller="User" asp-action="Friends" asp-route-Id="@Model.Id"   class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"  data-toggle="tab">Friends</a></li>
                                     <li class="list-inline-item me-5"><a asp-controller="User" asp-action="Photos" asp-route-Id="@Model.Id" class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block"  data-toggle="tab">Photos</a></li>
-                                    @if (Model.Id == ViewBag.Id)
-                                    {
-                                        <li class="list-inline-item me-5"><a asp-controller="User" asp-action="Blocks"  class="fw-700 font-xssss text-grey-500 pt-3 pb-3 ls-1 d-inline-block" data-toggle="tab">Blocks</a></li>
-                                    }
+                                    
                                 </ul>
                             </div>
 
