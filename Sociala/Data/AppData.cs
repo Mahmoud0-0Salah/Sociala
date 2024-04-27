@@ -26,7 +26,14 @@ namespace Sociala.Data
 
             base.OnModelCreating(modelBuilder);
 
-         
+            modelBuilder.Entity<Block>()
+               .HasKey(r => new { r.Blocked, r.Blocking });
+
+            modelBuilder.Entity<Friend>()
+            .HasKey(r => new { r.RequestingUserId, r.RequestedUserId });
+
+            modelBuilder.Entity<Request>()
+          .HasKey(r => new { r.RequestingUserId, r.RequestedUserId });
 
             modelBuilder.Entity<Post>()
                   .HasOne(s => s.User)

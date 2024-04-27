@@ -49,6 +49,9 @@ namespace Sociala.Controllers
                return RedirectToAction("Index", "home");
             if (authorization.IsBanned(Id))
                 return View("ErrorPage");
+            if (CheckRelationShip.IsBlock(Id))
+                return View("ErrorPage");
+
             var user = appData.User.FirstOrDefault(u => u.Id == Id);
 
             ViewBag.posts = appData.Post.Where(post => post.UserId == Id)
@@ -162,6 +165,8 @@ namespace Sociala.Controllers
             string userId = authorization.GetId();
             if (authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
+            if (CheckRelationShip.IsBlock(Id))
+                return View("ErrorPage");
             try
             {
                 var requestingUserId = authorization.GetId();
@@ -205,9 +210,8 @@ namespace Sociala.Controllers
 
             try
             {
-                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
-                var FinalResult = appData.Request.Find(DeleteResult.First());
-                appData.Request.Remove(FinalResult);
+                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id);
+                appData.Request.Remove(DeleteResult.First());
                 appData.SaveChanges();
             }
             catch
@@ -252,9 +256,8 @@ namespace Sociala.Controllers
                 friend.RequestedUserId = authorization.GetId();
                 friend.RequestingUserId = Id;
                 appData.Friend.Add(friend);
-                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id).Select(f => f.Id);
-                var FinalResult = appData.Request.Find(DeleteResult.First());
-                appData.Request.Remove(FinalResult);
+                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id);
+                appData.Request.Remove(DeleteResult.First());
                 appData.SaveChanges();
             }
             catch
@@ -294,9 +297,8 @@ namespace Sociala.Controllers
                 return RedirectToAction("index", "Home");
             try
             {
-                var DeleteResult = appData.Request.Where(p => p.RequestedUserId ==Id  && p.RequestingUserId == authorization.GetId()).Select(f => f.Id);
-                var FinalResult = appData.Request.Find(DeleteResult.First());
-                appData.Request.Remove(FinalResult);
+                var DeleteResult = appData.Request.Where(p => p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId());
+                appData.Request.Remove(DeleteResult.First());
                 appData.SaveChanges();
                 if (place=="Profile")
                     return Redirect($"/User/Profile/{Id}");
@@ -351,9 +353,8 @@ namespace Sociala.Controllers
             try
             {
 
-                var Result = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
-                var FinalResult = appData.Friend.Find(Result.First());
-                appData.Friend.Remove(FinalResult);
+                var Result = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId()));
+                appData.Friend.Remove(Result.First());
                 TempData["IdToProfile"] = Id;
                 appData.SaveChanges();
                 return Redirect($"/User/Profile/?Id={TempData["IdToProfile"]}");
@@ -380,22 +381,20 @@ namespace Sociala.Controllers
                 block.Blocked = Id;
                 appData.Block.Add(block);
                 appData.SaveChanges();
-               
-                var ResultOfFriend = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
+
+                var ResultOfFriend = appData.Friend.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId()));
                 if (ResultOfFriend.Count() >= 1)
                 {
-                    var FinalResultOfFriend = appData.Friend.Find(ResultOfFriend.First());
-                    appData.Friend.Remove(FinalResultOfFriend);
+                    appData.Friend.Remove(ResultOfFriend.First());
                     appData.SaveChanges();
                 }
                 else
                 {
-                    var ResultOfRequest = appData.Request.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId())).Select(p => p.Id);
+                    var ResultOfRequest = appData.Request.Where(p => (p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id) || (p.RequestedUserId == Id && p.RequestingUserId == authorization.GetId()));
 
                     if (ResultOfRequest.Count() >= 1)
                     {
-                        var FinalResultOfRequest = appData.Request.Find(ResultOfRequest.First());
-                        appData.Request.Remove(FinalResultOfRequest);
+                        appData.Request.Remove(ResultOfRequest.First());
                         appData.SaveChanges();
                     }
                 }
@@ -422,9 +421,8 @@ namespace Sociala.Controllers
         public IActionResult UnBlock(string Id)
         {
 
-            var Result = appData.Block.Where(p => p.Blocking == authorization.GetId()&&p.Blocked==Id).Select(p=>p.Id);
-             var FinalResult=appData.Block.Find(Result.First());
-            appData.Block.Remove(FinalResult);
+            var Result = appData.Block.Where(p => p.Blocking == authorization.GetId() && p.Blocked == Id);
+            appData.Block.Remove(Result.First());
             appData.SaveChanges();
             return RedirectToAction("Blocks");
 

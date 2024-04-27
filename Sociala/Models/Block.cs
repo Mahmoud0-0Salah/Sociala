@@ -5,9 +5,6 @@ namespace Sociala.Models
     public class Block
     {
 
-        [Key]
-
-        public int Id { get; set; }
         [StringLength(450)]
         public string Blocking { get; set; }
 
