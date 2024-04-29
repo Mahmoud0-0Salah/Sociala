@@ -3,27 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
 using Sociala.Models;
+using Sociala.Services;
 
 namespace Sociala.Controllers
 {
     public class PostsController : Controller
     {
         private readonly AppData _data;
-        private readonly IAuthorization authorization;
-        public PostsController(ILogger<HomeController> logger, AppData data, IAuthorization authorization)
+        private readonly IAuthorization _authorization;
+        private readonly INotification _notificationSerivce;
+        public PostsController(ILogger<HomeController> logger, AppData data, 
+                               IAuthorization authorization, INotification notificationSerivce)
         {
             _data = data;
-            this.authorization = authorization;
+            _authorization = authorization;
+            _notificationSerivce = notificationSerivce;
         }
 
         public IActionResult DeletePost(int Id)
         {
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
-            string userId = authorization.GetId();
-            if (authorization.IsAdmin(userId))
+            string userId = _authorization.GetId();
+            if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
 
             var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
@@ -33,7 +37,7 @@ namespace Sociala.Controllers
         }
         public IActionResult EditPost(int Id)
         {
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
@@ -45,7 +49,7 @@ namespace Sociala.Controllers
                 return NotFound();
             }
 
-            string userId = authorization.GetId();
+            string userId = _authorization.GetId();
             if (post.UserId != userId)
             {
                 return View("ErrorPage");
@@ -63,7 +67,7 @@ namespace Sociala.Controllers
                 return NotFound();
             }
 
-            string userId = authorization.GetId();
+            string userId = _authorization.GetId();
             if (post.UserId != userId)
             {
                 return View("ErrorPage");
@@ -112,16 +116,16 @@ namespace Sociala.Controllers
         }
         public IActionResult SharePost( int Id)
         {
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
-            string userId = authorization.GetId();
-            if (authorization.IsAdmin(userId))
+            string userId = _authorization.GetId();
+            if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
             Post Result = _data.Post.Where(p => p.Id == Id).SingleOrDefault();
             Post post= new Post();
-            post.UserId = authorization.GetId();
+            post.UserId = _authorization.GetId();
             post.CreateAt = DateTime.Now;
             post.Imj = Result.Imj;
             post.content = Result.content;
@@ -132,20 +136,22 @@ namespace Sociala.Controllers
             return Redirect("/Home/Index");
         }
 
-        public IActionResult Like(int Id,string Place)
+        public async Task<IActionResult> Like(int Id,string Place)
         {
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
-            string userId = authorization.GetId();
-            if (authorization.IsAdmin(userId))
+            string userId = _authorization.GetId();
+            if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
             Like like=new Like();
-            like.UserId = authorization.GetId();
+            like.UserId = _authorization.GetId();
             like.PostId = Id;
             _data.Like.Add(like);
             _data.SaveChanges();
+            await _notificationSerivce.SendLikeNotification(userId, Id);
+
             if (Place == "Index")
                 return Json(new { success = true, redirectTo = "/Home/Index" });
             return Json(new { success = true, redirectTo = $"/User/Profile/{Place}" });
@@ -155,15 +161,15 @@ namespace Sociala.Controllers
         public IActionResult DeleteLike(int Id, string Place)
         {
 
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
-            string userId = authorization.GetId();
-            if (authorization.IsAdmin(userId))
+            string userId = _authorization.GetId();
+            if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
 
-            var target= _data.Like.Where(l => l.PostId == Id && l.UserId == authorization.GetId()).SingleOrDefault();
+            var target= _data.Like.Where(l => l.PostId == Id && l.UserId == _authorization.GetId()).SingleOrDefault();
             _data.Like.Remove(target);
             _data.SaveChanges();
             if (Place == "Index")
@@ -175,11 +181,11 @@ namespace Sociala.Controllers
         [HttpGet]
         public IActionResult Report(int Id)
         {
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
-            string userId = authorization.GetId();
+            string userId = _authorization.GetId();
 
             var post = _data.Post.Where(p => p.Id == Id).Include(p => p.User).SingleOrDefault();
             if (post == null) {
@@ -197,11 +203,11 @@ namespace Sociala.Controllers
         [HttpPost]
         public IActionResult Report(int Id, IFormCollection req)
         {
-            if (!authorization.IsLoggedIn())
+            if (!_authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
-            string userId = authorization.GetId();
+            string userId = _authorization.GetId();
 
             var post = _data.Post.FirstOrDefault(p => p.Id == Id);
             if (post == null) {
