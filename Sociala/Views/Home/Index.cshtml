@@ -267,7 +267,8 @@
                                                 alert('An error occurred');
                                             }
                                         },
-                                        error: function () {
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            console.log('Response Text:', jqXHR.responseText);
                                             alert('An error occurred');
                                         }
                                     });
@@ -277,6 +278,9 @@
 
 
                         <script src="/js/lightbox.js"></script>
+                        <script src="~/js/signalr/dist/browser/signalr.js"></script>
+                        <script src="~/js/notifications.js"></script>
+                        
 
 </body>
 

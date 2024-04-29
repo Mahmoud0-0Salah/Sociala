@@ -8,8 +8,8 @@ namespace Sociala.Models
         [Key]
         public int Id { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public bool Seen { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public bool Seen { get; set; } = false;
         [StringLength(450)]
 
         [ForeignKey("User")]

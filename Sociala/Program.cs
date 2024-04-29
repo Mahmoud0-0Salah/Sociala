@@ -4,6 +4,7 @@ using EncryptServices;
 using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
 using Sociala.Services;
+using Sociala.Hubs;
 
 namespace Sociala
 {
@@ -23,12 +24,14 @@ namespace Sociala
 
             builder.Services.AddTransient <IAuthorization,Authorization>();
 
-            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             // Add services to the container.
           
              builder.Services.AddTransient<ICheckRelationShip, CheckRelationShip>();
+            builder.Services.AddScoped<INotification, NotificationService>();
 
-             
+            builder.Services.AddSignalR();
+
 
             var app = builder.Build();
 
@@ -50,6 +53,7 @@ namespace Sociala
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapHub<NotificationsHub>("/notifications");
             app.Run();
         }
     }
