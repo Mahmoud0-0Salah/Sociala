@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Massage>
+﻿@model IEnumerable<Message>
 @{
     var sender = ViewBag.Sendder as User;
 }
@@ -25,7 +25,7 @@
     <div class="modal-popup-footer w-100 border-top">
         <div class="card p-3 d-block border-0">
             <div class="form-group icon-right-input style1-input mb-0">
-                <form onsubmit="CreateMassage('@sender.Id')">
+                <form onsubmit="CreateMessage('@sender.Id')">
                     <input type="text" id="massagecontent" placeholder="Start typing.." class="form-control rounded-xl bg-greylight border-0 font-xssss fw-500 ps-3">
                 </form>
                 <i class="feather-send text-grey-500 font-md"></i>

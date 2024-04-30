@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Sociala.Models
 {
-    public class Massage
+    public class Message
     {
 
         [Key]

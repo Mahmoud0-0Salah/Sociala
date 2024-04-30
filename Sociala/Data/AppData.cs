@@ -19,7 +19,7 @@ namespace Sociala.Data
         public DbSet<Report> Report { get; set; }
         public DbSet<Request> Request { get; set; }
         public DbSet<Block> Block { get; set; }
-        public DbSet<Massage> Massage { get; set; }
+        public DbSet<Message> Message { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

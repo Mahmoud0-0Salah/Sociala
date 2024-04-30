@@ -298,7 +298,7 @@
                                                             <img src="@user.UrlPhoto" alt="image" class="w35">
                                                         </figure>
                                                         <h3 class="fw-700 mb-0 mt-0">
-                                                            <a onclick="ShowMassage('@user.Id')" class="font-xssss text-grey-600 d-block text-dark model-popup-chat">@user.UesrName</a>
+                                                        <a onclick="ShowMessage('@user.Id')" class="font-xssss text-grey-600 d-block text-dark model-popup-chat">@user.UesrName</a>
                                                         </h3>
                                                     </li>
                                                 }
@@ -351,10 +351,10 @@
 
 
                         <script>
-                            function ShowMassage(Id) {
+                function ShowMessage(Id) {
 
                                 $.ajax({
-                                    url: '/Massage/ShowMassage',
+                        url: '/Message/ShowMessage',
                                     data: { id: Id },
                                     success: function (response) {
                                         document.getElementById('chat').innerHTML = response
@@ -367,11 +367,11 @@
                         </script>
 
                         <script>
-                            function CreateMassage(Id) {
+                function CreateMessage(Id) {
                                 event.preventDefault();
                                 var Content = document.getElementById('massagecontent').value;
                                 $.ajax({
-                                    url: '/Massage/CreateMassage',
+                        url: '/Message/CreateMessage',
                                     data: { id: Id, content: Content },
                                     success: function (response) {
                                         document.getElementById('chat').innerHTML = response
