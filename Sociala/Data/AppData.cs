@@ -19,6 +19,7 @@ namespace Sociala.Data
         public DbSet<Report> Report { get; set; }
         public DbSet<Request> Request { get; set; }
         public DbSet<Block> Block { get; set; }
+        public DbSet<Massage> Massage { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -56,6 +57,9 @@ namespace Sociala.Data
 
             modelBuilder.Entity<Like>()
             .HasKey(r => new { r.UserId, r.PostId });
+
+            modelBuilder.Entity<Massage>()
+          .HasKey(r => new { r.SenderId, r.ResverId });
 
             modelBuilder.Entity<Like>()
                .HasOne(s => s.User)

@@ -53,7 +53,10 @@
                         <h6 class="text-grey-500 fw-500 font-xssss lh-4">There are many variations of pass..</h6>
                     </div>
                 </div>
-
+                @if (ViewBag.Tittle == "Home")
+                {
+                    <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"><i class="feather-message-square font-xl text-current"></i></a>
+                }
             <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
                 <div class="card bg-transparent-card border-0 d-block mt-3">
                     <p class="p-2 text-center ms-3 menu-icon center-menu-icon"> <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-l logo-text mb-0" style="justify-content:right"> <i class="feather-settings animation-spin d-inline-block font-xl text-current"></i> </span></p>
@@ -187,6 +190,95 @@
         </div>
 
     </div>
+
+
+    @if (ViewBag.Tittle == "Home")
+    {
+        <div class="right-chat nav-wrap mt-2 right-scroll-bar">
+        <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
+
+            <!-- loader wrapper -->
+            <div class="preloader-wrap p-3">
+                <div class="box shimmer">
+                    <div class="lines">
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                    </div>
+                </div>
+                <div class="box shimmer mb-3">
+                    <div class="lines">
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                    </div>
+                </div>
+                <div class="box shimmer">
+                    <div class="lines">
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                        <div class="line s_shimmer"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- loader wrapper -->
+
+            <div class="section full pe-3 ps-4 pt-4 position-relative feed-body">
+                <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">CONTACTS</h4>
+                <ul class="list-group list-group-flush">
+                    @foreach (var user in ViewBag.friends)
+                    {
+                        @if (user.Id!=Authorization.GetId())
+                        {
+                            
+                            <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                <figure class="avatar float-left mb-0 me-2">
+                                    <img src="@user.UrlPhoto" alt="image" class="w35">
+                                </figure>
+                                <h3 class="fw-700 mb-0 mt-0">
+                                    <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">@user.UesrName</a>
+                                </h3>
+                                <span class="badge badge-primary text-white badge-pill fw-500 mt-0">2</span>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+           
+            
+        </div>
+    </div>
+        
+    }
+
+    <div class="modal-popup-chat">
+        <div class="modal-popup-wrap bg-white p-0 shadow-lg rounded-3">
+            <div class="modal-popup-header w-100 border-bottom">
+                <div class="card p-3 d-block border-0 d-block">
+                    <figure class="avatar mb-0 float-left me-2">
+                        <img src="images/user-12.png" alt="image" class="w35 me-1">
+                    </figure>
+                    <h5 class="fw-700 text-primary font-xssss mt-1 mb-1">Hendrix Stamp</h5>
+                    <a href="#" class="font-xssss position-absolute right-0 top-0 mt-3 me-4"><i class="ti-close text-grey-900 mt-2 d-inline-block"></i></a>
+                </div>
+            </div>
+            <div class="modal-popup-body w-100 p-3 h-auto">
+                <div class="message"><div class="message-content font-xssss lh-24 fw-500">Hi, how can I help you?</div></div>
+                <div class="date-break font-xsssss lh-24 fw-500 text-grey-500 mt-2 mb-2">Mon 10:20am</div>
+                <div class="message self text-right mt-2"><div class="message-content font-xssss lh-24 fw-500">I want those files for you. I want you to send 1 PDF and 1 image file.</div></div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="modal-popup-footer w-100 border-top">
+                <div class="card p-3 d-block border-0 d-block">
+                    <div class="form-group icon-right-input style1-input mb-0"><input type="text" placeholder="Start typing.." class="form-control rounded-xl bg-greylight border-0 font-xssss fw-500 ps-3"><i class="feather-send text-grey-500 font-md"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="/js/plugin.js"></script>
     <script src="/js/countdown.js"></script>
