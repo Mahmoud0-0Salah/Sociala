@@ -26,16 +26,19 @@ namespace Sociala.Controllers
             massage.ResverId = id;
             _data.Massage.Add(massage);
             _data.SaveChanges();
-            var Massage = _data.Massage.Where(m=>m.SenderId.Equals(UserId)&&m.ResverId.Equals(id));
+            var Massage = _data.Massage.Where(m=>(m.SenderId.Equals(UserId) && m.ResverId.Equals(id)|| m.SenderId.Equals(id) && m.ResverId.Equals(UserId)));
             ViewBag.UserId=UserId;
+            ViewBag.Sendder = _data.User.Where(u=>u.Id.Equals(id)).SingleOrDefault();
             return PartialView("ShowMassage", Massage);
         }
 
         public IActionResult ShowMassage(string id)
         {
             string UserId = authorization.GetId();
-            var Massage = _data.Massage.Where(m => m.SenderId.Equals(UserId) && m.ResverId.Equals(id));
+            var Massage = _data.Massage.Where(m => (m.SenderId.Equals(UserId) && m.ResverId.Equals(id) || m.SenderId.Equals(id) && m.ResverId.Equals(UserId)));
             ViewBag.UserId = UserId;
+            ViewBag.Sendder = _data.User.Where(u => u.Id.Equals(id)).SingleOrDefault();
+
             return PartialView(Massage);
         }
     }

@@ -58,9 +58,6 @@ namespace Sociala.Data
             modelBuilder.Entity<Like>()
             .HasKey(r => new { r.UserId, r.PostId });
 
-            modelBuilder.Entity<Massage>()
-          .HasKey(r => new { r.SenderId, r.ResverId });
-
             modelBuilder.Entity<Like>()
                .HasOne(s => s.User)
                .WithMany()
