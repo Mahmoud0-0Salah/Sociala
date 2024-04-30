@@ -239,7 +239,7 @@
                                     <img src="@user.UrlPhoto" alt="image" class="w35">
                                 </figure>
                                 <h3 class="fw-700 mb-0 mt-0">
-                                    <a class="font-xssss text-grey-600 d-block text-dark model-popup-chat" href="#">@user.UesrName</a>
+                                        <a onclick="ShowMassage('@user.Id')" class="font-xssss text-grey-600 d-block text-dark model-popup-chat">@user.UesrName</a>
                                 </h3>
                                 <span class="badge badge-primary text-white badge-pill fw-500 mt-0">2</span>
                             </li>
@@ -263,10 +263,9 @@
 
             $.ajax({
                 url: '/Massage/ShowMassage',
-                type: 'POST',
                 data: { id: Id },
                 success: function (response) {
-                    document.getElementById(chat).innerHTML = response
+                    document.getElementById('chat').innerHTML = response
                 },
                 error: function () {
                     alert('An error occurred');

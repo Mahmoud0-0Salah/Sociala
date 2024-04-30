@@ -31,7 +31,6 @@ namespace Sociala.Controllers
             return PartialView("ShowMassage", Massage);
         }
 
-        [HttpPost]
         public IActionResult ShowMassage(string id)
         {
             string UserId = authorization.GetId();
