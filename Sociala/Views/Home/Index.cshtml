@@ -288,18 +288,23 @@
                                     <div class="section full pe-3 ps-4 pt-4 position-relative feed-body">
                                         <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">CONTACTS</h4>
                                         <ul class="list-group list-group-flush">
-                                            @foreach (var user in ViewBag.friends)
+                                        @foreach (var user in ViewBag.friends)
                                             {
-                                                @if (user.Id != Authorization.GetId())
+                                                @if (user.User.Id != Authorization.GetId())
                                                 {
 
                                                     <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
                                                         <figure class="avatar float-left mb-0 me-2">
-                                                            <img src="@user.UrlPhoto" alt="image" class="w35">
+                                                        <img src="@user.User.UrlPhoto" alt="image" class="w35">
                                                         </figure>
                                                         <h3 class="fw-700 mb-0 mt-0">
-                                                        <a onclick="ShowMessage('@user.Id')" class="font-xssss text-grey-600 d-block text-dark model-popup-chat">@user.UesrName</a>
+                                                        <a onclick="ShowMessage('@user.User.Id')" class="font-xssss text-grey-600 d-block text-dark model-popup-chat">@user.User.UesrName</a>
                                                         </h3>
+                                                    @if (user.IsActive)
+                                                    {
+                                                         <span class="bg-success ms-auto btn-round-xss"></span>
+                                                        
+                                                    }
                                                     </li>
                                                 }
                                             }

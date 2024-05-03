@@ -1,7 +1,9 @@
 ﻿using AuthorizationService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Sociala.Data;
+using Sociala.Hubs;
 using Sociala.Models;
 using Sociala.Services;
 using Sociala.ViewModel;
@@ -18,13 +20,15 @@ namespace Sociala.Controllers
         private readonly AppData _data;
         private readonly IAuthorization authorization;
         private readonly ICheckRelationShip CheckRelationShip;
-        public HomeController(ILogger<HomeController> logger, AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip)
+        private readonly IHubContext<NotificationsHub> _hubContext;
+
+        public HomeController(ILogger<HomeController> logger, AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip, IHubContext<NotificationsHub> hubContext)
         {
             _logger = logger;
             _data = data;
             this.authorization = authorization;
             this.CheckRelationShip = CheckRelationShip;
-
+            _hubContext= hubContext;
         }
 
         public IActionResult Index()
@@ -48,7 +52,10 @@ namespace Sociala.Controllers
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f => id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
             friendsId.Add(id);
             var friends = _data.User.Where(u => friendsId.Contains(u.Id));
-            ViewBag.friends = friends;
+
+            var _userConnections = NotificationsHub.GetUsersConnections();
+            ViewBag.friends = friends.Select(u => new { User = u, IsActive = _userConnections.ContainsKey(u.Id) });
+
             ViewBag.posts = (_data.Post.Join(friends,
                                 post => post.UserId,
                                 friend => friend.Id,
