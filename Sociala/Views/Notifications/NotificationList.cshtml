@@ -1,0 +1,172 @@
+﻿@model IEnumerable<Notification>
+@{
+    ViewData["Title"] = "Notifications";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="css/themify-icons.css">
+    <link rel="stylesheet" href="css/feather.css">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/emoji.css">
+
+    <link rel="stylesheet" href="css/lightbox.css">
+
+</head>
+
+<body class="color-theme-blue mont-font">
+
+    <div class="preloader"></div>
+
+
+    <div class="main-wrapper">
+
+
+        
+        <!-- main content -->
+        <div class="main-content right-chat-active">
+
+            <div class="middle-sidebar-bottom">
+                <div class="middle-sidebar-left">
+                    <!-- loader wrapper -->
+                    <div class="preloader-wrap p-3">
+                        <div class="box shimmer">
+                            <div class="lines">
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                            </div>
+                        </div>
+                        <div class="box shimmer mb-3">
+                            <div class="lines">
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                            </div>
+                        </div>
+                        <div class="box shimmer">
+                            <div class="lines">
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                                <div class="line s_shimmer"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- loader wrapper -->
+                    <div class="row feed-body">
+                        <div class="col-xl-8 col-xxl-9 col-lg-8">
+
+                            
+                            @foreach (var notification in Model)
+                            {
+
+                                <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-0 notificationItem" style="background-color: @(notification.Seen ? "white" : "#eff5f5")">
+                                    <div class="card-body p-0 d-flex">
+                                        <a class="card-body p-0 d-flex" asp-controller="user" asp-action="profile" asp-route-id="@notification.ActorId">
+                                            <figure class="avatar me-3"><img src="@notification.Actor.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                            <div class="card-body p-0 me-lg-5">
+                                                <h4 class="fw-700 text-grey-900 font-xssss mt-1">@notification.Actor.UesrName</h4>
+                                                <h6 class="fw-500 text-grey-450 font-xssss mt-1">@notification.CreatedAt</h6>
+                                            </div>
+                                        </a>
+                                       
+                                    </div>
+                                    <div class="card-body p-0 me-lg-5">
+                                        <p class="text-grey-600 lh-26 font-xssss w-100 mb-2"><b>@notification.Content</b>
+                                            @if (!notification.Seen)
+                                            {
+                                                <a data-notification-id="@notification.Id" style="color: ("blue")" class="mark-link float-right float-end font-xssxx">Mark As Read</a>
+                                            }
+                                            
+                                            
+                                        </p>
+                                    </div>
+
+                                </div>
+                                <br />
+
+                                
+                            }
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- main content -->
+
+
+        <div class="app-footer border-0 shadow-lg bg-primary-gradiant">
+            <a href="default.html" class="nav-content-bttn nav-center"><i class="feather-home"></i></a>
+            <a href="default-video.html" class="nav-content-bttn"><i class="feather-package"></i></a>
+            <a href="default-live-stream.html" class="nav-content-bttn" data-tab="chats"><i class="feather-layout"></i></a>
+            <a href="shop-2.html" class="nav-content-bttn"><i class="feather-layers"></i></a>
+            <a href="default-settings.html" class="nav-content-bttn"><img src="images/female-profile.png" alt="user" class="w30 shadow-xss"></a>
+        </div>
+
+        <div class="app-header-search">
+            <form class="search-form">
+                <div class="form-group searchbox mb-0 border-0 p-1">
+                    <input type="text" class="form-control border-0" placeholder="Search...">
+                    <i class="input-icon">
+                        <ion-icon name="search-outline" role="img" class="md hydrated" aria-label="search outline"></ion-icon>
+                    </i>
+                    <a href="#" class="ms-1 mt-1 d-inline-block close searchbox-close">
+                        <i class="ti-close font-xs"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+
+
+            $(document).on("click", ".mark-link", function () {
+
+                var element = $(this);
+                var notificationId = element.data('notification-id');
+                var notificationItem = element.closest('.notificationItem');
+                console.log("notificationId:", notificationId);
+                $.ajax({
+                    url: '/Notifications/MarkAsRead',
+                    type: 'POST',
+                    data: { Id: notificationId },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log("Success!");
+                            notificationItem.css('background-color', 'white');
+                            element.remove();
+                        } else {
+                            console.log('Response Text:', response);
+                            alert('An error occurred');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('Response Text:', jqXHR.responseText);
+                        alert('An error occurred');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

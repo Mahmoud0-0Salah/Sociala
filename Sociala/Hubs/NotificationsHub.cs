@@ -1,7 +1,11 @@
 ﻿using System.Net;
+using System.Text.Json;
 using AuthorizationService;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Sociala.Data;
 using Sociala.Models;
+using Sociala.Services;
 
 namespace Sociala.Hubs
 {
@@ -9,9 +13,13 @@ namespace Sociala.Hubs
     {
         private static readonly Dictionary<string, HashSet<string>> _userConnections = new Dictionary<string, HashSet<string>>();
         private readonly IAuthorization _authorization;
-        public NotificationsHub(IAuthorization authorization)
+        private readonly AppData _appData;
+        private readonly INotification _notificationService;
+        public NotificationsHub(IAuthorization authorization, AppData appData, INotification notificationService)
         {
             _authorization = authorization;
+            _appData = appData;
+            _notificationService = notificationService;
         }
         public override Task OnConnectedAsync()
         {
@@ -59,14 +67,35 @@ namespace Sociala.Hubs
         }
 
         
-        public async Task SendMessage(string message)
+        public async Task SendAllNotifications()
         {
-            string allUsers = "";
-            foreach (var user in _userConnections)
+            
+            string userId = _authorization.GetId();
+            if (userId == null)
             {
-                allUsers += ", " + user;
+                return;
             }
-            await Clients.All.SendAsync("ReceiveMessage", allUsers);
+            var notifications = _appData.Notification.Where(n => n.UserId == userId).Include(n => n.Actor)
+                                                     .OrderByDescending(n => n.CreatedAt).Take(5).ToList();
+            var notificationList = new List<string>();
+            foreach (var notification in notifications)
+            {
+                var dataToSend = new
+                {
+                    id = notification.Id,
+                    message = notification.Content,
+                    userName = notification.Actor.UesrName,
+                    imgUrl = notification.Actor.UrlPhoto,
+                    createdAt = notification.CreatedAt,
+                    seen = notification.Seen,
+                };  // add a link to the post
+                string jsonData = JsonSerializer.Serialize(dataToSend);
+                notificationList.Add(jsonData);
+            }
+
+            await Clients.Caller.SendAsync("ReceiveNotificationList", notificationList);
+            await _notificationService.HandleNotificationIcon(userId);
+
         }
 
         public static Dictionary<string, HashSet<string>> GetUsersConnections()
