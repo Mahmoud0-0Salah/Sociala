@@ -47,7 +47,7 @@
                                         <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">@user.Email</p>
                                         <span class="position-absolute right-15 top-0 d-flex align-items-center">
                                             <a href="#" class="d-lg-block d-none" style="position: relative; bottom: -40px;">Number of approved reports :  @user.NumberOfApprovedReports </a>
-                                            <a href="/admin/Ban/@user.Id" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white">Ban</a>
+                                            <a href="/admin/Ban/@user.Id" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white confirm-ban">Ban</a>
                                         </span>
                                     </div>
                                 </div>
@@ -61,3 +61,16 @@
 
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.confirm-ban').forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                var result = confirm('Are you sure you want to ban this user?');
+                if (result) {
+                    window.location.href = this.href;
+                }
+            });
+        });
+    });
+</script>
