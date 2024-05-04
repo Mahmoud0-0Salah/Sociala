@@ -1,6 +1,7 @@
 ﻿using AuthorizationService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Sociala.Data;
 using Sociala.Models;
 using Sociala.Services;
@@ -78,7 +79,12 @@ namespace Sociala.Controllers
             var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id) ).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id) && !u.IsBanned);
 
-            return View();
+            var SharePost = _data.SharePost.Where(r => friendsId.Contains(r.UserId)).Include(r => r.User)
+                                                           .Include(r => r.Post).Include(r => r.Post.User);
+                                                         
+
+
+            return View(SharePost);
         }
 
         public IActionResult Search(string Name)
