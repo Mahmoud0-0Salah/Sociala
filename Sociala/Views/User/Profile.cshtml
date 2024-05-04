@@ -137,7 +137,7 @@
                                         {
                                         <div class="card-body p-0 d-flex mt-2">
                                            
-                                            <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>   
+                                                    <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white confirm-link" style="background-color: red;">Block</a>
                                             </div>
                                         }
                                         else
@@ -589,6 +589,17 @@
                         },
                         error: function () {
                             alert('An error occurred');
+                        }
+                    });
+                });
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.confirm-link').forEach(function (element) {
+                    element.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var result = confirm('Are you sure you want to block @Model.UesrName');
+                        if (result) {
+                            window.location.href = this.href;
                         }
                     });
                 });
