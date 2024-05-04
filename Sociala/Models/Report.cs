@@ -13,11 +13,9 @@ namespace Sociala.Models
         [Required]
         public string Status { get; set; } = "Pending";
         public int PostId { get; set; }
-        [ForeignKey("PostId")]
         public Post Post { get; set; }
 
-        [StringLength(450)]
-        [ForeignKey("User")]
+        
         public string  UserId { get; set; }
         virtual public User User { get; set; }
     }

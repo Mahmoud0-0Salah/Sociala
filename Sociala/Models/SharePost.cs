@@ -10,10 +10,10 @@ namespace Sociala.Models
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int PostId { get; set; }
-        [ForeignKey("PostId")]
+       
         public Post Post { get; set; }
 
-        [ForeignKey("User")]
+     
         public string UserId { get; set; }
         virtual public User User { get; set; }
     }
