@@ -20,7 +20,7 @@ namespace Sociala.Controllers
             _notificationSerivce = notificationSerivce;
         }
 
-        public IActionResult DeletePost(int Id)
+        public IActionResult DeletePost(int Id ,bool IsShared=false)
         {
             if (!_authorization.IsLoggedIn())
             {
@@ -30,8 +30,16 @@ namespace Sociala.Controllers
             if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
 
-            var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
-            Post.IsHidden = true;
+            if (!IsShared)
+            {
+                var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
+                Post.IsHidden = true;
+            }
+            else
+            {
+                var Post = _data.SharePost.Where(p => p.Id == Id).SingleOrDefault();
+                Post.IsHidden = true;
+            }
             _data.SaveChanges();
             return Redirect("/user/profile");
         }

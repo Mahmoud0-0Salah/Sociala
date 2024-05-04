@@ -10,7 +10,7 @@ namespace Sociala.Models
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int PostId { get; set; }
-       
+        public bool IsHidden { get; set; } = false;
         public Post Post { get; set; }
 
      

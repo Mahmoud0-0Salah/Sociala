@@ -20,6 +20,7 @@ using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sociala.Controllers
 {
@@ -65,35 +66,59 @@ namespace Sociala.Controllers
             var _userConnections = NotificationsHub.GetUsersConnections();
             ViewBag.friends = friends.Select(u => new { User = u, IsActive = _userConnections.ContainsKey(u.Id) });
 
-            ViewBag.posts = (_data.Post.Join(friends,
-                                post => post.UserId,
-                                friend => friend.Id,
-                                (post, friend) =>
+            var posts = (_data.Post.Join(friends,
+             post => post.UserId,
+             friend => friend.Id,
+             (post, friend) => new PostInfo
+             {
+                 Id = post.Id,
+                 PostContent = post.content,
+                 PostImj = post.Imj,
+                 UserPhoto = friend.UrlPhoto,
+                 UserName = friend.UesrName,
+                 UserId = friend.Id,
+                 CreateAt = post.CreateAt,
+                 IsHidden = post.IsHidden,
+                 IsBanned = friend.IsBanned,
+                 Isliked = (_data.Like.Contains(new Like
+                 {
+                     PostId = post.Id,
+                     UserId = id
+                 }))
+             }))
+             .Where(p => !p.IsHidden && !p.IsBanned)
+             .ToList();
 
-                                new PostInfo
-                                ()
-                                {
-                                    Id = post.Id,
-                                    PostContent = post.content,
-                                    PostImj = post.Imj,
-                                    UserPhoto = friend.UrlPhoto,
-                                    UserName = friend.UesrName,
-                                    UserId = friend.Id,
-                                    CreateAt = post.CreateAt,
-                                    IsHidden = post.IsHidden,
-                                    IsBanned = friend.IsBanned,
-                                    Isliked = ((!(_data.Like.Contains(new Like
-                                    {
-                                        PostId = post.Id,
-                                        UserId = id
-                                    }))) ? false
-                                    : true),
+                    var sharedPosts = _data.SharePost.Include(p => p.Post).Include(p => p.Post.User).Join(friends,
+                        post => post.UserId,
+                        friend => friend.Id,
+                        (post, friend) => new PostInfo
+                        {
+                            Id = post.Id,
+                            PostContent = post.Content,
+                            OriginalPostContent = post.Post.content,
+                            PostImj = post.Post.Imj,
+                            UserPhoto = post.User.UrlPhoto,
+                            OriginalUserPhoto = post.Post.User.UrlPhoto,
+                            UserName = post.User.UesrName,
+                            OriginalUserName = post.Post.User.UesrName,
+                            UserId = friend.Id,
+                            OriginalUserId = post.Post.UserId,
+                            CreateAt = post.CreatedAt,
+                            IsHidden = (post.IsHidden | post.Post.IsHidden),
+                            IsBanned = (friend.IsBanned | post.User.IsBanned),
+                        })
+                        .Where(p => !p.IsHidden && !p.IsBanned)
+                        .ToList();
 
-                                }
-                                )).Where(p => !p.IsHidden && !p.IsBanned).OrderByDescending(p => p.CreateAt);
+            posts.AddRange(sharedPosts);
+
+
+
+
             var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id) && !u.IsBanned);
-
+            ViewBag.posts = posts.OrderByDescending(p=>p.CreateAt);
             return View();
         }
 
