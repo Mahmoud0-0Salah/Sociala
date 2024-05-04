@@ -4,6 +4,8 @@ var connection = new signalR.HubConnectionBuilder().withUrl("/notifications").bu
 
 connection.on("Message", function (message) {
 
+    var audio = new Audio('/message.mp3'); // Replace '/path/to/notification-sound.mp3' with the actual path to your notification sound file
+    audio.play();
     // No need to parse the message since it's already in JSON format
     var messageData = JSON.parse(message);
 
