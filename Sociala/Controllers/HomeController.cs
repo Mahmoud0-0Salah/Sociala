@@ -78,13 +78,7 @@ namespace Sociala.Controllers
                                 )).Where(p => !p.IsHidden&&!p.IsBanned).OrderByDescending(p => p.CreateAt);
             var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id) ).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id) && !u.IsBanned);
-
-            var SharePost = _data.SharePost.Where(r => friendsId.Contains(r.UserId)).Include(r => r.User)
-                                                           .Include(r => r.Post).Include(r => r.Post.User);
-                                                         
-
-
-            return View(SharePost);
+            return View();
         }
 
         public IActionResult Search(string Name)
