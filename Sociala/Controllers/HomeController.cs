@@ -1,4 +1,13 @@
 ﻿using AuthorizationService;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Sociala.Data;
+using Sociala.Hubs;
+using Sociala.Models;
+using Sociala.Services;
+using Sociala.ViewModel;
+using System.Diagnostics;
+using AuthorizationService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -28,7 +37,7 @@ namespace Sociala.Controllers
             _data = data;
             this.authorization = authorization;
             this.CheckRelationShip = CheckRelationShip;
-            _hubContext= hubContext;
+            _hubContext = hubContext;
         }
 
         public IActionResult Index()
@@ -72,7 +81,7 @@ namespace Sociala.Controllers
                                     UserId = friend.Id,
                                     CreateAt = post.CreateAt,
                                     IsHidden = post.IsHidden,
-                                    IsBanned=friend.IsBanned,
+                                    IsBanned = friend.IsBanned,
                                     Isliked = ((!(_data.Like.Contains(new Like
                                     {
                                         PostId = post.Id,
@@ -81,14 +90,15 @@ namespace Sociala.Controllers
                                     : true),
 
                                 }
-                                )).Where(p => !p.IsHidden&&!p.IsBanned).OrderByDescending(p => p.CreateAt);
-            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id) ).Select(r => r.RequestingUserId);
+                                )).Where(p => !p.IsHidden && !p.IsBanned).OrderByDescending(p => p.CreateAt);
+            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id) && !u.IsBanned);
 
             return View();
         }
 
-        public IActionResult Search(string Name)
+        
+public IActionResult Search(string Name)
         {
             if (!authorization.IsLoggedIn())
             {
@@ -111,7 +121,7 @@ namespace Sociala.Controllers
                                     UrlPhoto = User.UrlPhoto,
                                     status = User.IsBanned
 
-                                })).Where((result => result.Role != "Admin" && !result.status&& result.IsActive && result.UesrName.Contains(Name))).ToList();
+                                })).Where((result => result.Role != "Admin" && !result.status && result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
         [HttpPost]

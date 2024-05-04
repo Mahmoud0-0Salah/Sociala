@@ -1,4 +1,5 @@
 ﻿@using Sociala.ViewModel;
+@model Sociala.Models.SharePost;
 @{
     ViewBag.Tittle = "Home";
 }
@@ -160,7 +161,7 @@
                                 </form>
                             </div>
 
-                            @foreach (var post in ViewBag.posts)
+                            @foreach (var post  in ViewBag.posts)
                             {
                                 <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-0">
                                     <div class="card-body p-0 d-flex">
@@ -224,7 +225,7 @@
                                             </a>
                                         }
                                         <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
-                                        <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+                                        <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id"  class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
                                     </div>
                                 </div>
                                 <br />
