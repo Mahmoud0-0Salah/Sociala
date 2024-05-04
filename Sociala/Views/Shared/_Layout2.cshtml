@@ -36,7 +36,7 @@
                         <input  required type="text" name="Name" placeholder="Start typing to search.." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg" >
                     </div>
                 </form>
-                <a href="/home" class="p-2 text-center ms-3 menu-icon center-menu-icon" style="margin-right: 3px"> <span class="d-inline-block fredoka-font ls-3 fw-500 text-current font-s logo-text mb-0"><i class="feather-home font-lg alert-primary btn-round-lg theme-dark-bg text-current "></i> </span></a>
+                <a href="/home" class="p-2 text-center ms-3 menu-icon center-menu-icon"><i class="feather-home font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
                 @if (Authorization.IsUser(Authorization.GetId()))
                 {
                     <a asp-area="" asp-controller="User" asp-action="Profile" asp-route-id="@Authorization.GetId()" class="p-2 text-center ms-3 menu-icon center-menu-icon" style="margin-right: 3px"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a>
@@ -57,7 +57,10 @@
                         
                     </div> *@
                 </div>
-
+                @if (ViewBag.Tittle == "Home")
+                {
+                    <a href="#" class="p-2 text-center ms-3 menu-icon chat-active-btn"><i class="feather-message-square font-xl text-current"></i></a>
+                }
             <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
                 <div class="card bg-transparent-card border-0 d-block mt-3">
                     <p class="p-2 text-center ms-3 menu-icon center-menu-icon"> <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-l logo-text mb-0" style="justify-content:right"> <i class="feather-settings animation-spin d-inline-block font-xl text-current"></i> </span></p>
@@ -192,6 +195,9 @@
 
     </div>
     <div id="AvtivateNotificationSound"></div>
+
+
+
 
     <script src="/js/plugin.js"></script>
     <script src="/js/countdown.js"></script>

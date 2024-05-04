@@ -20,7 +20,7 @@ namespace Sociala.Controllers
             _notificationSerivce = notificationSerivce;
         }
 
-        public IActionResult DeletePost(int Id)
+        public IActionResult DeletePost(int Id ,bool IsShared=false)
         {
             if (!_authorization.IsLoggedIn())
             {
@@ -30,8 +30,16 @@ namespace Sociala.Controllers
             if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
 
-            var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
-            Post.IsHidden = true;
+            if (!IsShared)
+            {
+                var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
+                Post.IsHidden = true;
+            }
+            else
+            {
+                var Post = _data.SharePost.Where(p => p.Id == Id).SingleOrDefault();
+                Post.IsHidden = true;
+            }
             _data.SaveChanges();
             return Redirect("/user/profile");
         }
@@ -114,7 +122,26 @@ namespace Sociala.Controllers
 
 
         }
-        public IActionResult SharePost( int Id)
+
+        [HttpGet]
+        public IActionResult SharePost(int Id,string? UserId)
+        {
+            var post = _data.Post.Where(p => p.Id == Id).Include(p => p.User).SingleOrDefault();
+            TempData["FromProfile"] = UserId;
+            if (post == null)
+            {
+                if (UserId == null)
+                return Redirect("/Home/Index");
+                else
+                {
+                    return Redirect($"/user/Profile/{UserId}");
+                }
+            }
+            return View(post);
+
+        }
+        [HttpPost]
+        public IActionResult SharePost( int Id, IFormCollection req)
         {
             if (!_authorization.IsLoggedIn())
             {
@@ -123,17 +150,19 @@ namespace Sociala.Controllers
             string userId = _authorization.GetId();
             if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
-            Post Result = _data.Post.Where(p => p.Id == Id).SingleOrDefault();
-            Post post= new Post();
-            post.UserId = _authorization.GetId();
-            post.CreateAt = DateTime.Now;
-            post.Imj = Result.Imj;
-            post.content = Result.content;
-            post.IsHidden = Result.IsHidden;
-            _data.Post.Add(post);
+            SharePost post = new SharePost();
+            post.UserId= userId;
+            post.PostId = Id;
+            post.Content = req["content"];
+            _data.SharePost.Add(post);
             _data.SaveChanges();
 
-            return Redirect("/Home/Index");
+            if (TempData["FromProfile"] == null)
+                return Redirect("/Home/Index");
+            else
+            {
+                return Redirect($"/user/Profile/{TempData["FromProfile"]}");
+            }
         }
 
         public async Task<IActionResult> Like(int Id,string Place)

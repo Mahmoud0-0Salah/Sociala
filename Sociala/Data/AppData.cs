@@ -19,6 +19,9 @@ namespace Sociala.Data
         public DbSet<Report> Report { get; set; }
         public DbSet<Request> Request { get; set; }
         public DbSet<Block> Block { get; set; }
+        public DbSet<Message> Message { get; set; }
+
+        public DbSet<SharePost> SharePost { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -119,6 +122,19 @@ namespace Sociala.Data
                 .WithMany()
                 .HasForeignKey(s => s.RoleId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SharePost>()
+            .HasOne(s => s.User)
+            .WithMany()
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SharePost>()
+                .HasOne(s => s.Post)
+                .WithMany()
+                .HasForeignKey(s => s.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
+
 
         }
 

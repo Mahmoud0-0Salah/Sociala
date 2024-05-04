@@ -58,7 +58,7 @@ namespace Sociala.Controllers
 
             var user = appData.User.FirstOrDefault(u => u.Id == Id);
 
-            ViewBag.posts = appData.Post.Where(post => post.UserId == Id)
+            var posts = appData.Post.Where(post => post.UserId == Id)
                                       .Join(appData.User,
                                             post => post.UserId,
                                             user => user.Id,
@@ -86,7 +86,35 @@ namespace Sociala.Controllers
                                            .Where(p => !p.IsHidden).OrderByDescending(p => p.CreateAt)
                                         .ToList();
 
-             Id = authorization.GetId();
+
+
+            var sharedPosts = appData.SharePost.Include(p => p.Post).Include(p => p.Post.User).Where(post => post.UserId == Id).Join(appData.User,
+                post => post.UserId,
+                friend => friend.Id,
+                (post, friend) => new PostInfo
+                {
+                    Id = post.Id,
+                    PostContent = post.Content,
+                    OriginalPostContent = post.Post.content,
+                    PostImj = post.Post.Imj,
+                    UserPhoto = post.User.UrlPhoto,
+                    OriginalUserPhoto = post.Post.User.UrlPhoto,
+                    UserName = post.User.UesrName,
+                    OriginalUserName = post.Post.User.UesrName,
+                    UserId = friend.Id,
+                    OriginalUserId = post.Post.UserId,
+                    CreateAt = post.CreatedAt,
+                    IsHidden = (post.IsHidden | post.Post.IsHidden),
+                    IsBanned = (friend.IsBanned | post.User.IsBanned),
+                })
+                .Where(p => !p.IsHidden && !p.IsBanned)
+                .ToList();
+
+            posts.AddRange(sharedPosts);
+
+            ViewBag.posts = posts.OrderByDescending(p => p.CreateAt);
+
+            Id = authorization.GetId();
             ViewBag.Id = Id;
 
             return View(user);

@@ -1,8 +1,8 @@
-﻿@model Report
+﻿@model Sociala.Models.Post
 
 @{
 
-    ViewData["Title"] = "Report";
+    ViewData["Title"] = "SharePost";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -81,33 +81,54 @@
 
                             <div class="card w-100 shadow-xss rounded-xxl border-0 ps-4 pt-4 pe-4 pb-3 mb-3">
                                 <div class="card-body p-0">
-                                    <a href="#" class=" font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"><i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Reported by @Model.User.UesrName </a>
+                                    <a href="#" class=" font-xssss fw-600 text-grey-500 card-body p-0 d-flex align-items-center"><i class="btn-round-sm font-xs text-primary feather-edit-3 me-2 bg-greylight"></i>Share</a>
                                 </div>
                                 <div class="card-body p-0 mt-3 position-relative">
-                                    @Model.Content
+                                    <form asp-controller="Posts" asp-action="SharePost" method="post">
+                                        <textarea name="content" class="h100 bor-0 w-100 rounded-xxl p-2 ps-5 font-xssss text-grey-500 fw-500 border-light-md theme-dark-bg" cols="30" rows="10" placeholder="What do You Add"></textarea>
+                                        <div class="text-center mt-3">
+                                            <button type="submit" class="btn-round-md bg-white text-grey-500"><i class="ti-pencil"></i></button>
+                                        </div>
+                                    </form>
                                 </div>
                                 <div class="card-body d-flex p-0 mt-0">
 
                                     <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
                                         <div class="card-body p-0 d-flex">
-                                            <figure class="avatar me-3"><img src="@Model.Post.User.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
-                                            <h4 class="fw-700 text-grey-900 font-xssss mt-1">@Model.Post.User.UesrName  <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">@Model.Post.CreateAt</span></h4>
+                                            <figure class="avatar me-3"><img src="@Model.User.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                            <h4 class="fw-700 text-grey-900 font-xssss mt-1">@Model.User.UesrName  <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">@Model.CreateAt</span></h4>
 
                                         </div>
                                         <div class="card-body p-0 me-lg-5">
-                                            <p class="fw-500 text-grey-500 lh-26 font-xssss w-100"> @Model.Post.content</p>
+                                            <p class="fw-500 text-grey-500 lh-26 font-xssss w-100"> @Model.content</p>
                                         </div>
+                                   
+
+                                    @if (Model.Imj != null)
+                                    {
+                                        <div class="card-body d-block p-0 mb-3">
+                                            <div class="row ps-2 pe-2">
+                                                @if (Model.Imj[Model.Imj.Length - 1] != '4')
+                                                {
+                                                    <div class="col-sm-12 p-1"><img src="@Model.Imj" class="rounded-3 w-100" alt="image"></div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="col-sm-12 p-1">
+                                                        <video width="100%" controls>
+                                                            <source src="@Model.Imj" type="video/mp4">
+                                                            Your browser does not support the video tag.
+                                                        </video>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="card-body d-flex p-0">
 
                                     </div>
 
                                 </div>
-                                 
-                                <div class="text-center mt-3 d-inline">
-                                    <a href="#" id="approveLink" data-action="ApproveReport" data-controller="Admin" data-id="@Model.Id" class="btn btn-outline-success btn-lg confirm-link">Approve</a>
-                                    <a asp-action="RejectReport" asp-controller="Admin" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-lg">Reject</a>
-                                    
-                                </div>
-                                
                             </div>
 
                             <!-- Create Post end -->
@@ -148,26 +169,12 @@
         </div>
 
     </div>
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('.confirm-link').forEach(function (element) {
-                element.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    var action = this.getAttribute('data-action');
-                    var controller = this.getAttribute('data-controller');
-                    var id = this.getAttribute('data-id');
-                    var result = confirm('Are you sure you want to block Approve this Post');
-                    if (result) {
-                        window.location.href = '/' + controller + '/' + action + '/' + id;
-                    }
-                });
-            });
-        });
-
-    </script>
 
 
+    <script src="js/plugin.js"></script>
+
+    <script src="js/lightbox.js"></script>
+    <script src="js/scripts.js"></script>
 </body>
 
 </html>

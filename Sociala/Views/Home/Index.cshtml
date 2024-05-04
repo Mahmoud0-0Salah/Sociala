@@ -1,4 +1,10 @@
 ﻿@using Sociala.ViewModel;
+@model Sociala.Models.SharePost;
+@{
+    ViewBag.Tittle = "Home";
+}
+@inject AuthorizationService.IAuthorization Authorization
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -155,7 +161,7 @@
                                 </form>
                             </div>
 
-                            @foreach (var post in ViewBag.posts)
+                            @foreach (var post  in ViewBag.posts)
                             {
                                 <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-0">
                                     <div class="card-body p-0 d-flex">
@@ -166,24 +172,42 @@
                                                 <h6 class="fw-500 text-grey-450 font-xssss mt-1">@post.CreateAt</h6>
                                             </div>
                                         </a>
-                                        <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
-                                        <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
-                                            @* <div class="card-body p-0 d-flex">
+                                        @if (post.OriginalUserName == null)
+                                        {
+                                            <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
+                                                @* <div class="card-body p-0 d-flex">
                                         <i class="feather-bookmark text-grey-500 me-3 font-lg"></i>
                                         <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Save Link <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Add this to your saved items</span></h4>
                                         </div> *@
-                                            <div class="card-body p-0 d-flex mt-2">
-                                                <a asp-action="Report" asp-controller="Posts" asp-route-id="@post.Id">
-                                                    <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
-                                                    <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Report </h4>
-                                                </a>
-                                            </div>
+                                                <div class="card-body p-0 d-flex mt-2">
+                                                    <a asp-action="Report" asp-controller="Posts" asp-route-id="@post.Id">
+                                                        <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                        <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Report </h4>
+                                                    </a>
+                                                </div>
 
-                                        </div>
+                                            </div>
+                                        }
                                     </div>
                                     <div class="card-body p-0 me-lg-5">
                                         <p class="text-grey-600 lh-26 font-xssss w-100 mb-2"><b>@post.PostContent</b></p>
                                     </div>
+                                    @if (post.OriginalUserName != null)
+                                    {
+                                    <hr />
+                                    <a class="card-body p-0 d-flex" asp-controller="user" asp-action="profile" asp-route-id="@post.OriginalUserId">
+                                        <div class="card-body p-0 d-flex">
+                                            <figure class="avatar me-3"><img src="@post.OriginalUserPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                            <div class="card-body p-0 me-lg-5">
+                                                <h4 class="fw-700 text-grey-900 font-xssss mt-1">@post.OriginalUserName</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="card-body p-0 me-lg-5">
+                                        <p class="text-grey-600 lh-26 font-xssss w-100 mb-2"><b>@post.OriginalPostContent</b></p>
+                                    </div>
+                                    }
 
                                     @if (post.PostImj != null)
                                     {
@@ -205,22 +229,27 @@
                                             </div>
                                         </div>
                                     }
-                                    <div class="card-body d-flex p-0">
-                                        @if (!post.Isliked)
-                                        {
-                                            <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
-                                                <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
-                                                <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-                                            </a>
-                                        }
-                                        <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
-                                        <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
-                                    </div>
+                                    @if (post.OriginalUserName==null)
+                                    {
+                                        
+                                        <div class="card-body d-flex p-0">
+                                            @if (!post.Isliked)
+                                            {
+                                                <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
+                                                    <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
+                                                    <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
+                                                </a>
+                                            }
+                                            <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
+                                            <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id"  class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+                                        </div>
+                                    }
+                                   
                                 </div>
                                 <br />
                             }
@@ -248,6 +277,75 @@
 
                             </div>
                         </div>
+                            <div class="right-chat nav-wrap mt-2 right-scroll-bar">
+                                <div class="middle-sidebar-right-content bg-white shadow-xss rounded-xxl">
+
+                                    <!-- loader wrapper -->
+                                    <div class="preloader-wrap p-3">
+                                        <div class="box shimmer">
+                                            <div class="lines">
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                            </div>
+                                        </div>
+                                        <div class="box shimmer mb-3">
+                                            <div class="lines">
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                            </div>
+                                        </div>
+                                        <div class="box shimmer">
+                                            <div class="lines">
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                                <div class="line s_shimmer"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- loader wrapper -->
+
+                                    <div class="section full pe-3 ps-4 pt-4 position-relative feed-body">
+                                        <h4 class="font-xsssss text-grey-500 text-uppercase fw-700 ls-3">CONTACTS</h4>
+                                        <ul class="list-group list-group-flush">
+                                        @foreach (var user in ViewBag.friends)
+                                            {
+                                                @if (user.User.Id != Authorization.GetId())
+                                                {
+
+                                                    <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
+                                                        <figure class="avatar float-left mb-0 me-2">
+                                                        <img src="@user.User.UrlPhoto" alt="image" class="w35">
+                                                        </figure>
+                                                        <h3 class="fw-700 mb-0 mt-0">
+                                                        <a onclick="ShowMessage('@user.User.Id')" class="font-xssss text-grey-600 d-block text-dark model-popup-chat">@user.User.UesrName</a>
+                                                        </h3>
+                                                    @if (user.IsActive)
+                                                    {
+                                                         <span class="bg-success ms-auto btn-round-xss"></span>
+                                                        
+                                                    }
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </div>
+
+
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+                        <div id="chat" class="modal-popup-chat">
+                        </div>
+
                         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                         <script>
                             $(document).ready(function () {
@@ -281,8 +379,45 @@
                         </script>
 
 
+                        <script>
+                function ShowMessage(Id) {
+
+                                $.ajax({
+                        url: '/Message/ShowMessage',
+                                    data: { id: Id },
+                                    success: function (response) {
+                                        document.getElementById('chat').innerHTML = response
+                                    },
+                                    error: function () {
+                                        alert('An error occurred');
+                                    }
+                                });
+                            }
+                        </script>
+
+                        <script>
+                function CreateMessage(Id) {
+                                event.preventDefault();
+                                var Content = document.getElementById('massagecontent').value;
+                                $.ajax({
+                        url: '/Message/CreateMessage',
+                                    data: { id: Id, content: Content },
+                                    success: function (response) {
+                                        document.getElementById('chat').innerHTML = response
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error(xhr.responseText);
+                                    }
+                                });
+
+
+
+                            }
+
+
+                        </script>
                         <script src="/js/lightbox.js"></script>
-                        
+                       
                         
 
 </body>

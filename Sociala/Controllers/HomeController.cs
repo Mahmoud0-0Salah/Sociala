@@ -1,7 +1,18 @@
 ﻿using AuthorizationService;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Sociala.Data;
+using Sociala.Hubs;
+using Sociala.Models;
+using Sociala.Services;
+using Sociala.ViewModel;
+using System.Diagnostics;
+using AuthorizationService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Sociala.Data;
+using Sociala.Hubs;
 using Sociala.Models;
 using Sociala.Services;
 using Sociala.ViewModel;
@@ -9,6 +20,7 @@ using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sociala.Controllers
 {
@@ -18,13 +30,15 @@ namespace Sociala.Controllers
         private readonly AppData _data;
         private readonly IAuthorization authorization;
         private readonly ICheckRelationShip CheckRelationShip;
-        public HomeController(ILogger<HomeController> logger, AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip)
+        private readonly IHubContext<NotificationsHub> _hubContext;
+
+        public HomeController(ILogger<HomeController> logger, AppData data, IAuthorization authorization, ICheckRelationShip CheckRelationShip, IHubContext<NotificationsHub> hubContext)
         {
             _logger = logger;
             _data = data;
             this.authorization = authorization;
             this.CheckRelationShip = CheckRelationShip;
-
+            _hubContext = hubContext;
         }
 
         public IActionResult Index()
@@ -48,39 +62,68 @@ namespace Sociala.Controllers
             var friendsId = _data.Friend.Where(f => f.RequestingUserId.Equals(id) || f.RequestedUserId.Equals(id)).Select(f => id.Equals(f.RequestedUserId) ? f.RequestingUserId : f.RequestedUserId).ToList();
             friendsId.Add(id);
             var friends = _data.User.Where(u => friendsId.Contains(u.Id));
-            ViewBag.posts = (_data.Post.Join(friends,
-                                post => post.UserId,
-                                friend => friend.Id,
-                                (post, friend) =>
 
-                                new PostInfo
-                                ()
-                                {
-                                    Id = post.Id,
-                                    PostContent = post.content,
-                                    PostImj = post.Imj,
-                                    UserPhoto = friend.UrlPhoto,
-                                    UserName = friend.UesrName,
-                                    UserId = friend.Id,
-                                    CreateAt = post.CreateAt,
-                                    IsHidden = post.IsHidden,
-                                    IsBanned=friend.IsBanned,
-                                    Isliked = ((!(_data.Like.Contains(new Like
-                                    {
-                                        PostId = post.Id,
-                                        UserId = id
-                                    }))) ? false
-                                    : true),
+            var _userConnections = NotificationsHub.GetUsersConnections();
+            ViewBag.friends = friends.Select(u => new { User = u, IsActive = _userConnections.ContainsKey(u.Id) });
 
-                                }
-                                )).Where(p => !p.IsHidden&&!p.IsBanned).OrderByDescending(p => p.CreateAt);
-            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id) ).Select(r => r.RequestingUserId);
+            var posts = (_data.Post.Join(friends,
+             post => post.UserId,
+             friend => friend.Id,
+             (post, friend) => new PostInfo
+             {
+                 Id = post.Id,
+                 PostContent = post.content,
+                 PostImj = post.Imj,
+                 UserPhoto = friend.UrlPhoto,
+                 UserName = friend.UesrName,
+                 UserId = friend.Id,
+                 CreateAt = post.CreateAt,
+                 IsHidden = post.IsHidden,
+                 IsBanned = friend.IsBanned,
+                 Isliked = (_data.Like.Contains(new Like
+                 {
+                     PostId = post.Id,
+                     UserId = id
+                 }))
+             }))
+             .Where(p => !p.IsHidden && !p.IsBanned)
+             .ToList();
+
+                    var sharedPosts = _data.SharePost.Include(p => p.Post).Include(p => p.Post.User).Join(friends,
+                        post => post.UserId,
+                        friend => friend.Id,
+                        (post, friend) => new PostInfo
+                        {
+                            Id = post.Id,
+                            PostContent = post.Content,
+                            OriginalPostContent = post.Post.content,
+                            PostImj = post.Post.Imj,
+                            UserPhoto = post.User.UrlPhoto,
+                            OriginalUserPhoto = post.Post.User.UrlPhoto,
+                            UserName = post.User.UesrName,
+                            OriginalUserName = post.Post.User.UesrName,
+                            UserId = friend.Id,
+                            OriginalUserId = post.Post.UserId,
+                            CreateAt = post.CreatedAt,
+                            IsHidden = (post.IsHidden | post.Post.IsHidden),
+                            IsBanned = (friend.IsBanned | post.User.IsBanned),
+                        })
+                        .Where(p => !p.IsHidden && !p.IsBanned)
+                        .ToList();
+
+            posts.AddRange(sharedPosts);
+
+
+
+
+            var RequestsId = _data.Request.Where(r => r.RequestedUserId.Equals(id)).Select(r => r.RequestingUserId);
             ViewBag.Requests = _data.User.Where(u => RequestsId.Contains(u.Id) && !u.IsBanned);
-
+            ViewBag.posts = posts.OrderByDescending(p=>p.CreateAt);
             return View();
         }
 
-        public IActionResult Search(string Name)
+        
+public IActionResult Search(string Name)
         {
             if (!authorization.IsLoggedIn())
             {
@@ -103,7 +146,7 @@ namespace Sociala.Controllers
                                     UrlPhoto = User.UrlPhoto,
                                     status = User.IsBanned
 
-                                })).Where((result => result.Role != "Admin" && !result.status&& result.IsActive && result.UesrName.Contains(Name))).ToList();
+                                })).Where((result => result.Role != "Admin" && !result.status && result.IsActive && result.UesrName.Contains(Name))).ToList();
             return View();
         }
         [HttpPost]

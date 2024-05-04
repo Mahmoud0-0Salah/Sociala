@@ -137,7 +137,7 @@
                                         {
                                         <div class="card-body p-0 d-flex mt-2">
                                            
-                                            <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: red;">Block</a>   
+                                                    <a asp-controller="User" asp-action="Block" asp-route-id="@Model.Id" asp-route-place="Profile" class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white confirm-link" style="background-color: red;">Block</a>
                                             </div>
                                         }
                                         else
@@ -245,26 +245,75 @@
                                             <i class="feather-bookmark text-grey-500 me-3 font-lg"></i>
                                             <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Save Link <span class="d-block font-xsssss fw-500 mt-1 lh-3 text-grey-500">Add this to your saved items</span></h4>
                                             </div> *@
-                                                <div class="card-body p-0 d-flex mt-2">
-                                                    <a asp-action="DeletePost" asp-controller="Posts" asp-route-id="@post.Id">
-                                                        <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
-                                                        <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Post </h4>
-                                                    </a>
-                                                </div>
+                                            @if (post.OriginalUserName == null)
+                                                {
+                                                    <div class="card-body p-0 d-flex mt-2">
+                                                        <a asp-action="DeletePost" asp-controller="Posts" asp-route-id="@post.Id" asp-route-IsShared="false">
+                                                            <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                            <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Post </h4>
+                                                        </a>
+                                                    </div>
 
-                                                <div class="card-body p-0 d-flex mt-2">
-                                                    <a asp-controller="Posts" asp-action="EditPost" asp-route-id="@post.Id">
-                                                        <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
-                                                        <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Edit Post </h4>
-                                                    </a>
-                                                </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="card-body p-0 d-flex mt-2">
+                                                        <a asp-action="DeletePost" asp-controller="Posts" asp-route-id="@post.Id" asp-route-IsShared="true">
+                                                            <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                            <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Post </h4>
+                                                        </a>
+                                                    </div>
+                                                    
+                                                }
+                                                @if (post.OriginalUserName == null)
+                                                {
+                                                    <div class="card-body p-0 d-flex mt-2">
+                                                        <a asp-controller="Posts" asp-action="EditPost" asp-route-id="@post.Id">
+                                                            <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                            <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Edit Post </h4>
+                                                        </a>
+                                                    </div>
 
+                                               
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
+                                           
+                                                @if (post.OriginalUserName == null)
+                                                {
+
+                                                    <div class="card-body p-0 d-flex mt-2">
+                                                        <a asp-action="Report" asp-controller="Posts" asp-route-id="@post.Id">
+                                                            <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                                                            <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Report </h4>
+                                                        </a>
+                                                    </div>
+                                                }
                                             </div>
                                         }
                                     </div>
                                     <div class="card-body p-0 me-lg-5">
                                         <p class="text-grey-600 lh-26 font-xssss w-100 mb-2"><b>@post.PostContent</b></p>
                                     </div>
+                                    @if (post.OriginalUserName != null)
+                                    {
+                                        <hr />
+                                        <a class="card-body p-0 d-flex" asp-controller="user" asp-action="profile" asp-route-id="@post.OriginalUserId">
+                                            <div class="card-body p-0 d-flex">
+                                                <figure class="avatar me-3"><img src="@post.OriginalUserPhoto" alt="image" class="shadow-sm rounded-circle w45"></figure>
+                                                <div class="card-body p-0 me-lg-5">
+                                                    <h4 class="fw-700 text-grey-900 font-xssss mt-1">@post.OriginalUserName</h4>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div class="card-body p-0 me-lg-5">
+                                            <p class="text-grey-600 lh-26 font-xssss w-100 mb-2"><b>@post.OriginalPostContent</b></p>
+                                        </div>
+                                    }
                                     @if (post.PostImj != null)
                                     {
                                         <div class="card-body d-block p-0 mb-3">
@@ -288,19 +337,25 @@
                                     <div class="card-body d-flex p-0">
                                         @if (Authorization.IsUser(ViewBag.Id))
                                         {
-                                            @if (!post.Isliked)
+                                            @if (post.OriginalUserName == null)
                                             {
-                                                <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" >
-                                                    <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
-                                                </a>
+
+                                                @if (!post.Isliked)
+                                                {
+                                                    <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" >
+                                                        <i class="feather-thumbs-up text-white me-1 btn-round-xs font-xss" style="background-color:gray;"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" >
+                                                        <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
+                                                    </a>
+                                                }
+                                                <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
+                                                <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id"  asp-route-UserId="@Model.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+
                                             }
-                                            else
-                                            {
-                                                <a id="likeButton-@post.Id" data-post-id="@post.Id" class="like-button d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2" >
-                                                    <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
-                                                </a>
-                                            }
-                                            <a href="#" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss">22 Comment</span></a>
                                         }
                                     </div>
                                 </div>
@@ -587,6 +642,17 @@
                         },
                         error: function () {
                             alert('An error occurred');
+                        }
+                    });
+                });
+            });
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.confirm-link').forEach(function (element) {
+                    element.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        var result = confirm('Are you sure you want to block @Model.UesrName');
+                        if (result) {
+                            window.location.href = this.href;
                         }
                     });
                 });
