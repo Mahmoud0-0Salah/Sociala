@@ -47,11 +47,15 @@
                 <div id="notificationList" class="dropdown-menu dropdown-menu-end p-4 rounded-3 border-0 shadow-lg" aria-labelledby="dropdownMenu3">
 
                     <h4 class="fw-700 font-xss mb-4">Notification</h4>
-                    <div id="notificationItem" class="card bg-transparent-card w-100 border-0 ps-5 mb-3">
+                    <div id="allNotifications" class="float-right mt-1">
+                        <a asp-controller="Notifications" asp-action="NotificationList">All Notifications</a>
+                    </div>
+                    @* <div id="0" class="notificationItem card bg-transparent-card w-100 border-0 ps-5 mb-3">
                         <img src="images/user-8.png" alt="user" class="w40 position-absolute left-0">
                         <h5 class="font-xsss text-grey-900 mb-1 mt-0 fw-700 d-block">Hendrix Stamp <span class="text-grey-400 font-xsssss fw-600 float-right mt-1"> 3 min</span></h5>
-                        <h6 class="text-grey-500 fw-500 font-xssss lh-4">There are many variations of pass..</h6>
-                    </div>
+                        <h6 class="text-grey-500 fw-500 font-xssss lh-4">There are many variations of pass..<a href="" class="mark-link float-right float-end font-xssxx">Mark As Read</a></h6>
+                        
+                    </div> *@
                 </div>
 
             <div class="p-2 text-center ms-3 position-relative dropdown-menu-icon menu-icon cursor-pointer">
@@ -85,8 +89,8 @@
                         <li>
                             <label class="item-radio item-content">
                                 <input type="radio" name="color-radio" value="pink"><i class="ti-check"></i>
-                                <span class="circle-color bg-pink" style="background-color: #ff2d55;"></span>
                             </label>
+                                <span class="circle-color bg-pink" style="background-color: #ff2d55;"></span>
                         </li>
                         <li>
                             <label class="item-radio item-content">
@@ -187,6 +191,7 @@
         </div>
 
     </div>
+    <div id="AvtivateNotificationSound"></div>
 
     <script src="/js/plugin.js"></script>
     <script src="/js/countdown.js"></script>
@@ -201,6 +206,40 @@
                 + '<div class="time-count"><span class="text-time">%H</span> <span class="text-day">Hours</span> </div> '
                 + '<div class="time-count"><span class="text-time">%M</span> <span class="text-day">Min</span> </div> '
                 + '<div class="time-count"><span class="text-time">%S</span> <span class="text-day">Sec</span> </div> '));
+            });
+        });
+    </script>
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/notifications.js"></script>
+    <script>
+        $(document).ready(function () {
+
+
+            $(document).on("click", ".mark-link", function () {
+                
+                var element = $(this);
+                var notificationId = element.data('notification-id'); 
+                var notificationItem = element.closest('.notificationItem');
+                console.log("notificationId:", notificationId);
+                $.ajax({
+                    url: '/Notifications/MarkAsRead',
+                    type: 'POST',
+                    data: { Id: notificationId},
+                    success: function (response) {
+                        if (response.success) {
+                            console.log("Success!");
+                            notificationItem.css('background-color', 'white');
+                            element.remove();
+                        } else {
+                            console.log('Response Text:', response);
+                            alert('An error occurred');
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('Response Text:', jqXHR.responseText);
+                        alert('An error occurred');
+                    }
+                });
             });
         });
     </script>

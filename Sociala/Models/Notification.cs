@@ -16,5 +16,9 @@ namespace Sociala.Models
         public string  UserId { get; set; }
         virtual public User User { get; set; }
 
+        [ForeignKey("Actor")]
+        public string? ActorId { get; set; }
+        virtual public User Actor { get; set; }
+
     }
 }

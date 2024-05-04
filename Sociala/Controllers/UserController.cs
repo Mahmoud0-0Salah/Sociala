@@ -28,8 +28,11 @@ namespace Sociala.Controllers
         private readonly IAuthorization authorization;
         private readonly IConfiguration configuration;
         private readonly ICheckRelationShip CheckRelationShip;
+        private readonly INotification notificationSerivce;
 
-        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender, IAuthorization authorization, IConfiguration configuration, ICheckRelationShip CheckRelationShip)
+        public UserController(AppData appData, IEncrypt encryptClass, IEmailSender emailSender,
+                                IAuthorization authorization, IConfiguration configuration,
+                                ICheckRelationShip CheckRelationShip, INotification notificationSerivce)
         {
             this.appData = appData;
             this.encryptclass = encryptClass;
@@ -37,6 +40,7 @@ namespace Sociala.Controllers
             this.authorization = authorization;
             this.configuration = configuration;
             this.CheckRelationShip = CheckRelationShip;
+            this.notificationSerivce = notificationSerivce;
         }
         public IActionResult Profile(string Id)
         {
@@ -156,7 +160,7 @@ namespace Sociala.Controllers
         }
 
 
-        public IActionResult AddFriend(string Id, string Place)
+        public async Task<IActionResult> AddFriend(string Id, string Place)
         {
             if (!authorization.IsLoggedIn())
             {
@@ -177,6 +181,7 @@ namespace Sociala.Controllers
                 request.RequestedUserId = Id;
                 appData.Request.Add(request);
                 appData.SaveChanges();
+                await notificationSerivce.SendFriendRequestNotification(request.RequestingUserId, request.RequestedUserId);
 
             }
             catch
@@ -241,7 +246,7 @@ namespace Sociala.Controllers
             else return RedirectToAction("ShowRequest");
 
         }
-        public IActionResult ConfirmRequest(string Id, string Place)
+        public async Task <IActionResult> ConfirmRequest(string Id, string Place)
         {
             if (!authorization.IsLoggedIn())
             {
@@ -259,6 +264,7 @@ namespace Sociala.Controllers
                 var DeleteResult = appData.Request.Where(p => p.RequestedUserId == authorization.GetId() && p.RequestingUserId == Id);
                 appData.Request.Remove(DeleteResult.First());
                 appData.SaveChanges();
+                await notificationSerivce.SendFriendRequestAcceptNotification(friend.RequestedUserId, friend.RequestingUserId);
             }
             catch
             {
