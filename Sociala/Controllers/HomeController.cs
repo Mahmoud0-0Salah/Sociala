@@ -111,7 +111,7 @@ namespace Sociala.Controllers
                             Isliked = (_data.Like.Contains(new Like
                             {
                                 PostId = post.Post.Id,
-                                UserId = post.UserId
+                                UserId = id
                             }))
                         })
                         .Where(p => !p.IsHidden && !p.IsBanned)
