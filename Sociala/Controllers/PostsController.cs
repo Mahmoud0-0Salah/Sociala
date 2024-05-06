@@ -220,6 +220,7 @@ namespace Sociala.Controllers
                 _data.Comment.Add(comment);
                 _data.SaveChanges();
                 var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User);
+                ViewData["PostId"] = id;
                 return PartialView("ShowComment", res);
             }
             catch
@@ -231,7 +232,7 @@ namespace Sociala.Controllers
         {
           
             var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User);
-            TempData["PostId"]= Id;
+             ViewData["PostId"]= Id;
             return PartialView(comment);
         }
 
