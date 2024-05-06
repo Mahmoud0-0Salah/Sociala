@@ -266,10 +266,10 @@
 
                                             <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
                                         </div>
-                                       <div id = "@post.Id" >
+                                        <div id="@post.Id">
+                                            <input id="appear-@post.Id" class="appear-@post.Id" value="false" style="display:none">
 
                                         </div>
-
 
                                     }
                                     else
@@ -471,12 +471,17 @@
                 function GetData(Id) {
                     event.preventDefault();
                     //console.log(Id);
+                    var appear = document.getElementById('appear-' + Id).value;
 
                     $.ajax({
-                        url: '/Posts/ShowComment/' ,
-                        data: {  Id },
+                        url: '/Posts/ShowComment/',
+                        data: { Id },
                         success: function (result) {
-                            document.getElementById(Id).innerHTML = result;
+                            if (appear == 'false')
+                                document.getElementById(Id).innerHTML = result;
+                            else
+                                document.getElementById(Id).innerHTML = '<input id="appear-' + Id + '" value="false" style="display: none;">';
+
 
 
                         }
