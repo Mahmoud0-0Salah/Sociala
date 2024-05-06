@@ -9,6 +9,7 @@ namespace Sociala.ViewModel
         public string? OriginalPostContent { get; set; }
         public string? OriginalUserPhoto { get; set; }
         public string? OriginalUserName { get; set; }
+        public int? OriginalId { get; set; }
         public User? User { get; set; }
         public string PostImj { get; set; }
         public string UserPhoto { get; set; }

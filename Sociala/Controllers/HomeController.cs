@@ -95,6 +95,7 @@ namespace Sociala.Controllers
                         (post, friend) => new PostInfo
                         {
                             Id = post.Id,
+                            OriginalId = post.Post.Id,
                             PostContent = post.Content,
                             OriginalPostContent = post.Post.content,
                             PostImj = post.Post.Imj,
@@ -107,6 +108,11 @@ namespace Sociala.Controllers
                             CreateAt = post.CreatedAt,
                             IsHidden = (post.IsHidden | post.Post.IsHidden),
                             IsBanned = (friend.IsBanned | post.User.IsBanned),
+                            Isliked = (_data.Like.Contains(new Like
+                            {
+                                PostId = post.Post.Id,
+                                UserId = post.UserId
+                            }))
                         })
                         .Where(p => !p.IsHidden && !p.IsBanned)
                         .ToList();
