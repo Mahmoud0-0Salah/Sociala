@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Sociala.Models.Comment>
+@{
+    int Id = Convert.ToInt32(TempData["PostId"]);
+}
+<div class="middle-sidebar-bottom">
+  <div class="middle-sidebar-left pe-0">
+    <div class="row">
+      <div class="col-xl-12">
+
+        <div class="chat-area">
+          <div class="messages">
+            @{int c = 0;}
+            @foreach (var item in Model)
+            {
+              <div class="col-md-12 message relative">
+                <div class="card-body">
+                  <div class="direct-chat-msg">
+                    <div class="direct-chat-info clearfix">
+
+                      <a asp-controller="User" asp-action="Profile" asp-route-Id="@item.User.Id">
+                        <figure class="avatar me-3">
+                          <img src="@item.User.UrlPhoto" alt="image" class="shadow-sm rounded-circle w45">
+                          <span class="username-behind-photo">@item.User.UesrName</span>
+                        </figure>
+                      </a>
+                                           
+                     <a href="#" class="ms-auto dropup absolute top-0 end-0 translate-middle-y" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i>
+                </a>
+                <div class="dropdown-menu dropup p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
+                  <div class="card-body p-0 d-flex mt-2">
+                    <a href="#">
+                      <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
+                      <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Comment </h4>
+                    </a>
+                  </div>
+                  <div class="card-body p-0 d-flex mt-2">
+                    <a href="#">
+                      <i class="feather-edit text-grey-500 me-3 font-lg"></i>
+                      <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Edit Comment </h4>
+                    </a>
+                  </div>
+                </div>
+                      <span class="direct-chat-timestamp float-right"> @item.Content</span>
+                    </div>
+                  </div>
+                </div>
+
+                
+                            </div>
+                            c++;
+
+                           Id = Convert.ToInt32(item.PostId);
+                        }
+            @if (c == 0)
+            {
+              <a class="mt-0 btn pt-2 pb-2 ps-3 pe-3 lh-24 ms-1 ls-3 d-inline-block rounded-xl font-xsssss fw-700 ls-lg text-white" style="background-color: gray;">No Comment Until Now</a>
+
+            }
+          </div>
+        </div>
+
+        <div class="modal-popup-footer w-100 border-top">
+          <div class="card p-3 d-block border-0">
+            <div class="form-group icon-right-input style1-input mb-0">
+               
+              <form onsubmit="CreateComment('@Id')">
+                <input type="text" id="CommentContent" placeholder="Start typing.." class="form-control rounded-xl bg-greylight border-0 font-xssss fw-500 ps-3">
+              </form>
+              <i class="feather-send text-grey-500 font-md"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<style>
+   .chat-area {
+  display: flex;
+  flex-direction: column-reverse; /* Reverse order */
+  height: 150px; /* Adjust height as needed */
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+.messages {
+  display: flex;
+  flex-direction: column-reverse; /* Reverse order */
+}
+
+.message {
+  margin-top: 5px;
+}
+
+.self {
+  text-align: right;
+}
+
+</style

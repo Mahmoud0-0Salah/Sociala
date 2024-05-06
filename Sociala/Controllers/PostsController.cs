@@ -12,7 +12,7 @@ namespace Sociala.Controllers
         private readonly AppData _data;
         private readonly IAuthorization _authorization;
         private readonly INotification _notificationSerivce;
-        public PostsController(ILogger<HomeController> logger, AppData data, 
+        public PostsController(ILogger<HomeController> logger, AppData data,
                                IAuthorization authorization, INotification notificationSerivce)
         {
             _data = data;
@@ -20,7 +20,7 @@ namespace Sociala.Controllers
             _notificationSerivce = notificationSerivce;
         }
 
-        public IActionResult DeletePost(int Id ,bool IsShared=false)
+        public IActionResult DeletePost(int Id, bool IsShared = false)
         {
             if (!_authorization.IsLoggedIn())
             {
@@ -32,7 +32,7 @@ namespace Sociala.Controllers
 
             if (!IsShared)
             {
-                var Post =_data.Post.Where(p=>p.Id == Id).SingleOrDefault();
+                var Post = _data.Post.Where(p => p.Id == Id).SingleOrDefault();
                 Post.IsHidden = true;
             }
             else
@@ -124,14 +124,14 @@ namespace Sociala.Controllers
         }
 
         [HttpGet]
-        public IActionResult SharePost(int Id,string? UserId)
+        public IActionResult SharePost(int Id, string? UserId)
         {
             var post = _data.Post.Where(p => p.Id == Id).Include(p => p.User).SingleOrDefault();
             TempData["FromProfile"] = UserId;
             if (post == null)
             {
                 if (UserId == null)
-                return Redirect("/Home/Index");
+                    return Redirect("/Home/Index");
                 else
                 {
                     return Redirect($"/user/Profile/{UserId}");
@@ -141,7 +141,7 @@ namespace Sociala.Controllers
 
         }
         [HttpPost]
-        public IActionResult SharePost( int Id, IFormCollection req)
+        public IActionResult SharePost(int Id, IFormCollection req)
         {
             if (!_authorization.IsLoggedIn())
             {
@@ -151,7 +151,7 @@ namespace Sociala.Controllers
             if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
             SharePost post = new SharePost();
-            post.UserId= userId;
+            post.UserId = userId;
             post.PostId = Id;
             post.Content = req["content"];
             _data.SharePost.Add(post);
@@ -165,7 +165,7 @@ namespace Sociala.Controllers
             }
         }
 
-        public async Task<IActionResult> Like(int Id,string Place)
+        public async Task<IActionResult> Like(int Id, string Place)
         {
             if (!_authorization.IsLoggedIn())
             {
@@ -174,7 +174,7 @@ namespace Sociala.Controllers
             string userId = _authorization.GetId();
             if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
-            Like like=new Like();
+            Like like = new Like();
             like.UserId = _authorization.GetId();
             like.PostId = Id;
             _data.Like.Add(like);
@@ -198,13 +198,41 @@ namespace Sociala.Controllers
             if (_authorization.IsAdmin(userId))
                 return RedirectToAction("index", "Home");
 
-            var target= _data.Like.Where(l => l.PostId == Id && l.UserId == _authorization.GetId()).SingleOrDefault();
+            var target = _data.Like.Where(l => l.PostId == Id && l.UserId == _authorization.GetId()).SingleOrDefault();
             _data.Like.Remove(target);
             _data.SaveChanges();
             if (Place == "Index")
                 return Json(new { success = true, redirectTo = "/Home/Index" });
             return Json(new { success = true, redirectTo = $"/User/Profile/{Place}" });
 
+        }
+
+        public IActionResult CreateComment(int id, string content)
+        {
+            try
+            {
+                Comment comment = new Comment();
+                comment.PostId = id;
+                comment.UserId = _authorization.GetId();
+                comment.Content = content;
+                comment.CreatedAt = DateTime.Now;
+               
+                _data.Comment.Add(comment);
+                _data.SaveChanges();
+                var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User);
+                return PartialView("ShowComment", res);
+            }
+            catch
+            {
+                return View("ErrorPage");
+            }
+        }
+        public IActionResult ShowComment(int Id)
+        {
+          
+            var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User);
+            TempData["PostId"]= Id;
+            return PartialView(comment);
         }
 
         [HttpGet]
@@ -217,18 +245,19 @@ namespace Sociala.Controllers
             string userId = _authorization.GetId();
 
             var post = _data.Post.Where(p => p.Id == Id).Include(p => p.User).SingleOrDefault();
-            if (post == null) {
+            if (post == null)
+            {
 
                 return RedirectToAction("Index", "Home");
             }
-            if (! CanReport(Id, userId))
+            if (!CanReport(Id, userId))
             {
                 return View("CanNotReport");
             }
 
             return View(post);
         }
-        
+
         [HttpPost]
         public IActionResult Report(int Id, IFormCollection req)
         {
@@ -239,7 +268,8 @@ namespace Sociala.Controllers
             string userId = _authorization.GetId();
 
             var post = _data.Post.FirstOrDefault(p => p.Id == Id);
-            if (post == null) {
+            if (post == null)
+            {
 
                 return RedirectToAction("Index", "Home");
             }
@@ -249,9 +279,9 @@ namespace Sociala.Controllers
             }
 
             var content = req["content"];
-            var report = new Report{  UserId = userId, PostId=Id, Content=content };
+            var report = new Report { UserId = userId, PostId = Id, Content = content };
 
-            _data.Add(report);  
+            _data.Add(report);
             _data.SaveChanges();
 
             return RedirectToAction("Index", "Home");
