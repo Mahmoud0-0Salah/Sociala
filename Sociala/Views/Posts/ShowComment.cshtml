@@ -2,7 +2,6 @@
 @{
     int Id = Convert.ToInt32(TempData["PostId"]);
 }
-<input id="appear-@Model.First().PostId" class="appear-@Model.First().PostId" value="true" style="display:none">
 <div class="middle-sidebar-bottom">
   <div class="middle-sidebar-left pe-0">
     <div class="row">
@@ -52,6 +51,7 @@
                             c++;
 
                            Id = Convert.ToInt32(item.PostId);
+                        
                         }
             @if (c == 0)
             {
