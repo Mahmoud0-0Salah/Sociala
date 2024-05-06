@@ -216,8 +216,7 @@ namespace Sociala.Controllers
                 comment.UserId = _authorization.GetId();
                 comment.Content = content;
                 comment.CreatedAt = DateTime.Now;
-                 Console.WriteLine(content + "aaaaaaaaaaaaaaaaa");
-                 Console.WriteLine(id + "aaaaaaaaaaaaaaaaa");
+               
                 _data.Comment.Add(comment);
                 _data.SaveChanges();
                 var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User);
@@ -230,6 +229,7 @@ namespace Sociala.Controllers
         }
         public IActionResult ShowComment(int Id)
         {
+          
             var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User);
             TempData["PostId"]= Id;
             return PartialView(comment);

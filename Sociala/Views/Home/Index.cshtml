@@ -266,6 +266,11 @@
 
                                             <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
                                         </div>
+                                       <div id = "@post.Id" >
+
+                                        </div>
+
+
                                     }
                                     else
                                     {
@@ -284,7 +289,6 @@
                                             }
                                             
 
-                                            <td><a href="#" onclick="GetData(@post.Id)" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss"> Comment</span></a> </td>
                                             <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
 
 
@@ -292,9 +296,7 @@
 
 
                                     }
-                                    <div id="@post.Id">
-                                    </div>
-
+                                    
 
                                 </div>
                                 <br />
@@ -471,7 +473,8 @@
                     //console.log(Id);
 
                     $.ajax({
-                        url: "Posts/ShowComment/" + Id,
+                        url: '/Posts/ShowComment/' ,
+                        data: {  Id },
                         success: function (result) {
                             document.getElementById(Id).innerHTML = result;
 
