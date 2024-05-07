@@ -219,7 +219,7 @@ namespace Sociala.Controllers
                
                 _data.Comment.Add(comment);
                 _data.SaveChanges();
-                var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User);
+                var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User).OrderByDescending(p=>p.CreatedAt);
                 ViewData["PostId"] = id;
                 return PartialView("ShowComment", res);
             }
@@ -231,7 +231,7 @@ namespace Sociala.Controllers
         public IActionResult ShowComment(int Id)
         {
           
-            var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User);
+            var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User).OrderByDescending(p => p.CreatedAt);
              ViewData["PostId"]= Id;
             return PartialView(comment);
         }
