@@ -1,6 +1,7 @@
 "use strict";
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/notifications").build();
+export default connection;
 var notificationSound = new Audio('/notification.mp3');
 var soundActivator = document.getElementById("AvtivateNotificationSound");
 function createNotificationItem(notification) {
@@ -122,14 +123,14 @@ connection.on("ReceiveNotificationList", function (notificationList) {
 });
 
 connection.on("ActivateNotificationIcon", function () {
-    var icon = document.querySelector('.dot-count');
+    var icon = document.querySelector('#notification-active');
     icon.style.display = 'block';
     console.log(icon);
 
 });
 
 connection.on("DeActivateNotificationIcon", function () {
-    var icon = document.querySelector('.dot-count');
+    var icon = document.querySelector('#notification-active');
     icon.style.display = 'none';
     console.log(icon);
 
