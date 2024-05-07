@@ -1,13 +1,14 @@
 "use strict";
+import connection from './notifications.js';
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/notifications").build();
+var soundActivator = document.getElementById("AvtivateMessageSound");
+var audio = new Audio('/message.mp3');
 
 connection.on("Message", function (message) {
 
-    var audio = new Audio('/message.mp3'); // Replace '/path/to/notification-sound.mp3' with the actual path to your notification sound file
-    audio.play();
     // No need to parse the message since it's already in JSON format
     var messageData = JSON.parse(message);
+    soundActivator.click();
 
     // Create the message container
     var messageContainer = document.createElement('div');
@@ -30,14 +31,13 @@ connection.on("Message", function (message) {
 
 });
 
-connection.start().then(function () {
-    console.log("Connection Started");
-}).catch(function (err) {
-    return console.error(err.toString());
-});
 
 function SendMessage(content, receiverId) {
     connection.invoke("CreateMessage", receiverId, content).catch(function (err) {
         return console.error(err.toString());
     });
 }
+
+soundActivator.addEventListener("click", function () {
+    audio.play();
+});
