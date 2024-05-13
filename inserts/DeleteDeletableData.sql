@@ -1,0 +1,12 @@
+delete from [Block]
+delete from [Message]
+delete from [Comment]
+delete from [like]
+delete from [Report]
+delete from [Message]
+delete from [Notification]
+delete from [Request]
+delete from [Friend]
+delete from [SharePost]
+delete from [post]
+delete from [User] where  id!='a-d-m-i-n'

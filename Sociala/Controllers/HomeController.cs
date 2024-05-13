@@ -21,6 +21,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Sociala.Migrations;
 
 namespace Sociala.Controllers
 {
@@ -129,13 +130,102 @@ namespace Sociala.Controllers
         }
 
         
-public IActionResult Search(string Name)
+        public IActionResult SearchForPosts(string type)
+        {
+            if (!authorization.IsLoggedIn())
+            {
+                return RedirectToAction("LogIn", "User");
+            }
+            string Name = (string)TempData["Name"];
+                ViewBag.Name = Name;
+                TempData["Name"] = Name;
+                string id = authorization.GetId();
+
+
+                if (type == "Posts")
+                    ViewBag.Posts = "active";
+                else if (type == "Photos")
+                    ViewBag.Photos = "active";
+                else 
+                    ViewBag.Videos = "active";
+
+                var posts = (_data.Post.Join(_data.User,
+                 post => post.UserId,
+                 friend => friend.Id,
+                 (post, friend) => new PostInfo
+                 {
+                     Id = post.Id,
+                     PostContent = post.content,
+                     PostImj = post.Imj,
+                     UserPhoto = friend.UrlPhoto,
+                     UserName = friend.UesrName,
+                     UserId = friend.Id,
+                     CreateAt = post.CreateAt,
+                     IsHidden = post.IsHidden,
+                     IsBanned = friend.IsBanned,
+                     Isliked = (_data.Like.Contains(new Like
+                     {
+                         PostId = post.Id,
+                         UserId = id
+                     }))
+                 }))
+                 .Where(p => !p.IsHidden && !p.IsBanned && p.PostContent.Contains(Name))
+                 .ToList();
+
+         
+                var sharedPosts = _data.SharePost.Include(p => p.Post).Include(p => p.Post.User).Join(_data.User,
+                    post => post.UserId,
+                    friend => friend.Id,
+                    (post, friend) => new PostInfo
+                    {
+                        Id = post.Id,
+                        OriginalId = post.Post.Id,
+                        PostContent = post.Content,
+                        OriginalPostContent = post.Post.content,
+                        PostImj = post.Post.Imj,
+                        UserPhoto = post.User.UrlPhoto,
+                        OriginalUserPhoto = post.Post.User.UrlPhoto,
+                        UserName = post.User.UesrName,
+                        OriginalUserName = post.Post.User.UesrName,
+                        UserId = friend.Id,
+                        OriginalUserId = post.Post.UserId,
+                        CreateAt = post.CreatedAt,
+                        IsHidden = (post.IsHidden | post.Post.IsHidden),
+                        IsBanned = (friend.IsBanned | post.User.IsBanned),
+                        Isliked = (_data.Like.Contains(new Like
+                        {
+                            PostId = post.Post.Id,
+                            UserId = id
+                        }))
+                    })
+                    .Where(p => !p.IsHidden && !p.IsBanned && p.PostContent.Contains(Name))
+                    .ToList();
+
+                posts.AddRange(sharedPosts);
+
+                if (type == "Photos")
+                    posts = posts.Where(p => p.PostImj!=null && p.PostImj[p.PostImj.Length - 1] != '4').ToList();
+                else if (type == "Videos" )
+                    posts = posts.Where(p => p.PostImj != null && p.PostImj[p.PostImj.Length - 1] == '4').ToList();
+
+                return View(posts);
+        }
+
+        [HttpPost]
+        public IActionResult Search(IFormCollection req)
+        {
+                return Redirect($"/Home/Search/?name={req["Name"]}");
+        }
+
+        [HttpGet]
+        public IActionResult Search(string Name)
         {
             if (!authorization.IsLoggedIn())
             {
                 return RedirectToAction("LogIn", "User");
             }
             TempData["Name"] = Name;
+
             ViewBag.Search = (_data.User.Join(_data.Role,
                                 User => User.RoleId,
                                 Role => Role.Id,
@@ -202,11 +292,6 @@ public IActionResult Search(string Name)
 
 
 
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
