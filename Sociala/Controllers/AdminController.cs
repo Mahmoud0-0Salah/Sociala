@@ -70,7 +70,7 @@ namespace Sociala.Controllers
                 return RedirectToAction("Index", "Home");
             }
             var ReportedUsers = _data.Report.Where(r=>r.Status.Equals("Approved")).Include(r => r.Post).Include(r => r.Post.User).Select(r=>r.Post.User).Where(u=>!u.IsBanned).Distinct().OrderByDescending(u => u.NumberOfApprovedReports);
-            var AllUsers = _data.User;
+            var AllUsers = _data.User.Where(u => !u.IsBanned);
             ViewBag.ReportNum= _data.Report.Where(r => r.Status == "Pending").Count();
             ViewBag.AllUsers = AllUsers;
             return View(ReportedUsers);
