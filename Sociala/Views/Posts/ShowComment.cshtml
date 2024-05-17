@@ -19,13 +19,13 @@
             <div class="col-xl-12">
 
                 <div class="chat-area">
-                    <div class="messages">
+                    <div class="comments">
                         @{
                             int c = 0;
                         }
                         @foreach (var item in Model)
                         {
-                            <div class="col-md-12 message relative">
+                            <div class="col-md-12 comment relative">
                                 <div class="card-body">
                                     <div class="direct-chat-msg">
                                         <div class="direct-chat-info clearfix">
@@ -110,12 +110,12 @@
         scroll-behavior: smooth; /* Smooth scrolling behavior */
     }
 
-    .messages {
+    .comments {
         display: flex;
         flex-direction: column; /* Keep direction as column */
     }
 
-    .message {
+    .comment {
         margin-top: 5px;
     }
 
