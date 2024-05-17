@@ -368,7 +368,7 @@
                                     <ul class="list-group list-group-flush">
                                         @foreach (var user in ViewBag.friends)
                                         {
-                                            @if (user.User.Id != Authorization.GetId())
+                                            @if (user.User.Id != Authorization.GetId() && !user.User.IsBanned)
                                             {
 
                                                 <li class="bg-transparent list-group-item no-icon pe-0 ps-0 pt-2 pb-2 border-0 d-flex align-items-center">
