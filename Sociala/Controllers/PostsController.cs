@@ -207,8 +207,9 @@ namespace Sociala.Controllers
 
         }
 
-        public IActionResult CreateComment(int id, string content)
+        public IActionResult CreateComment(int id, string content, int shareid)
         {
+            Console.WriteLine(shareid + "aaaaaa333aaaaaa");
             try
             {
                 Comment comment = new Comment();
@@ -219,8 +220,9 @@ namespace Sociala.Controllers
                
                 _data.Comment.Add(comment);
                 _data.SaveChanges();
-                var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User).OrderByDescending(p=>p.CreatedAt);
+                var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User).OrderByDescending(p=>p.CreatedAt).ToList();
                 ViewData["PostId"] = id;
+                ViewData["shareId"] = shareid;
                 return PartialView("ShowComment", res);
             }
             catch
@@ -228,11 +230,13 @@ namespace Sociala.Controllers
                 return View("ErrorPage");
             }
         }
-        public IActionResult ShowComment(int Id)
+        public IActionResult ShowComment(int Id,int id2)
         {
           
             var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User).OrderByDescending(p => p.CreatedAt);
              ViewData["PostId"]= Id;
+            ViewData["shareId"] = id2;
+            Console.WriteLine(id2 + "aaaaaaa2aaaaa");
             return PartialView(comment);
         }
 

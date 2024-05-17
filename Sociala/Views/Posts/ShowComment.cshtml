@@ -1,12 +1,18 @@
 ﻿@model IEnumerable<Sociala.Models.Comment>
 @{
     int Id = Convert.ToInt32(ViewData["PostId"]);
+    int shareid;
+    if (ViewData["shareId"] != null)
+        shareid = Convert.ToInt32(ViewData["shareId"]) + Id;
+    else
+        shareid = Id;
+    int shareid2 = Convert.ToInt32(ViewData["shareId"]);
 }
 
 @inject Sociala.Services.ICheckRelationShip CheckRelationShip
 
 <hr />
-<input id="appear-@Id" class="appear-@Id" value="true" style="display:none">
+<input id="appear-@shareid" class="appear-@shareid" value="true" style="display:none">
 <div class="middle-sidebar-bottom">
     <div class="middle-sidebar-left pe-0">
         <div class="row">
@@ -61,6 +67,11 @@
                             c++;
 
                             Id = Convert.ToInt32(item.PostId);
+                            if (ViewData["shareId"] != null)
+                                shareid = Convert.ToInt32(ViewData["shareId"]) + Id;
+                            else
+                                shareid = Id;
+                             shareid2 = Convert.ToInt32(ViewData["shareId"]);
                             <hr />
 
                         }
@@ -76,7 +87,7 @@
                     <div class="card p-3 d-block border-0">
                         <div class="form-group icon-right-input style1-input mb-0">
 
-                            <form onsubmit="CreateComment('@Id')">
+                            <form onsubmit="CreateComment('@Id',@shareid2)">
                                 <input type="text" id="CommentContent" placeholder="Start typing.." class="form-control rounded-xl bg-greylight border-0 font-xssss fw-500 ps-3">
                             </form>
                             <i class="feather-send text-grey-500 font-md"></i>
