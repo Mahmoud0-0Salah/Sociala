@@ -1,4 +1,6 @@
-﻿<div class="middle-sidebar-bottom">
+﻿@inject AuthorizationService.IAuthorization Authorization
+
+<div class="middle-sidebar-bottom">
     <div class="middle-sidebar-left pe-0">
         <div class="row">
             <div class="card-body d-block w-100 shadow-none mb-0 p-0 border-top-xs">
@@ -24,7 +26,7 @@
                                     <h6 class="fw-500 text-grey-450 font-xssss mt-1">@post.CreateAt</h6>
                                 </div>
                             </a>
-                            @if (post.OriginalUserName == null)
+                            @if (post.OriginalUserName == null && Authorization.IsUser(Authorization.GetId()))
                             {
                                 <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                                 <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
@@ -41,7 +43,7 @@
 
                                 </div>
                             }
-                            else
+                            else if (Authorization.IsUser(Authorization.GetId()))
                             {
                                 <a href="#" class="ms-auto" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></a>
                                 <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
@@ -98,7 +100,7 @@
                                 </div>
                             </div>
                         }
-                        @if (post.OriginalUserName == null)
+                        @if (post.OriginalUserName == null && Authorization.IsUser(Authorization.GetId()) )
                         {
 
                             <div class="card-body d-flex p-0">
@@ -124,7 +126,7 @@
                             </div>
 
                         }
-                        else
+                        else if (Authorization.IsUser(Authorization.GetId()))
                         {
                             <div class="card-body d-flex p-0">
                                 @if (!post.Isliked)

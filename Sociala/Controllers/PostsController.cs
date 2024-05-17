@@ -209,7 +209,6 @@ namespace Sociala.Controllers
 
         public IActionResult CreateComment(int id, string content, int shareid)
         {
-            Console.WriteLine(shareid + "aaaaaa333aaaaaa");
             try
             {
                 Comment comment = new Comment();
@@ -236,7 +235,6 @@ namespace Sociala.Controllers
             var comment = _data.Comment.Where(p => p.PostId == Id).Include(p => p.User).OrderByDescending(p => p.CreatedAt);
              ViewData["PostId"]= Id;
             ViewData["shareId"] = id2;
-            Console.WriteLine(id2 + "aaaaaaa2aaaaa");
             return PartialView(comment);
         }
 

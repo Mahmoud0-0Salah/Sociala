@@ -58,7 +58,7 @@ namespace Sociala.Controllers
 
             return View(report);
         }
-        public IActionResult ReportedUsersInfo()
+        public IActionResult UsersInfo()
         {
             if (!authorization.IsLoggedIn())
             {
@@ -69,9 +69,11 @@ namespace Sociala.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            var users = _data.Report.Where(r=>r.Status.Equals("Approved")).Include(r => r.Post).Include(r => r.Post.User).Select(r=>r.Post.User).Where(u=>!u.IsBanned).Distinct().OrderByDescending(u => u.NumberOfApprovedReports);
+            var ReportedUsers = _data.Report.Where(r=>r.Status.Equals("Approved")).Include(r => r.Post).Include(r => r.Post.User).Select(r=>r.Post.User).Where(u=>!u.IsBanned).Distinct().OrderByDescending(u => u.NumberOfApprovedReports);
+            var AllUsers = _data.User;
             ViewBag.ReportNum= _data.Report.Where(r => r.Status == "Pending").Count();
-            return View(users);
+            ViewBag.AllUsers = AllUsers;
+            return View(ReportedUsers);
         }
         [HttpGet]
         public IActionResult ApproveReport(int Id)
