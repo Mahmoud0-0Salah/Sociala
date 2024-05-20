@@ -44,17 +44,23 @@ namespace Sociala.Controllers
         }
         public IActionResult Profile(string Id)
         {
-            
-            if (Id == null)
-                Id = authorization.GetId();
-            if (!authorization.IsLoggedIn())
-                return RedirectToAction("LogIn", "User");
-            if (authorization.IsAdmin(Id))
-               return RedirectToAction("Index", "home");
-            if (authorization.IsBanned(Id))
+            try
+            {
+                if (!authorization.IsLoggedIn())
+                    return RedirectToAction("LogIn", "User");
+                if (Id == null)
+                    Id = authorization.GetId();
+                if (authorization.IsAdmin(Id))
+                   return RedirectToAction("Index", "home");
+                if (authorization.IsBanned(Id))
+                    return View("ErrorPage");
+                if (CheckRelationShip.IsBlock(Id))
+                    return View("ErrorPage");
+            }
+            catch 
+            {
                 return View("ErrorPage");
-            if (CheckRelationShip.IsBlock(Id))
-                return View("ErrorPage");
+            }
 
             var user = appData.User.FirstOrDefault(u => u.Id == Id);
 
