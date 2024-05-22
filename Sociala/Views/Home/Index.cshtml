@@ -504,36 +504,56 @@
 
             </script>
 
-           <script>
-    function CreateComment(Id, id2) {
-        event.preventDefault();
-        // Convert to integers to ensure proper addition
-        var shareid;
-        if (id2 != 0) {
-            shareid = parseInt(id2, 10) + parseInt(Id, 10);
-        } else {
-            shareid = Id;
-        }
-        console.log(Id);
-        console.log(id2);
-        console.log(shareid);
+            <script>
+                function CreateComment(Id, id2) {
+                    event.preventDefault();
+                    // Convert to integers to ensure proper addition
+                    var shareid;
+                    if (id2 != 0) {
+                        shareid = parseInt(id2, 10) + parseInt(Id, 10);
+                    } else {
+                        shareid = Id;
+                    }
         
-        var Content = document.getElementById('CommentContent').value;
+                    var Content = document.getElementById('CommentContent').value;
         
-        $.ajax({
-            url: '/Posts/CreateComment',
-              data: { id: Id, content: Content, shareid: id2 },
-            success: function(result) {
-                document.getElementById(shareid).innerHTML = result;
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-</script>
+                    $.ajax({
+                        url: '/Posts/CreateComment',
+                          data: { id: Id, content: Content, shareid: id2 },
+                        success: function(result) {
+                            document.getElementById(shareid).innerHTML = result;
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            </script>
 
+            <script>
+                function DeleteComment(Commentid, Id, id2) {
+                    event.preventDefault();
+                    var shareid;
+                    if (id2 != 0) {
+                        shareid = parseInt(id2, 10) + parseInt(Id, 10);
+                    } else {
+                        shareid = Id;
+                    }
 
+                    $.ajax({
+                        url: '/Posts/DeleteComment',
+                        data: { commentid : Commentid, id: Id, shareid: id2 },
+                        success: function (result) {
+                            console.log(1);
+                            document.getElementById(shareid).innerHTML = result;
+                        },
+                        error: function (xhr, status, error) {
+                            console.log(0);
+                            console.error(xhr.responseText);
+                        }
+                    });
+                }
+            </script>
 
 
 </body>

@@ -1,9 +1,11 @@
 ﻿using AuthorizationService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Sociala.Data;
 using Sociala.Models;
 using Sociala.Services;
+using System.ComponentModel.Design;
 
 namespace Sociala.Controllers
 {
@@ -209,8 +211,9 @@ namespace Sociala.Controllers
 
         public IActionResult CreateComment(int id, string content, int shareid)
         {
-            try
-            {
+            if (!_authorization.IsLoggedIn() || _authorization.IsAdmin(_authorization.GetId()))
+                return RedirectToAction("index", "Home");
+           
                 Comment comment = new Comment();
                 comment.PostId = id;
                 comment.UserId = _authorization.GetId();
@@ -223,12 +226,53 @@ namespace Sociala.Controllers
                 ViewData["PostId"] = id;
                 ViewData["shareId"] = shareid;
                 return PartialView("ShowComment", res);
+        }
+
+        public IActionResult DeleteComment(int commentid,int id, int shareid)
+        {
+            if (!_authorization.IsLoggedIn() || _authorization.IsAdmin(_authorization.GetId()))
+                return RedirectToAction("index", "Home");
+            Comment comment = _data.Comment.Where(c => c.Id == commentid).SingleOrDefault();
+            try
+            {
+                _data.Comment.Remove(comment);
+                _data.SaveChanges();
+
+                var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User).OrderByDescending(p => p.CreatedAt).ToList();
+                ViewData["PostId"] = id;
+                ViewData["shareId"] = shareid;
+                return PartialView("ShowComment", res);
             }
             catch
             {
-                return View("ErrorPage");
+                return PartialView("ErrorPage");
             }
         }
+
+        [HttpGet]
+        public IActionResult EditComment(int id)
+        {
+            if (!_authorization.IsLoggedIn() || _authorization.IsAdmin(_authorization.GetId()))
+                return RedirectToAction("index", "Home");
+            ViewBag.id = id;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EditComment(int id,IFormCollection req)
+        {
+            if (string.IsNullOrEmpty(req["content"]))
+            {
+                ViewBag.error = "Enter Content";
+                ViewBag.id = id;
+                return View();
+            }
+            Comment comment = _data.Comment.Where(c => c.Id == id).SingleOrDefault();
+            comment.Content = req["content"].ToString();
+            _data.SaveChanges();
+            return RedirectToAction("index", "Home");
+        }
+
         public IActionResult ShowComment(int Id,int id2)
         {
           

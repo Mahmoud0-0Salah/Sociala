@@ -44,13 +44,13 @@
                                                 </a>
                                                 <div class="dropdown-menu dropup p-4 rounded-xxl border-0 shadow-lg" aria-labelledby="dropdownMenu2">
                                                     <div class="card-body p-0 d-flex mt-2">
-                                                        <a href="#">
+                                                        <a onclick="DeleteComment(@item.Id,@Id,@shareid2)">
                                                             <i class="feather-alert-circle text-grey-500 me-3 font-lg"></i>
                                                             <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Delete Comment </h4>
                                                         </a>
                                                     </div>
                                                     <div class="card-body p-0 d-flex mt-2">
-                                                        <a href="#">
+                                                        <a href="/posts/EditComment/@item.Id">
                                                             <i class="feather-edit text-grey-500 me-3 font-lg"></i>
                                                             <h4 class="fw-600 text-grey-900 font-xssss mt-0 me-4">Edit Comment </h4>
                                                         </a>

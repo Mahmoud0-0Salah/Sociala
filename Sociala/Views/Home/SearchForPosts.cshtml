@@ -116,7 +116,7 @@
                                         <i class="feather-thumbs-up text-white bg-primary-gradiant me-1 btn-round-xs font-xss"></i>
                                     </a>
                                 }
-                                <td><a href="#" onclick="GetData(@post.Id)" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss"> Comment</span></a> </td>
+                                <td><a href="#" onclick="GetData(@post.Id,0)" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss"> Comment</span></a> </td>
 
                                 <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.Id" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
                             </div>
@@ -124,7 +124,6 @@
                                 <input id="appear-@post.Id" class="appear-@post.Id" value="false" style="display:none">
 
                             </div>
-
                         }
                         else if (Authorization.IsUser(Authorization.GetId()))
                         {
@@ -142,9 +141,16 @@
                                     </a>
                                 }
 
+                                <td><a href="#" onclick="GetData(@post.OriginalId,@post.Id)" class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i><span class="d-none-xss"> Comment</span></a> </td>
 
                                 <a asp-controller="Posts" asp-action="SharePost" asp-route-ID="@post.OriginalId" class="ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss"><i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i><span class="d-none-xs">Share</span></a>
+                            </div>
 
+                            int shareid = (@post.Id) + (@post.OriginalId);
+
+
+                            <div id="@shareid">
+                                <input id="appear-@shareid" class="appear-@shareid" value="false" style="display:none">
 
                             </div>
 
@@ -197,19 +203,24 @@
 
 
 <script>
-    function GetData(Id) {
+    function GetData(Id, id2) {
         event.preventDefault();
         //console.log(Id);
-        var appear = document.getElementById('appear-' + Id).value;
+        if (id2 != 0)
+            var shareid = Id + id2;
+        else var shareid = Id;
+
+
+        var appear = document.getElementById('appear-' + shareid).value;
 
         $.ajax({
             url: '/Posts/ShowComment/',
-            data: { Id },
+            data: { Id, id2 },
             success: function (result) {
                 if (appear == 'false')
-                    document.getElementById(Id).innerHTML = result;
+                    document.getElementById(shareid).innerHTML = result;
                 else
-                    document.getElementById(Id).innerHTML = '<input id="appear-' + Id + '" value="false" style="display: none;">';
+                    document.getElementById(shareid).innerHTML = '<input id="appear-' + shareid + '" value="false" style="display: none;">';
 
 
 
@@ -223,24 +234,52 @@
 </script>
 
 <script>
-    function CreateComment(Id) {
+    function CreateComment(Id, id2) {
         event.preventDefault();
+        // Convert to integers to ensure proper addition
+        var shareid;
+        if (id2 != 0) {
+            shareid = parseInt(id2, 10) + parseInt(Id, 10);
+        } else {
+            shareid = Id;
+        }
+
         var Content = document.getElementById('CommentContent').value;
+
         $.ajax({
             url: '/Posts/CreateComment',
-            data: { id: Id, content: Content },
+            data: { id: Id, content: Content, shareid: id2 },
             success: function (result) {
-                document.getElementById(Id).innerHTML = result;
-                console.log(Id);
+                document.getElementById(shareid).innerHTML = result;
             },
             error: function (xhr, status, error) {
                 console.error(xhr.responseText);
             }
         });
-
-
-
     }
+</script>
 
+<script>
+    function DeleteComment(Commentid, Id, id2) {
+        event.preventDefault();
+        var shareid;
+        if (id2 != 0) {
+            shareid = parseInt(id2, 10) + parseInt(Id, 10);
+        } else {
+            shareid = Id;
+        }
 
+        $.ajax({
+            url: '/Posts/DeleteComment',
+            data: { commentid: Commentid, id: Id, shareid: id2 },
+            success: function (result) {
+                console.log(1);
+                document.getElementById(shareid).innerHTML = result;
+            },
+            error: function (xhr, status, error) {
+                console.log(0);
+                console.error(xhr.responseText);
+            }
+        });
+    }
 </script>
