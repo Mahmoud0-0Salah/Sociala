@@ -76,6 +76,19 @@ namespace Sociala.Controllers
             ViewBag.AllUsers = AllUsers;
             return View(ReportedUsers);
         }
+
+        [HttpPost]
+        public IActionResult Search(string Name)
+        {
+            var AdminRoleId = _data.Role.Where(r => r.Name.Equals("Admin")).SingleOrDefault().Id;
+            var users = _data.User
+                .Where(u => !u.IsBanned && (u.UesrName.Contains(Name) || u.Email.Contains(Name)) && u.RoleId != AdminRoleId)
+                .OrderBy(u => u.NumberOfApprovedReports)
+                .ToList();
+
+            return PartialView(users);
+        }
+
         [HttpGet]
         public IActionResult ApproveReport(int Id)
         {

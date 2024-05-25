@@ -9,7 +9,7 @@
                 <div class="nav-caption fw-600 font-xssss text-grey-500"><span>Dashboard </span></div>
                 <ul class="mb-3">
                     <li><a href="/admin" class="nav-content-bttn open-font"><i class="font-xl text-current feather-inbox me-3"></i><span>Reports</span><span class="circle-count bg-warning mt-1">@ViewBag.ReportNum</span></a></li>
-                    <li><a href="/admin/ReportedUsersInfo" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Users </span><<span class="circle-count bg-warning mt-1">@Model.Count()</span></a></li>
+                    <li><a href="/admin/UsersInfo" class="nav-content-bttn open-font"><i class="feather-user btn-round-md bg-primary-gradiant me-3"></i><span>Users </span><<span class="circle-count bg-warning mt-1">@Model.Count()</span></a></li>
                     <!-- <li><a href="default-hotel.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-home me-3"></i><span>Near Hotel</span></a></li>
                     <li><a href="default-event.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-map-pin me-3"></i><span>Latest Event</span></a></li>
                     <li><a href="default-live-stream.html" class="nav-content-bttn open-font"><i class="font-xl text-current feather-youtube me-3"></i><span>Live Stream</span></a></li>                         -->
@@ -72,52 +72,83 @@
                         <div class="card-body d-flex align-items-center p-0">
                             <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900">
                                 All users
+                                <div class="card shadow-xss w-100 d-block d-flex border-0 p-4 mb-3">
+                                    <div class="card-body d-flex align-items-center p-0">
+                                        <form id="search-form" asp-controller="Admin" asp-action="Search" method="post" class="search-form header-search">
+                                            <div class="form-group mb-0 icon-input">
+                                                <i class="feather-search font-sm text-grey-400"></i>
+                                                <input type="text" name="Name" placeholder="Search in your friends..." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </h2>
                         </div>
                     </div>
-
-                    <div class="row ps-2 pe-1">
-                        @foreach (var user in ViewBag.AllUsers)
-                        {
-                            <div class="col-md-6 col-sm-6 pe-2 ps-2">
-                                <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
-                                    <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(images/bb-16.png);"></div>
-                                    <div class="card-body d-block w-100 pl-10 pe-4 pb-4 pt-0 text-left position-relative">
-                                        <a href="/user/profile/@user.Id" style="display:inline">
-
-                                            <figure class="avatar position-absolute w75 z-index-1" style="top:-40px; left: 15px;"><img src="@user.UrlPhoto" alt="image" class="float-right p-1 bg-white rounded-circle w-100"></figure>
-                                            <div class="clearfix"></div>
-                                            <h4 class="fw-700 font-xsss mt-3 mb-1">@user.UesrName</h4>
-                                        </a>
-                                        <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">@user.Email</p>
-                                        <span class="position-absolute right-15 top-0 d-flex align-items-center">
-                                            <a href="#" class="d-lg-block d-none" style="position: relative; bottom: -40px;">Number of approved reports :  @user.NumberOfApprovedReports </a>
-                                            <a href="/admin/Ban/@user.Id" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white confirm-ban">Ban</a>
-                                        </span>
+                    <div id="search-results">
+                        <div class="row ps-2 pe-1">
+                            @foreach (var user in ViewBag.AllUsers)
+                            {
+                                <div class="col-md-6 col-sm-6 pe-2 ps-2">
+                                    <div class="card d-block border-0 shadow-xss rounded-3 overflow-hidden mb-3">
+                                        <div class="card-body position-relative h100 bg-image-cover bg-image-center" style="background-image: url(images/bb-16.png);"></div>
+                                        <div class="card-body d-block w-100 pl-10 pe-4 pb-4 pt-0 text-left position-relative">
+                                            <a href="/user/profile/@user.Id" style="display:inline">
+                                                <figure class="avatar position-absolute w75 z-index-1" style="top:-40px; left: 15px;"><img src="@user.UrlPhoto" alt="image" class="float-right p-1 bg-white rounded-circle w-100"></figure>
+                                                <div class="clearfix"></div>
+                                                <h4 class="fw-700 font-xsss mt-3 mb-1">@user.UesrName</h4>
+                                            </a>
+                                            <p class="fw-500 font-xsssss text-grey-500 mt-0 mb-3">@user.Email</p>
+                                            <span class="position-absolute right-15 top-0 d-flex align-items-center">
+                                                <a href="#" class="d-lg-block d-none" style="position: relative; bottom: -40px;">Number of approved reports : @user.NumberOfApprovedReports </a>
+                                                <a href="/admin/Ban/@user.Id" class="text-center p-2 lh-24 w100 ms-1 ls-3 d-inline-block rounded-xl bg-current font-xsssss fw-700 ls-lg text-white confirm-ban">Ban</a>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        }
-
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
-
-
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.confirm-ban').forEach(function (element) {
-            element.addEventListener('click', function (e) {
-                e.preventDefault();
-                var result = confirm('Are you sure you want to ban this user?');
-                if (result) {
-                    window.location.href = this.href;
-                }
+        function initializeBanConfirmations() {
+            document.querySelectorAll('.confirm-ban').forEach(function (element) {
+                element.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var result = confirm('Are you sure you want to ban this user?');
+                    if (result) {
+                        window.location.href = this.href;
+                    }
+                });
             });
+        }
+
+        initializeBanConfirmations();
+
+        document.getElementById('search-form').addEventListener('submit', function (e) {
+            e.preventDefault(); 
+
+            var formData = new FormData(this);
+
+            fetch('/Admin/Search', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('search-results').innerHTML = data;
+
+                    initializeBanConfirmations();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         });
     });
 </script>
