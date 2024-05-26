@@ -209,7 +209,7 @@ namespace Sociala.Controllers
 
         }
 
-        public IActionResult CreateComment(int id, string content, int shareid)
+        public async Task<IActionResult> CreateComment(int id, string content, int shareid)
         {
             if (!_authorization.IsLoggedIn() || _authorization.IsAdmin(_authorization.GetId()))
                 return RedirectToAction("index", "Home");
@@ -222,6 +222,7 @@ namespace Sociala.Controllers
                
                 _data.Comment.Add(comment);
                 _data.SaveChanges();
+                await _notificationSerivce.SendCommentNotification(comment.UserId, comment.PostId);
                 var res = _data.Comment.Where(p => p.PostId == id).Include(p => p.User).OrderByDescending(p=>p.CreatedAt).ToList();
                 ViewData["PostId"] = id;
                 ViewData["shareId"] = shareid;
