@@ -60,7 +60,29 @@ namespace Sociala.Services
 
         public async Task SendCommentNotification(string actorId, int postId)
         {
+            var post = _data.Post.Where(p => p.Id == postId).SingleOrDefault();
+            if (post == null || post.UserId == actorId)
+            {
+                return;
+            }
+            var actor = _data.User.FirstOrDefault(u => u.Id == actorId);
+            var message = $"""{actor.UesrName} Commented On Your Post""";
+            var notification = new Notification() { UserId = post.UserId, Content = message, ActorId = actorId };
+            _data.Notification.Add(notification);
+            _data.SaveChanges();
 
+            var dataToSend = new
+            {
+                id = notification.Id,
+                message = message,
+                userName = actor.UesrName,
+                imgUrl = actor.UrlPhoto,
+                createdAt = notification.CreatedAt,
+                seen = notification.Seen,
+            };
+            string jsonData = JsonSerializer.Serialize(dataToSend);
+            await SendMessageToUser(post.UserId, jsonData);
+            await HandleNotificationIcon(post.UserId);
         }
         public async Task SendFriendRequestNotification(string actorId, string userId)
         {
