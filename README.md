@@ -20,6 +20,9 @@ A social media website for contact with others and share posts using ASP.NET MVC
     - Comment & Like for posts 
     - Delete Comment & Edit it
     - Share Posts
+    - send friend request
+    - Confirm or delete  friend request
+    - Block another user
     - Profile
     - Edit in profile info
     - Searching & Filtering
