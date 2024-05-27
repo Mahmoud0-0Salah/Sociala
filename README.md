@@ -10,11 +10,11 @@ A social media website for contact with others and share posts using ASP.NET MVC
 ## Features
 - User Section
     - Authentication & Authorization
-    - Home page for show all posts
+    - Home page for display all posts
     - User can create posts 
-    - Delete posts & Edit in it
+    - Delete posts & Edit it
     - Comment & Like for posts 
-    - Delete Comment & Edit in it
+    - Delete Comment & Edit it
     - Share Posts
     - Profile
     - Edit in profile info
