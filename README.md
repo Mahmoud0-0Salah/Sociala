@@ -1,7 +1,12 @@
 # Sociala
 A social media website for contact with others and share posts using ASP.NET MVC. In this project there are two rules admin & user
 
-
+## How to run project
+- Open requirements file 
+- Move imj folder to "\Sociala\Sociala\wwwroot"
+- Move appsettings.json & appsettings.Development.json to "\Sociala\Sociala"
+- Change ConnectionStrings in appsettings.json
+- run project  
 ## Features
 - User Section
     - Authentication & Authorization
