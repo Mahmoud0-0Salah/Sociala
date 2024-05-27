@@ -2,11 +2,15 @@
 A social media website for contact with others and share posts using ASP.NET MVC. In this project there are two rules admin & user
 
 ## How to run project
+- Ensure you have .NET 7.0 installed on your machine.
+- Install Microsoft.EntityFrameworkCore.Tools version 7
+- Install Microsoft.EntityFrameworkCore version 7
 - Open requirements file 
 - Move imj folder to "\Sociala\Sociala\wwwroot"
 - Move appsettings.json & appsettings.Development.json to "\Sociala\Sociala"
 - Change ConnectionStrings in appsettings.json
-- run project  
+- in Package Manager Console running the following command "Update-Database"
+- run project 
 ## Features
 - User Section
     - Authentication & Authorization
