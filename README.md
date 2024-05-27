@@ -45,3 +45,7 @@ A social media website for contact with others and share posts using ASP.NET MVC
 
 ## Database Design
 ![Capture](https://github.com/Mahmoud0-0Salah/Sociala/assets/126424722/cf4b20d4-49e2-4eb5-ac89-a289f44b7a7d)
+
+## Demo Video
+https://github.com/Mahmoud0-0Salah/Sociala/assets/126424722/238d3a7e-04f9-42ea-b43d-765869668c78
+
