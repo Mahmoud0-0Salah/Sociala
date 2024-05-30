@@ -10,6 +10,7 @@ A social media website for contact with others and share posts using ASP.NET MVC
 - Move appsettings.json & appsettings.Development.json to "\Sociala\Sociala"
 - Change ConnectionStrings in appsettings.json
 - in Package Manager Console running the following command "Update-Database"
+- In "\Sociala\inserts" folder run "AddRolesAndAdminEmail.sql" query 
 - run project 
 ## Features
 - User Section
